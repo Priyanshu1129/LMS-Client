@@ -22,23 +22,24 @@ let signUpSchema = object({
 });
 
 const Register = ({ navigation }) => {
-
   const dispatch = useDispatch();
-  const { status, isAuthenticated, error, data } = useSelector((state) => state.auth.authDetails);
+  const { status, isAuthenticated, error, data } = useSelector(
+    (state) => state.auth.authDetails
+  );
 
   const handleRegistration = (values) => {
     dispatch(register(values));
-  }
+  };
 
-  useEffect(()=>{
-    if(status === "pending"){
+  useEffect(() => {
+    if (status === "pending") {
       //  loading
-    }else if(status === "success" && isAuthenticated){
-      navigation.navigate('Home');
-    }else if(status === "failed" ){
+    } else if (status === "success" && isAuthenticated) {
+      navigation.navigate("Home");
+    } else if (status === "failed") {
       Alert.alert(error);
     }
-  },[status])
+  }, [status]);
 
   return (
     <View
@@ -60,16 +61,7 @@ const Register = ({ navigation }) => {
         onSubmit={handleRegistration}
         validationSchema={signUpSchema}
       >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting,
-          isValid,
-          values,
-          touched,
-          errors,
-        }) => (
+        {({ handleChange, handleSubmit, isValid, values, touched, errors }) => (
           <View style={{ width: "70%" }}>
             <TextInput
               style={Styles.input}

@@ -1,16 +1,20 @@
 import axios from "axios";
-import { paymentActions } from "../slices/paymentSlice";
+import { seatActions } from "../slices/seatSlice";
 import { serverURL } from "../../config/config";
 
-const route = `${serverURL}/payment`
+const route = `${serverURL}/seat`
 
-export const getAllPayment = () => async (dispatch) => {
+export const getAllSeats = (token) => async (dispatch) => {
     try {
-        dispatch(paymentActions.getAllPaymentRequest());
-
-        const data = await axios.get(`${route}/payment`);
-        console.log('get-all-payment-res-data', data);
-        dispatch(paymentActions.getAllPaymentSuccess(data.data));
+        dispatch(seatActions.getAllSeatsRequest());
+        console.log('get-all-seat-token', token);
+        const data = await axios.get(`${route}/`, {
+            headers: {
+                "authorization": token
+            }
+        });
+        // console.log('get-all-seat-res-data', data);
+        dispatch(seatActions.getAllSeatsSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -21,18 +25,18 @@ export const getAllPayment = () => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(paymentActions.getAllPaymentFailure(errorMessage));
+        dispatch(seatActions.getAllSeatsFailure(errorMessage));
     }
 };
 
-export const getPayment = (paymentId) => async (dispatch) => {
+export const getSeat = (paymentId) => async (dispatch) => {
     try {
         console.log("get-paymentData", paymentId);
-        dispatch(paymentActions.getPaymentRequest());
+        dispatch(seatActions.getSeatDetailsRequest());
 
-        const data = await axios.get(`${route}/payment/${paymentId}`);
-        console.log('get-payment-res-data', data);
-        dispatch(paymentActions.getPaymentSuccess(data.data));
+        const data = await axios.get(`${route}/seat/${paymentId}`);
+        console.log('get-seat-res-data', data);
+        dispatch(seatActions.getSeatDetailsSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -43,17 +47,17 @@ export const getPayment = (paymentId) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(paymentActions.getPaymentFailure(errorMessage));
+        dispatch(seatActions.getSeatDetailsFailure(errorMessage));
     }
 };
 
-export const createPayment = (paymentData) => async (dispatch) => {
+export const createSeat = (paymentData) => async (dispatch) => {
     try {
         console.log("create-paymentData", paymentData);
-        dispatch(paymentActions.createPaymentRequest());
+        dispatch(seatActions.createSeatRequest());
 
         const data = await axios.post(
-            `${route}/payment`,
+            `${route}/seat`,
             paymentData,
             {
                 headers: {
@@ -61,8 +65,8 @@ export const createPayment = (paymentData) => async (dispatch) => {
                 },
             }
         );
-        console.log('create-payment-res-data', data);
-        dispatch(paymentActions.createPaymentSuccess(data.data));
+        console.log('create-seat-res-data', data);
+        dispatch(seatActions.createSeatSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -73,17 +77,17 @@ export const createPayment = (paymentData) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(paymentActions.createPaymentFailure(errorMessage));
+        dispatch(seatActions.createSeatFailure(errorMessage));
     }
 };
 
-export const updatePayment = (paymentData) => async (dispatch) => {
+export const updateSeat = (paymentData) => async (dispatch) => {
     try {
         console.log("update-paymentData", paymentData);
-        dispatch(paymentActions.updatePaymentRequest());
+        dispatch(seatActions.updateSeatRequest());
 
         const data = await axios.put(
-            `${route}/payment`,
+            `${route}/seat`,
             paymentData,
             {
                 headers: {
@@ -91,8 +95,8 @@ export const updatePayment = (paymentData) => async (dispatch) => {
                 },
             }
         );
-        console.log('update-payment-res-data', data);
-        dispatch(paymentActions.updatePaymentSuccess(data.data));
+        console.log('update-seat-res-data', data);
+        dispatch(seatActions.updateSeatSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -103,17 +107,17 @@ export const updatePayment = (paymentData) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(paymentActions.updatePaymentFailure(errorMessage));
+        dispatch(seatActions.updateSeatFailure(errorMessage));
     }
 };
 
-export const deletePayment = (paymentData) => async (dispatch) => {
+export const deleteSeat = (paymentData) => async (dispatch) => {
     try {
         console.log("delete-paymentData", paymentData);
-        dispatch(paymentActions.deletePaymentRequest());
+        dispatch(seatActions.deleteSeatRequest());
 
         const data = await axios.delete(
-            `${route}/payment`,
+            `${route}/seat`,
             paymentData,
             {
                 headers: {
@@ -121,8 +125,8 @@ export const deletePayment = (paymentData) => async (dispatch) => {
                 },
             }
         );
-        console.log('delete-payment-res-data', data);
-        dispatch(paymentActions.deletePaymentSuccess(data.data));
+        console.log('delete-seat-res-data', data);
+        dispatch(seatActions.deleteSeatSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -133,6 +137,6 @@ export const deletePayment = (paymentData) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(paymentActions.deletePaymentFailure(errorMessage));
+        dispatch(seatActions.deleteSeatFailure(errorMessage));
     }
 };

@@ -22,6 +22,7 @@ export const login = (loginData) => async (dispatch) => {
         console.log('login-res-data', data);
         if (data.status == 200) {
             AsyncStorage.setItem("data", JSON.stringify(data.data));
+            AsyncStorage.setItem("token", `Bearer ${data.data.token}`);
             AsyncStorage.setItem("isAuthenticated", "true");
         }
         dispatch(authActions.loginSuccess(data.data));

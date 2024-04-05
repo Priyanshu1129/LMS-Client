@@ -2,13 +2,19 @@ import axios from "axios";
 import { memberActions } from "../slices/memberSlice";
 import { serverURL } from "../../config/config";
 
-const route = `${serverURL}/`
 
-export const getAllMember = () => async (dispatch) => {
+const route = `${serverURL}/member`
+
+export const getAllMember = (token) => async (dispatch) => {
     try {
         dispatch(memberActions.getAllMemberRequest());
-
-        const data = await axios.get(`${route}/member`);
+        console.log('getAllMemberToken', token);
+        const data = await axios.get(`${route}/`, {
+            headers: {
+                "authorization": token
+            }
+        });
+        
         console.log('get-all-member-res-data', data);
         dispatch(memberActions.getAllMemberSuccess(data.data));
     } catch (error) {
@@ -47,17 +53,17 @@ export const getMember = (memberId) => async (dispatch) => {
     }
 };
 
-export const createMember = (memberData) => async (dispatch) => {
+export const createMember = (memberData, token) => async (dispatch) => {
     try {
         console.log("create-memberData", memberData);
         dispatch(memberActions.createMemberRequest());
-
         const data = await axios.post(
-            `${route}/member`,
+            `${route}/`,
             memberData,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": token
                 },
             }
         );

@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer, useNavigation, DrawerActions, useFocusEffect } from '@react-navigation/native';
-import { BackHandler } from 'react-native';
+import { BackHandler, SafeAreaView } from 'react-native';
 import Login from './screens/auth/login';
 import Register from './screens/auth/register';
 import ForgotPassword from './screens/auth/forgotPassword';
@@ -15,7 +15,7 @@ import AddMember from './screens/member/addMember';
 import PaymentList from './screens/payment/paymentList';
 import PaymentDetails from './screens/payment/paymentDetails';
 import SeatList from './screens/seat/seatList';
-import ReservedSeatDetails from './screens/seat/reservedSeatDetails';
+import SeatDetails from './screens/seat/seatDetails';
 import Search from './screens/search/search';
 import Notifications from './screens/notification/notification';
 import Subscription from './screens/subscription/subscription';
@@ -24,6 +24,7 @@ import StaffsList from './screens/staff/staffsList';
 import StaffDetails from './screens/staff/staffDetails';
 import AddStaff from './screens/staff/addStaff';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MyOrganization from './screens/myOrganization/myOrganization';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -103,6 +104,10 @@ const StackNav = () => {
                 }}
             />
             <Stack.Screen
+                name="MyOrganization"
+                component={MyOrganization}
+            />
+            <Stack.Screen
                 name='Members'
                 component={Members}
             />
@@ -158,8 +163,8 @@ const StackNav = () => {
                 component={SeatList}
             />
             <Stack.Screen
-                name='ReservedSeatDetails'
-                component={ReservedSeatDetails}
+                name='SeatDetails'
+                component={SeatDetails}
             />
             <Stack.Screen
                 name='Subscription'
@@ -227,9 +232,11 @@ export const Main = () => {
 
     return (
         <NavigationContainer>
-            {
-                isAuthenticated ? (<DrawNav />) : (<UnAuthNav />)
-            }
+            <SafeAreaView style={{ flex: 1 }}>
+                {
+                    isAuthenticated ? (<DrawNav />) : (<UnAuthNav />)
+                }
+            </SafeAreaView>
         </NavigationContainer>
     );
 }

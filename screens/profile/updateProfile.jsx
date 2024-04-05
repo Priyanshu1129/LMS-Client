@@ -54,7 +54,7 @@ function UpdateProfile({ navigation }) {
 
   const handleUpdateProfile = (values) => {
     console.log("values", values);
-    
+
     navigation.goBack();
     // dispatch(updateProfile());
   };

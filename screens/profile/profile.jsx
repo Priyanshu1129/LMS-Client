@@ -15,18 +15,20 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const Profile = ({ navigation, route }) => {
   const [data, setData] = useState();
+
   const getData = async () => {
     const storedData = await AsyncStorage.getItem("data");
+
     setData(JSON.parse(storedData));
   };
-  
+
   useEffect(() => {
     getData();
   }, []);
 
   return (
     <View>
-      {/* <Text>{JSON.stringify(data)}</Text> */}
+      <Text>{JSON.stringify(data)}</Text>
       <View style={styles.userInfoSection}>
         <View
           style={{

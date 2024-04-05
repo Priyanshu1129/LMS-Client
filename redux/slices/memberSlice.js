@@ -77,9 +77,12 @@ const memberSlice = createSlice({
         },
         clearAllMembersError: (state) => {
             state.allMembers.error = null;
+            state.allMembers.status = null;
         },
         clearMemberDetailsError: (state) => {
             state.memberDetails.error = null;
+            state.memberDetails.pending = null;
+
         }
     }
 })
