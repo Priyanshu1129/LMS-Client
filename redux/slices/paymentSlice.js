@@ -74,6 +74,9 @@ const paymentSlice = createSlice({
             state.paymentDetails.status = 'failed'
             state.paymentDetails.error = action.payload;
         },
+        clearPaymentDetailsStatus: (state, action ) => {
+            state.paymentDetails.status = null;
+        },
         clearAllPaymentsError: (state) => {
             state.allPayments.error = null;
         },

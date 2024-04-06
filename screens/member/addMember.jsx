@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createMember } from "../../redux/actions/memberActions";
 import { memberActions } from "../../redux/slices/memberSlice";
 import PageLoader from "../../components/pageLoader";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchToken } from "../../config/fetchAsyncStorage.js";
 
 let memberSchema = object({
   name: string().required(),
@@ -30,7 +30,7 @@ const AddMemberPage = ({ navigation }) => {
   );
 
   const getToken = async () => {
-    const storedToken = await AsyncStorage.getItem("token");
+    const storedToken = await fetchToken();
     setToken(storedToken);
   };
 

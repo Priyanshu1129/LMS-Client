@@ -74,6 +74,34 @@ const seatSlice = createSlice({
             state.seatDetails.status = 'failed'
             state.seatDetails.error = action.payload;
         },
+        allocateSeatRequest: (state, action) => {
+            state.seatDetails.status = 'pending'
+        },
+        allocateSeatSuccess: (state, action) => {
+            state.seatDetails.status = 'success'
+            state.seatDetails.data = action.payload;
+        },
+        allocateSeatFailed: (state, action) => {
+            state.seatDetails.status = 'failed'
+            state.seatDetails.error = action.payload;
+        },
+        deallocateSeatRequest: (state, action) => {
+            state.seatDetails.status = 'pending'
+        },
+        deallocateSeatSuccess: (state, action) => {
+            state.seatDetails.status = 'success'
+            state.seatDetails.data = action.payload;
+        },
+        deallocateSeatFailed: (state, action) => {
+            state.seatDetails.status = 'failed'
+            state.seatDetails.error = action.payload;
+        },
+        clearSeatDetailsStatus: (state ,action) => {
+            state.seatDetails.status = null;
+        },
+        clearAllSeatsStatus: (state ,action) => {
+            state.allSeats.status = null;
+        },
         clearAllSeatsError: (state) => {
             state.allSeats.error = null;
         },

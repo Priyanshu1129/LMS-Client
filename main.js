@@ -14,6 +14,7 @@ import MemberDetails from './screens/member/memberDetails';
 import AddMember from './screens/member/addMember';
 import PaymentList from './screens/payment/paymentList';
 import PaymentDetails from './screens/payment/paymentDetails';
+import MakePayment from './screens/payment/makePayment';
 import SeatList from './screens/seat/seatList';
 import SeatDetails from './screens/seat/seatDetails';
 import Search from './screens/search/search';
@@ -153,6 +154,10 @@ const StackNav = () => {
             <Stack.Screen
                 name='PaymentList'
                 component={PaymentList}
+            />
+            <Stack.Screen
+                name='MakePayment'
+                component={MakePayment}
             />
             <Stack.Screen
                 name='PaymentDetails'

@@ -29,7 +29,7 @@ export const getAllSeats = (token) => async (dispatch) => {
     }
 };
 
-export const getSeat = (paymentId) => async (dispatch) => {
+export const getSeat = (seatId) => async (dispatch) => {
     try {
         console.log("get-paymentData", paymentId);
         dispatch(seatActions.getSeatDetailsRequest());
@@ -51,7 +51,7 @@ export const getSeat = (paymentId) => async (dispatch) => {
     }
 };
 
-export const createSeat = (paymentData) => async (dispatch) => {
+export const createSeat = (seatData) => async (dispatch) => {
     try {
         console.log("create-paymentData", paymentData);
         dispatch(seatActions.createSeatRequest());
@@ -81,7 +81,7 @@ export const createSeat = (paymentData) => async (dispatch) => {
     }
 };
 
-export const updateSeat = (paymentData) => async (dispatch) => {
+export const updateSeat = (seatData) => async (dispatch) => {
     try {
         console.log("update-paymentData", paymentData);
         dispatch(seatActions.updateSeatRequest());
@@ -111,7 +111,7 @@ export const updateSeat = (paymentData) => async (dispatch) => {
     }
 };
 
-export const deleteSeat = (paymentData) => async (dispatch) => {
+export const deleteSeat = (seatData) => async (dispatch) => {
     try {
         console.log("delete-paymentData", paymentData);
         dispatch(seatActions.deleteSeatRequest());
@@ -138,5 +138,68 @@ export const deleteSeat = (paymentData) => async (dispatch) => {
             errorMessage = error.message || "Unknown error";
         }
         dispatch(seatActions.deleteSeatFailure(errorMessage));
+    }
+};
+
+export const allocateSeat = (allocateData, token) => async (dispatch) => {
+    try {
+        console.log("allocate-seat-Data", allocateData);
+        dispatch(seatActions.allocateSeatRequest());
+
+        const data = await axios.post(
+            `${route}/allocate`,
+            allocateData,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": token
+                },
+            }
+        );
+        console.log('allocate-seat-res-data', data);
+
+        dispatch(seatActions.allocateSeatSuccess(data.data));
+    } catch (error) {
+        console.log("error", error)
+        let errorMessage = "An error occurred";
+        if (error.response) {
+            errorMessage = error.response.data.message || "Server error";
+        } else if (error.request) {
+            errorMessage = "Network error";
+        } else {
+            errorMessage = error.message || "Unknown error";
+        }
+        dispatch(seatActions.allocateSeatFailed(errorMessage));
+    }
+};
+
+export const deAllocateSeat = (memberId, token) => async (dispatch) => {
+    try {
+        console.log("de-allocate-seat-Data", memberId, token);
+        dispatch(seatActions.deallocateSeatRequest());
+
+        const data = await axios.post(
+            `${route}/de_allocate?memberId=${memberId}`, {},
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": token
+                },
+            }
+        );
+
+        console.log('de-allocate-seat-res-data', data);
+        dispatch(seatActions.deallocateSeatSuccess(data.data));
+    } catch (error) {
+        console.log("error", error)
+        let errorMessage = "An error occurred";
+        if (error.response) {
+            errorMessage = error.response.data.message || "Server error";
+        } else if (error.request) {
+            errorMessage = "Network error";
+        } else {
+            errorMessage = error.message || "Unknown error";
+        }
+        dispatch(seatActions.deallocateSeatFailed(errorMessage));
     }
 };

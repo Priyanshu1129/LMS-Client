@@ -148,7 +148,8 @@ const MembersPage = ({ navigation }) => {
               .filter(
                 (member) =>
                   filterOption === "all" ||
-                  member.membership.toLowerCase() === filterOption.toLowerCase()
+                  member.membershipStatus.toLowerCase() ===
+                    filterOption.toLowerCase()
               )
               .map((member, index) => (
                 <DataTable.Row

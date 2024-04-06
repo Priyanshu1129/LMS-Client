@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
-import { List, TextInput } from "react-native-paper";
-import { Dropdown } from "react-native-element-dropdown";
+import { Button, List, TextInput } from "react-native-paper";
+import Dropdown from "../../components/dropdown";
 
-const PaymentHistoryPage = () => {
+const PaymentHistoryPage = ({ navigation }) => {
   const [payments, setPayments] = useState([
     {
       id: 1,
@@ -37,41 +37,53 @@ const PaymentHistoryPage = () => {
     return true;
   };
 
+  const renderPayments = () =>
+    payments
+      .filter(filterPayments)
+      .map((payment) => (
+        <List.Item
+          key={payment.id}
+          title={`${payment.date}`}
+          description={`${payment.method}, ${payment.paidBy}`}
+          right={() => <Text style={styles.amount}>{payment.amount}</Text>}
+          style={styles.listItem}
+          titleStyle={styles.listItemTitle}
+          descriptionStyle={styles.listItemDescription}
+        />
+      ));
+
   return (
     <View style={styles.container}>
       <View style={styles.filterContainer}>
         <TextInput
-          label="Search by Name"
+          label="Search by Member Name"
           value={nameFilter}
           onChangeText={setNameFilter}
           style={styles.input}
         />
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate("MakePayment")}
+          style={styles.addButton}
+        >
+          Make Payment
+        </Button>
       </View>
-      {/* <View style={styles.filterContainer}>
+
+      <View style={styles.filterContainer}>
         <Dropdown
-          label="Method Filter"
+          placeholder="Method Filter"
           value={methodFilter}
           data={[
             { label: "All", value: "all" },
             { label: "Cash", value: "Cash" },
             { label: "Online", value: "Online" },
           ]}
-          onChangeText={(value) => setMethodFilter(value)}
-          style={styles.input}
+          setValue={setMethodFilter}
         />
-      </View> */}
+      </View>
       <ScrollView contentContainerStyle={styles.listContainer}>
-        {payments.filter(filterPayments).map((payment) => (
-          <List.Item
-            key={payment.id}
-            title={`${payment.date}`}
-            description={`${payment.method}, ${payment.paidBy}`}
-            right={() => <Text style={styles.amount}>{payment.amount}</Text>}
-            style={styles.listItem}
-            titleStyle={styles.listItemTitle}
-            descriptionStyle={styles.listItemDescription}
-          />
-        ))}
+        {renderPayments()}
       </ScrollView>
     </View>
   );
@@ -111,18 +123,3 @@ const styles = StyleSheet.create({
 });
 
 export default PaymentHistoryPage;
-
-// import { StyleSheet, Text, View } from 'react-native'
-// import React from 'react'
-
-// const paymentList = () => {
-//   return (
-//     <View>
-//       <Text>paymentList</Text>
-//     </View>
-//   )
-// }
-
-// export default paymentList
-
-// const styles = StyleSheet.create({})

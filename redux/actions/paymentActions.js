@@ -47,17 +47,18 @@ export const getPayment = (paymentId) => async (dispatch) => {
     }
 };
 
-export const createPayment = (paymentData) => async (dispatch) => {
+export const createPayment = (paymentData, token) => async (dispatch) => {
     try {
         console.log("create-paymentData", paymentData);
         dispatch(paymentActions.createPaymentRequest());
 
         const data = await axios.post(
-            `${route}/payment`,
+            `${route}/`,
             paymentData,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": token
                 },
             }
         );

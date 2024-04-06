@@ -1,89 +1,172 @@
-import React, { useState } from "react";
-import { View, ScrollView, StyleSheet, Alert } from "react-native";
-import { Card, Title, Paragraph, Button, Portal, Dialog, Text } from "react-native-paper";
+import React, { useState, useEffect, useMemo } from "react";
+import { View, ScrollView, StyleSheet } from "react-native";
+import { Snackbar } from "react-native-paper";
+import { memberActions } from "../../redux/slices/memberSlice.js";
+import { getAllMember } from "../../redux/actions/memberActions.js";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchToken } from "../../config/fetchAsyncStorage.js";
+import PageLoader from "../../components/pageLoader";
 
-const SeatDetailsPage = () => {
-  // Dummy data for seat details
+import { Title } from "react-native-paper";
+import SlotCard from "./slotCard.jsx";
+
+const SeatDetailsPage = ({ route }) => {
+  const dispatch = useDispatch();
   const [confirmationVisible, setConfirmationVisible] = useState(false);
-  const [slotToDeallocate, setSlotToDeallocate] = useState("");
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  // const [slotToDeallocate, setSlotToDeallocate] = useState("");
+  const [token, setToken] = useState("");
+  const [message, setMessage] = useState("");
+  const [member, setMember] = useState(null);
+  const [membersLoading, setMembersLoading] = useState(false);
+  const [fetchedMembers, setFetchedMembers] = useState([]);
+  const [members, setMembers] = useState([]);
+  const { seat } = route.params;
+
+  const {
+    status: membersStatus,
+    data: membersData,
+    error: membersError,
+  } = useSelector((state) => state.member.allMembers);
+
+  const { status, data, error } = useSelector(
+    (state) => state.seat.seatDetails
+  );
+
+  const getToken = async () => {
+    const storedToken = await fetchToken();
+    setToken(storedToken);
+  };
+
+  useMemo(() => {
+    if (token) {
+      dispatch(getAllMember(token));
+    }
+  }, [token]);
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  useMemo(() => {
+    if (membersStatus === "pending") {
+      setMembersLoading(true);
+    } else if (
+      membersStatus === "success" &&
+      membersData.status === "success"
+    ) {
+      setFetchedMembers([...membersData.data]);
+      setMembersLoading(false);
+    } else {
+      setMessage(membersError);
+      setVisible(true);
+      setMembersLoading(false);
+      memberActions.clearAllMembersError();
+    }
+  }, [membersStatus]);
+
+  useMemo(() => {
+    const modifyMembers = fetchedMembers.map((member) => ({
+      label: member.name,
+      value: member._id,
+    }));
+    setMembers(modifyMembers);
+  }, [fetchedMembers]);
+
   const seatDetails = {
-    seatNumber: 1,
+    id: seat?._id,
+    seatNumber: seat?.seatNumber || 1,
     occupiedBy: {
-      morning: "John Doe",
-      noon: "Alice Smith",
-      evening: "Bob Johnson",
+      morning: seat?.schedule?.morning?.occupant || "",
+      noon: seat?.schedule?.noon?.occupant || "",
+      evening: seat?.schedule?.evening?.occupant || "",
+      fullDay: seat?.schedule?.fullDay?.occupant || "",
     },
     description: "Comfortable seat near the window",
-    createdAt: "2024-04-08T10:30:00Z",
-    updatedAt: "2024-04-10T15:45:00Z",
+    createdAt: seat?.createdAt || "",
+    updatedAt: seat?.updatedAt || "",
   };
 
-  const handleDeallocate = (slot) => {
-    setSlotToDeallocate(slot);
-    setConfirmationVisible(true);
+  useEffect(() => {
+    if (status === "pending") {
+      setLoading(true);
+    } else if (status === "success") {
+      setLoading(false);
+      setMessage(data.message);
+      setVisible(true);
+    } else if (status === "failed") {
+      setLoading(false);
+      setMessage(error);
+      setVisible(true);
+      memberActions.clearMemberDetailsError();
+    }
+  }, [status]);
+
+  // const confirmDeallocate = () => {
+  //   // Perform deallocation action here
+  //   Alert.alert(
+  //     `Deallocated ${slotToDeallocate} slot for ${seatDetails.occupiedBy[slotToDeallocate]}`
+  //   );
+  //   setConfirmationVisible(false);
+  // };
+
+  // const cancelDeallocate = () => {
+  //   setConfirmationVisible(false);
+  // };
+
+  const onDismissSnackBar = () => {
+    setVisible(false);
+    setMessage(null);
   };
 
-  const confirmDeallocate = () => {
-    // Perform deallocation action here
-    Alert.alert(`Deallocated ${slotToDeallocate} slot for ${seatDetails.occupiedBy[slotToDeallocate]}`);
-    setConfirmationVisible(false);
-  };
-
-  const cancelDeallocate = () => {
-    setConfirmationVisible(false);
-  };
-
-  return (
+  return loading ? (
+    <PageLoader />
+  ) : (
     <ScrollView contentContainerStyle={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.title}>Seat {seatDetails.seatNumber}</Title>
-          <View style={styles.slotContainer}>
-            <Paragraph style={styles.label}>Occupied By:</Paragraph>
-            <View style={styles.occupiedBy}>
-              <View style={styles.slot}>
-                <Text style={styles.slotText}>Morning: {seatDetails.occupiedBy.morning}</Text>
-                <Button
-                  mode="contained"
-                  onPress={() => handleDeallocate("morning")}
-                  style={styles.button}
-                >
-                  {seatDetails.occupiedBy.morning ? "Deallocate" : "Allocate"}
-                </Button>
-              </View>
-              <View style={styles.slot}>
-                <Text style={styles.slotText}>Noon: {seatDetails.occupiedBy.noon}</Text>
-                <Button
-                  mode="contained"
-                  onPress={() => handleDeallocate("noon")}
-                  style={styles.button}
-                >
-                  {seatDetails.occupiedBy.noon ? "Deallocate" : "Allocate"}
-                </Button>
-              </View>
-              <View style={styles.slot}>
-                <Text style={styles.slotText}>Evening: {seatDetails.occupiedBy.evening}</Text>
-                <Button
-                  mode="contained"
-                  onPress={() => handleDeallocate("evening")}
-                  style={styles.button}
-                >
-                  {seatDetails.occupiedBy.evening ? "Deallocate" : "Allocate"}
-                </Button>
-              </View>
-            </View>
-          </View>
-          <Paragraph style={styles.info}>Description: {seatDetails.description}</Paragraph>
-          <Paragraph style={styles.info}>Created At: {seatDetails.createdAt}</Paragraph>
-          <Paragraph style={styles.info}>Updated At: {seatDetails.updatedAt}</Paragraph>
-        </Card.Content>
-      </Card>
-      <Portal>
+      <Title style={styles.title}>Seat {seatDetails.seatNumber}</Title>
+
+      <SlotCard
+        members={members}
+        slot="Morning"
+        seatId={seatDetails.id}
+        occupiedBy={seatDetails?.occupiedBy?.morning}
+        member={member}
+        token={token}
+        setMember={setMember}
+      />
+      <SlotCard
+        members={members}
+        slot="Noon"
+        seatId={seatDetails.id}
+        occupiedBy={seatDetails?.occupiedBy?.noon}
+        member={member}
+        token={token}
+        setMember={setMember}
+      />
+      <SlotCard
+        members={members}
+        slot="Evening"
+        seatId={seatDetails.id}
+        occupiedBy={seatDetails?.occupiedBy?.evening}
+        member={member}
+        token={token}
+        setMember={setMember}
+      />
+      {/* 
+      <Paragraph style={styles.info}>
+        Description: {seatDetails.description}
+      </Paragraph>
+      <Paragraph style={styles.info}>
+        Created At: {seatDetails.createdAt}
+      </Paragraph> */}
+      {/* <Portal>
         <Dialog visible={confirmationVisible} onDismiss={cancelDeallocate}>
           <Dialog.Title>Confirm Deallocate</Dialog.Title>
           <Dialog.Content>
             <Paragraph>
-              Are you sure you want to deallocate {slotToDeallocate} slot for {seatDetails.occupiedBy[slotToDeallocate]}?
+              Are you sure you want to de allocate {slotToDeallocate} slot for{" "}
+              {seatDetails.occupiedBy[slotToDeallocate]}?
             </Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
@@ -91,7 +174,21 @@ const SeatDetailsPage = () => {
             <Button onPress={confirmDeallocate}>Confirm</Button>
           </Dialog.Actions>
         </Dialog>
-      </Portal>
+      </Portal> */}
+      {message && (
+        <Snackbar
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: "Hide",
+            onPress: () => {
+              onDismissSnackBar();
+            },
+          }}
+        >
+          {message}
+        </Snackbar>
+      )}
     </ScrollView>
   );
 };
