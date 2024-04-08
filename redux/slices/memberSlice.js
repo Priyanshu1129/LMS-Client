@@ -11,6 +11,11 @@ const initialState = {
         status: null,
         error: null,
         data: null,
+    },
+    deleteMember: {
+        status: null,
+        error: null,
+        data: null,
     }
 }
 
@@ -65,24 +70,33 @@ const memberSlice = createSlice({
             state.memberDetails.error = action.payload;
         },
         deleteMemberRequest: (state, action) => {
-            state.memberDetails.status = 'pending'
+            state.deleteMember.status = 'pending'
         },
         deleteMemberSuccess: (state, action) => {
-            state.memberDetails.status = 'success'
-            state.memberDetails.data = action.payload;
+            state.deleteMember.status = 'success'
+            state.deleteMember.data = action.payload;
         },
         deleteMemberFailure: (state, action) => {
-            state.memberDetails.status = 'failed'
-            state.memberDetails.error = action.payload;
+            state.deleteMember.status = 'failed'
+            state.deleteMember.error = action.payload;
+        },
+        clearAllMembersStatus: (state) => {
+            state.allMembers.status = null;
+        },
+        clearMemberDetailsStatus: (state) => {
+            state.memberDetails.status = null;
+        },
+        clearDeleteMemberStatus: (state) => {
+            state.deleteMember.status = null;
         },
         clearAllMembersError: (state) => {
             state.allMembers.error = null;
-            state.allMembers.status = null;
         },
         clearMemberDetailsError: (state) => {
             state.memberDetails.error = null;
-            state.memberDetails.pending = null;
-
+        },
+        clearDeleteMemberError: (state) => {
+            state.deleteMember.error = null;
         }
     }
 })

@@ -77,6 +77,9 @@ const paymentSlice = createSlice({
         clearPaymentDetailsStatus: (state, action ) => {
             state.paymentDetails.status = null;
         },
+        clearAllPaymentsStatus: (state, action ) => {
+            state.allPayments.status = null;
+        },
         clearAllPaymentsError: (state) => {
             state.allPayments.error = null;
         },

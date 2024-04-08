@@ -46,11 +46,13 @@ const SeatsPage = ({ navigation }) => {
       setMessage("Member Fetched Successfully");
       setVisible(true);
       setLoading(false);
+      dispatch(seatActions.clearAllSeatsStatus());
     } else {
       setMessage(error);
       setVisible(true);
       setLoading(false);
       seatActions.clearAllSeatsError();
+      dispatch(seatActions.clearAllSeatsStatus());
     }
   }, [status]);
 
@@ -77,9 +79,7 @@ const SeatsPage = ({ navigation }) => {
     setMessage(null);
   };
 
-  return loading ? (
-    <PageLoader />
-  ) : (
+  return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.topSection}>
         <TextInput
@@ -91,7 +91,9 @@ const SeatsPage = ({ navigation }) => {
           Add Seat
         </Button>
       </View>
-      {seats.length > 0 ? (
+      {loading ? (
+        <PageLoader />
+      ) : seats.length > 0 ? (
         <View style={styles.bottomSection}>{renderSeats()}</View>
       ) : (
         <Text>No Seats Available</Text>

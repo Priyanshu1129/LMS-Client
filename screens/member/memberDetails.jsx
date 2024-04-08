@@ -1,10 +1,61 @@
-import React from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Avatar, Button, Card, Title, Paragraph } from "react-native-paper";
+import ConfirmationDialog from "../../components/confirmationDialog.jsx";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteMember } from "../../redux/actions/memberActions.js";
+import { fetchToken } from "../../config/fetchAsyncStorage.js";
+import { memberActions } from "../../redux/slices/memberSlice.js";
 
-const UserProfile = ({ route }) => {
+const UserProfile = ({ route, navigation }) => {
   const { member } = route.params;
-  const avatarUri = "https://randomuser.me/api/portraits/men/1.jpg"; // Example avatar image URL
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [visibleSnackBar, setVisibleSnackBar] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const avatarUri = "https://randomuser.me/api/portraits/men/1.jpg";
+  const dispatch = useDispatch();
+  const {
+    status: deleteStatus,
+    data: deleteData,
+    error: deleteError,
+  } = useSelector((state) => state.member.deleteMember);
+
+  useEffect(() => {
+    if (deleteStatus === "pending") {
+      setLoading(true);
+    } else if (deleteStatus === "success") {
+      setLoading(false);
+      setMessage(deleteData.message);
+      setVisibleSnackBar(true);
+      dispatch(memberActions.clearDeleteMemberStatus());
+      console.log("msg-delete", deleteData.message);
+      navigation.goBack();
+    } else if (deleteStatus === "failed") {
+      setLoading(false);
+      setMessage(deleteError);
+      setVisibleSnackBar(true);
+      dispatch(memberActions.clearDeleteMemberStatus());
+      dispatch(memberActions.clearDeleteMemberError());
+    }
+  }, [deleteStatus]);
+
+  const getToken = async () => {
+    const storedToken = await fetchToken();
+    setToken(storedToken);
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  useEffect(() => {
+    if (deleteConfirmation) {
+      dispatch(deleteMember(member._id, token));
+    }
+  }, [deleteConfirmation]);
 
   const user = {
     name: member?.name || "N/A",
@@ -64,9 +115,25 @@ const UserProfile = ({ route }) => {
           ))}
         </Card.Content>
       </Card>
-      <Button icon="email" mode="contained" style={styles.button}>
-        Send Email
-      </Button>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Button icon="update" mode="contained" style={styles.button}>
+          Update Member
+        </Button>
+        <Button
+          icon="delete"
+          mode="contained"
+          style={styles.button}
+          onPress={() => setDialogVisible(true)}
+        >
+          Delete Member
+        </Button>
+      </View>
+      <ConfirmationDialog
+        visible={dialogVisible}
+        setVisible={setDialogVisible}
+        setConfirmation={setDeleteConfirmation}
+        message={`Confirm Delete For Member ${user.name}`}
+      />
     </ScrollView>
   );
 };

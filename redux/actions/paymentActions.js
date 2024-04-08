@@ -4,12 +4,16 @@ import { serverURL } from "../../config/config";
 
 const route = `${serverURL}/payment`
 
-export const getAllPayment = () => async (dispatch) => {
+export const getAllPayment = (token) => async (dispatch) => {
     try {
         dispatch(paymentActions.getAllPaymentRequest());
 
-        const data = await axios.get(`${route}/payment`);
-        console.log('get-all-payment-res-data', data);
+        const data = await axios.get(`${route}/`, {
+            headers: {
+                "authorization": token
+            }
+        });
+        console.log('get-all-payment-res-data', data.data);
         dispatch(paymentActions.getAllPaymentSuccess(data.data));
     } catch (error) {
         console.log("error", error)
@@ -62,7 +66,7 @@ export const createPayment = (paymentData, token) => async (dispatch) => {
                 },
             }
         );
-        console.log('create-payment-res-data', data);
+        console.log('create-payment-res-data', data.data);
         dispatch(paymentActions.createPaymentSuccess(data.data));
     } catch (error) {
         console.log("error", error)

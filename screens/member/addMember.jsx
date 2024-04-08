@@ -9,14 +9,24 @@ import { memberActions } from "../../redux/slices/memberSlice";
 import PageLoader from "../../components/pageLoader";
 import { fetchToken } from "../../config/fetchAsyncStorage.js";
 
-let memberSchema = object({
-  name: string().required(),
-  email: string().email().required(),
-  phone: number().required(),
-  gender: string().required(),
-  preparation: string().required(),
-  address: string().required(),
-  monthlySeatFee: number().required(),
+const memberSchema = object({
+  name: string().required("Name is required"),
+  email: string().email("Invalid email address").required("Email is required"),
+  phone: number()
+    .required("Phone number is required")
+    .min(1000000000, "Phone number must be 10 digits")
+    .max(9999999999, "Phone number must be 10 digits"),
+  gender: string().required("Gender is required"),
+  preparation: string().required("Preparation is required"),
+  address: string().required("Address is required"),
+  monthlySeatFee: number()
+    .required("Monthly seat fee is required")
+    .test(
+      "non-zero",
+      "Monthly seat fee must start with a non-zero digit",
+      (value) => /^[1-9]\d*$/.test(value)
+    )
+    .max(100000, "Monthly seat fee cannot exceed 100000"),
 });
 
 const AddMemberPage = ({ navigation }) => {
@@ -54,11 +64,13 @@ const AddMemberPage = ({ navigation }) => {
       setLoading(false);
       setMessage("Member Added Successfully");
       setVisible(true);
+      dispatch(memberActions.clearMemberDetailsStatus());
       navigation.goBack();
     } else if (status === "failed") {
       setLoading(false);
       setMessage(error);
       setVisible(true);
+      dispatch(memberActions.clearMemberDetailsStatus());
       memberActions.clearMemberDetailsError();
     }
   }, [status]);
@@ -107,6 +119,7 @@ const AddMemberPage = ({ navigation }) => {
                 label="Phone"
                 value={values.phone}
                 mode="outlined"
+                maxLength={10}
                 onChangeText={handleChange("phone")}
                 keyboardType="numeric"
                 style={styles.input}
@@ -160,6 +173,7 @@ const AddMemberPage = ({ navigation }) => {
                 label="Monthly Fee"
                 value={values.monthlySeatFee}
                 mode="outlined"
+                maxLength={4}
                 onChangeText={handleChange("monthlySeatFee")}
                 keyboardType="numeric"
                 style={styles.input}

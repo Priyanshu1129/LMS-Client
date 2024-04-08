@@ -14,8 +14,8 @@ export const getAllMember = (token) => async (dispatch) => {
                 "authorization": token
             }
         });
-        
-        console.log('get-all-member-res-data', data);
+
+        console.log('get-all-member-res-data', data.data);
         dispatch(memberActions.getAllMemberSuccess(data.data));
     } catch (error) {
         console.log("error", error)
@@ -113,24 +113,24 @@ export const updateMember = (memberData) => async (dispatch) => {
     }
 };
 
-export const deleteMember = (memberData) => async (dispatch) => {
+export const deleteMember = (memberId, token) => async (dispatch) => {
     try {
-        console.log("delete-memberData", memberData);
+        console.log("delete-memberData", memberId);
         dispatch(memberActions.deleteMemberRequest());
 
         const data = await axios.delete(
-            `${route}/member`,
-            memberData,
+            `${route}/${memberId}`,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": token
                 },
             }
         );
-        console.log('delete-member-res-data', data);
+        console.log('delete-member-res-data', data.data);
         dispatch(memberActions.deleteMemberSuccess(data.data));
     } catch (error) {
-        console.log("error", error)
+        console.log("delete-member-error", error)
         let errorMessage = "An error occurred";
         if (error.response) {
             errorMessage = error.response.data.message || "Server error";

@@ -1,23 +1,25 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
-import { Snackbar } from "react-native-paper";
+import { Button, Snackbar } from "react-native-paper";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import { getAllMember } from "../../redux/actions/memberActions.js";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchToken } from "../../config/fetchAsyncStorage.js";
 import PageLoader from "../../components/pageLoader";
-
+import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { Title } from "react-native-paper";
 import SlotCard from "./slotCard.jsx";
+import { seatActions } from "../../redux/slices/seatSlice.js";
+import { deleteSeat } from "../../redux/actions/seatActions.js";
 
-const SeatDetailsPage = ({ route }) => {
+const SeatDetailsPage = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const [confirmationVisible, setConfirmationVisible] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const [visibleSnackBar, setVisibleSnackBar] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const [slotToDeallocate, setSlotToDeallocate] = useState("");
+  const [dialogVisible, setDialogVisible] = useState(false);
   const [token, setToken] = useState("");
   const [message, setMessage] = useState("");
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [member, setMember] = useState(null);
   const [membersLoading, setMembersLoading] = useState(false);
   const [fetchedMembers, setFetchedMembers] = useState([]);
@@ -33,6 +35,11 @@ const SeatDetailsPage = ({ route }) => {
   const { status, data, error } = useSelector(
     (state) => state.seat.seatDetails
   );
+  const {
+    status: deleteStatus,
+    data: deleteData,
+    error: deleteError,
+  } = useSelector((state) => state.seat.deleteSeat);
 
   const getToken = async () => {
     const storedToken = await fetchToken();
@@ -60,7 +67,7 @@ const SeatDetailsPage = ({ route }) => {
       setMembersLoading(false);
     } else {
       setMessage(membersError);
-      setVisible(true);
+      setVisibleSnackBar(true);
       setMembersLoading(false);
       memberActions.clearAllMembersError();
     }
@@ -94,31 +101,46 @@ const SeatDetailsPage = ({ route }) => {
     } else if (status === "success") {
       setLoading(false);
       setMessage(data.message);
-      setVisible(true);
+      setVisibleSnackBar(true);
+      dispatch(seatActions.clearSeatDetailsStatus());
     } else if (status === "failed") {
       setLoading(false);
       setMessage(error);
-      setVisible(true);
-      memberActions.clearMemberDetailsError();
+      setVisibleSnackBar(true);
+      dispatch(seatActions.clearSeatDetailsStatus());
+      dispatch(seatActions.clearSeatDetailsError());
     }
   }, [status]);
 
-  // const confirmDeallocate = () => {
-  //   // Perform deallocation action here
-  //   Alert.alert(
-  //     `Deallocated ${slotToDeallocate} slot for ${seatDetails.occupiedBy[slotToDeallocate]}`
-  //   );
-  //   setConfirmationVisible(false);
-  // };
-
-  // const cancelDeallocate = () => {
-  //   setConfirmationVisible(false);
-  // };
+  useEffect(() => {
+    if (deleteStatus === "pending") {
+      setLoading(true);
+    } else if (deleteStatus === "success") {
+      setLoading(false);
+      setMessage(deleteData.message);
+      setVisibleSnackBar(true);
+      dispatch(seatActions.clearDeleteSeatStatus());
+      console.log("msg-delete",deleteData.message);
+      navigation.goBack();
+    } else if (deleteStatus === "failed") {
+      setLoading(false);
+      setMessage(deleteError);
+      setVisibleSnackBar(true);
+      dispatch(seatActions.clearDeleteSeatStatus());
+      dispatch(seatActions.clearDeleteSEatError());
+    }
+  }, [deleteStatus]);
 
   const onDismissSnackBar = () => {
-    setVisible(false);
+    setVisibleSnackBar(false);
     setMessage(null);
   };
+
+  useEffect(() => {
+    if (deleteConfirmation) {
+      dispatch(deleteSeat(seatDetails.id, token));
+    }
+  }, [deleteConfirmation]);
 
   return loading ? (
     <PageLoader />
@@ -153,31 +175,22 @@ const SeatDetailsPage = ({ route }) => {
         token={token}
         setMember={setMember}
       />
-      {/* 
-      <Paragraph style={styles.info}>
-        Description: {seatDetails.description}
-      </Paragraph>
-      <Paragraph style={styles.info}>
-        Created At: {seatDetails.createdAt}
-      </Paragraph> */}
-      {/* <Portal>
-        <Dialog visible={confirmationVisible} onDismiss={cancelDeallocate}>
-          <Dialog.Title>Confirm Deallocate</Dialog.Title>
-          <Dialog.Content>
-            <Paragraph>
-              Are you sure you want to de allocate {slotToDeallocate} slot for{" "}
-              {seatDetails.occupiedBy[slotToDeallocate]}?
-            </Paragraph>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={cancelDeallocate}>Cancel</Button>
-            <Button onPress={confirmDeallocate}>Confirm</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal> */}
+      <Button
+        mode="contained"
+        onPress={() => setDialogVisible(true)}
+        style={styles.allocateButton}
+      >
+        Delete Seat
+      </Button>
+      <ConfirmationDialog
+        visible={dialogVisible}
+        setVisible={setDialogVisible}
+        setConfirmation={setDeleteConfirmation}
+        message={`Confirm Delete For Seat ${seatDetails.seatNumber}`}
+      />
       {message && (
         <Snackbar
-          visible={visible}
+          visible={visibleSnackBar}
           onDismiss={onDismissSnackBar}
           action={{
             label: "Hide",

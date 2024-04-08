@@ -13,7 +13,7 @@ export const getAllSeats = (token) => async (dispatch) => {
                 "authorization": token
             }
         });
-        // console.log('get-all-seat-res-data', data);
+        console.log('get-all-seat-res-data', data.data);
         dispatch(seatActions.getAllSeatsSuccess(data.data));
     } catch (error) {
         console.log("error", error)
@@ -65,7 +65,7 @@ export const createSeat = (seatData) => async (dispatch) => {
                 },
             }
         );
-        console.log('create-seat-res-data', data);
+        console.log('create-seat-res-data', data.data);
         dispatch(seatActions.createSeatSuccess(data.data));
     } catch (error) {
         console.log("error", error)
@@ -111,21 +111,21 @@ export const updateSeat = (seatData) => async (dispatch) => {
     }
 };
 
-export const deleteSeat = (seatData) => async (dispatch) => {
+export const deleteSeat = (seatId, token) => async (dispatch) => {
     try {
-        console.log("delete-paymentData", paymentData);
+        console.log("delete-seat-data", seatId);
         dispatch(seatActions.deleteSeatRequest());
 
         const data = await axios.delete(
-            `${route}/seat`,
-            paymentData,
+            `${route}/${seatId}`,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": token
                 },
             }
         );
-        console.log('delete-seat-res-data', data);
+        console.log('delete-seat-res-data', data.data);
         dispatch(seatActions.deleteSeatSuccess(data.data));
     } catch (error) {
         console.log("error", error)
@@ -156,7 +156,7 @@ export const allocateSeat = (allocateData, token) => async (dispatch) => {
                 },
             }
         );
-        console.log('allocate-seat-res-data', data);
+        console.log('allocate-seat-res-data', data.data);
 
         dispatch(seatActions.allocateSeatSuccess(data.data));
     } catch (error) {
@@ -179,7 +179,7 @@ export const deAllocateSeat = (memberId, token) => async (dispatch) => {
         dispatch(seatActions.deallocateSeatRequest());
 
         const data = await axios.post(
-            `${route}/de_allocate?memberId=${memberId}`, {},
+            `${route}/de_allocate/${memberId}`, {},
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -188,7 +188,7 @@ export const deAllocateSeat = (memberId, token) => async (dispatch) => {
             }
         );
 
-        console.log('de-allocate-seat-res-data', data);
+        console.log('de-allocate-seat-res-data', data.data);
         dispatch(seatActions.deallocateSeatSuccess(data.data));
     } catch (error) {
         console.log("error", error)

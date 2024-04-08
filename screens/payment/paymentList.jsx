@@ -1,38 +1,74 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
 import { Button, List, TextInput } from "react-native-paper";
 import Dropdown from "../../components/dropdown";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllPayment } from "../../redux/actions/paymentActions";
+import { paymentActions } from "../../redux/slices/paymentSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import PageLoader from "../../components/pageLoader";
 
 const PaymentHistoryPage = ({ navigation }) => {
   const [payments, setPayments] = useState([
-    {
-      id: 1,
-      date: "2024-04-01",
-      amount: 500,
-      method: "Cash",
-      paidBy: "John Doe",
-    },
-    {
-      id: 2,
-      date: "2024-04-05",
-      amount: 800,
-      method: "Online",
-      paidBy: "Jane Smith",
-    },
-    // Add more payments as needed
+    // {
+    //   id: 1,
+    //   date: "2024-04-01",
+    //   amount: 500,
+    //   method: "Cash",
+    //   paidBy: "John Doe",
+    // }
   ]);
-
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState(null);
   const [nameFilter, setNameFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [methodFilter, setMethodFilter] = useState("all");
 
+  const dispatch = useDispatch();
+  const { status, data, error } = useSelector(
+    (state) => state.payment.allPayments
+  );
+
+  const getToken = async () => {
+    const storedToken = await AsyncStorage.getItem("token");
+    setToken(storedToken);
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  useMemo(() => {
+    if (token) {
+      dispatch(getAllPayment(token));
+    }
+  }, [token]);
+
+  useMemo(() => {
+    if (status === "pending") {
+      setLoading(true);
+    } else if (status === "success" && data.status === "success") {
+      setPayments(data.data);
+      setLoading(false);
+      dispatch(paymentActions.clearAllPaymentsStatus());
+    } else {
+      setMessage(error);
+      setVisible(true);
+      setLoading(false);
+      dispatch(paymentActions.clearAllPaymentsError());
+      dispatch(paymentActions.clearAllPaymentsStatus());
+    }
+  }, [status]);
+
   const filterPayments = (payment) => {
     if (
       nameFilter &&
-      !payment.paidBy.toLowerCase().includes(nameFilter.toLowerCase())
+      !payment.paidBy.name.toLowerCase().includes(nameFilter.toLowerCase())
     )
       return false;
-    if (dateFilter && payment.date !== dateFilter) return false;
+    if (dateFilter && payment.createdAt !== dateFilter) return false;
     if (methodFilter !== "all" && payment.method !== methodFilter) return false;
     return true;
   };
@@ -42,9 +78,9 @@ const PaymentHistoryPage = ({ navigation }) => {
       .filter(filterPayments)
       .map((payment) => (
         <List.Item
-          key={payment.id}
-          title={`${payment.date}`}
-          description={`${payment.method}, ${payment.paidBy}`}
+          key={payment._id}
+          title={`${payment.createdAt}`}
+          description={`${payment.method}, ${payment.paidBy.name}`}
           right={() => <Text style={styles.amount}>{payment.amount}</Text>}
           style={styles.listItem}
           titleStyle={styles.listItemTitle}
@@ -83,7 +119,13 @@ const PaymentHistoryPage = ({ navigation }) => {
         />
       </View>
       <ScrollView contentContainerStyle={styles.listContainer}>
-        {renderPayments()}
+        {loading ? (
+          <PageLoader />
+        ) : payments.length > 0 ? (
+          renderPayments()
+        ) : (
+          <Text>No Payments Available</Text>
+        )}
       </ScrollView>
     </View>
   );

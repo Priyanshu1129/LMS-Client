@@ -19,6 +19,7 @@ const MembersPage = ({ navigation }) => {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+  // const [ refreshRequest , setRefreshRequest ] = useState(false);
   const [statusFilterVisible, setStatusFilterVisible] = useState(false);
   const [filterOption, setFilterOption] = useState("all");
 
@@ -52,11 +53,12 @@ const MembersPage = ({ navigation }) => {
       setMessage("Member Fetched Successfully");
       setVisible(true);
       setLoading(false);
+      dispatch(memberActions.clearAllMembersStatus());
     } else {
       setMessage(error);
       setVisible(true);
       setLoading(false);
-      memberActions.clearAllMembersError();
+      dispatch(memberActions.clearAllMembersError());
     }
   }, [status]);
 
@@ -71,9 +73,7 @@ const MembersPage = ({ navigation }) => {
     setMessage(null);
   };
 
-  return loading ? (
-    <PageLoader />
-  ) : (
+  return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={{ padding: 20 }}>
         <View style={{ marginBottom: 20 }}>
@@ -130,9 +130,19 @@ const MembersPage = ({ navigation }) => {
               }}
               title="Inactive"
             />
+            <Menu.Item
+              onPress={() => {
+                setFilterOption("expired");
+                closeStatusFilter();
+              }}
+              title="Expired"
+            />
           </Menu>
         </View>
-        {members.length > 0 ? (
+
+        {loading ? (
+          <PageLoader />
+        ) : members.length > 0 ? (
           <DataTable>
             <DataTable.Header>
               <DataTable.Title key="sno">SNo.</DataTable.Title>

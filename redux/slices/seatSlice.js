@@ -11,6 +11,11 @@ const initialState = {
         status: null,
         error: null,
         data: null,
+    },
+    deleteSeat: {
+        status: null,
+        error: null,
+        data: null
     }
 }
 
@@ -64,15 +69,15 @@ const seatSlice = createSlice({
             state.seatDetails.error = action.payload;
         },
         deleteSeatRequest: (state, action) => {
-            state.seatDetails.status = 'pending'
+            state.deleteSeat.status = 'pending'
         },
         deleteSeatSuccess: (state, action) => {
-            state.seatDetails.status = 'success'
-            state.seatDetails.data = action.payload;
+            state.deleteSeat.status = 'success'
+            state.deleteSeat.data = action.payload;
         },
         deleteSeatFailure: (state, action) => {
-            state.seatDetails.status = 'failed'
-            state.seatDetails.error = action.payload;
+            state.deleteSeat.status = 'failed'
+            state.deleteSeat.error = action.payload;
         },
         allocateSeatRequest: (state, action) => {
             state.seatDetails.status = 'pending'
@@ -96,11 +101,17 @@ const seatSlice = createSlice({
             state.seatDetails.status = 'failed'
             state.seatDetails.error = action.payload;
         },
-        clearSeatDetailsStatus: (state ,action) => {
+        clearSeatDetailsStatus: (state, action) => {
             state.seatDetails.status = null;
         },
-        clearAllSeatsStatus: (state ,action) => {
+        clearDeleteSeatStatus: (state, action) => {
+            state.deleteSeat.status = null;
+        },
+        clearAllSeatsStatus: (state, action) => {
             state.allSeats.status = null;
+        },
+        clearDeleteSEatError: (state) => {
+            state.deleteSeat.error = null;
         },
         clearAllSeatsError: (state) => {
             state.allSeats.error = null;

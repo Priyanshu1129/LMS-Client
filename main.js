@@ -26,7 +26,7 @@ import StaffDetails from './screens/staff/staffDetails';
 import AddStaff from './screens/staff/addStaff';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MyOrganization from './screens/myOrganization/myOrganization';
-
+import { fetchToken } from './config/fetchAsyncStorage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 
@@ -35,6 +35,8 @@ import DrawerContent from './components/drawerContent';
 
 
 const Stack = createNativeStackNavigator();
+
+
 
 const UnAuthNav = () => {
 
@@ -60,19 +62,20 @@ const UnAuthNav = () => {
     )
 }
 
-const StackNav = () => {
+const StackNav = ({ token }) => {
 
     const navigation = useNavigation();
 
     return (
         <Stack.Navigator
             screenOptions={{
-                headerTitleAlign: "center",
+                headerTitleAlign: "center"
             }}
         >
             <Stack.Screen
                 name='Home'
                 component={Home}
+                initialParams={{ token }}
                 options={{
                     headerRight: () => {
                         return (
@@ -106,23 +109,28 @@ const StackNav = () => {
             />
             <Stack.Screen
                 name="MyOrganization"
+                initialParams={token}
                 component={MyOrganization}
             />
             <Stack.Screen
                 name='Members'
+                initialParams={token}
                 component={Members}
             />
             <Stack.Screen
                 name='AddMember'
+                initialParams={token}
                 component={AddMember}
             />
             <Stack.Screen
                 name='MemberDetails'
+                initialParams={token}
                 component={MemberDetails}
             />
             <Stack.Screen
                 name='Profile'
                 component={Profile}
+                initialParams={token}
                 options={{
                     headerRight: () => {
                         return (
@@ -137,46 +145,57 @@ const StackNav = () => {
             />
             <Stack.Screen
                 name='UpdateProfile'
+                initialParams={token}
                 component={UpdateProfile}
             />
             <Stack.Screen
                 name='StaffsList'
+                initialParams={token}
                 component={StaffsList}
             />
             <Stack.Screen
                 name='AddStaff'
+                initialParams={token}
                 component={AddStaff}
             />
             <Stack.Screen
                 name='StaffDetails'
+                initialParams={token}
                 component={StaffDetails}
             />
             <Stack.Screen
                 name='PaymentList'
+                initialParams={token}
                 component={PaymentList}
             />
             <Stack.Screen
                 name='MakePayment'
+                initialParams={token}
                 component={MakePayment}
             />
             <Stack.Screen
                 name='PaymentDetails'
+                initialParams={token}
                 component={PaymentDetails}
             />
             <Stack.Screen
                 name='SeatList'
+                initialParams={token}
                 component={SeatList}
             />
             <Stack.Screen
                 name='SeatDetails'
+                initialParams={token}
                 component={SeatDetails}
             />
             <Stack.Screen
                 name='Subscription'
+                initialParams={token}
                 component={Subscription}
             />
             <Stack.Screen
                 name='Search'
+                initialParams={token}
                 component={Search}
                 options={{
                     headerShown: false
@@ -184,10 +203,12 @@ const StackNav = () => {
             />
             <Stack.Screen
                 name='Notifications'
+                initialParams={token}
                 component={Notifications}
             />
             <Stack.Screen
                 name='ChangePassword'
+                initialParams={token}
                 component={ChangePassword}
             />
             <Stack.Screen
@@ -198,7 +219,7 @@ const StackNav = () => {
     )
 }
 
-const DrawNav = () => {
+const DrawNav = ({ token }) => {
     const Drawer = createDrawerNavigator();
     return (
         <Drawer.Navigator
@@ -208,7 +229,9 @@ const DrawNav = () => {
             initialRouteName={'Home'}
             drawerContent={props => <DrawerContent {...props} />}
         >
-            <Drawer.Screen name='Home' component={StackNav} />
+            <Drawer.Screen name='Home' >
+                {() => <StackNav token={token} />}
+            </Drawer.Screen>
         </Drawer.Navigator>
     )
 }
@@ -216,6 +239,7 @@ const DrawNav = () => {
 
 export const Main = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [token, setToken] = useState(null);
 
     const getData = async () => {
         const data = await AsyncStorage.getItem('isAuthenticated');
@@ -230,16 +254,21 @@ export const Main = () => {
     //         return BackHandler.removeEventListener('hardwareBackPress', () => { BackHandler.exitApp() })
     //     })
     // )
+    const getToken = async () => {
+        const storedToken = await fetchToken();
+        setToken(storedToken);
+    };
 
     useEffect(() => {
         getData();
+        getToken();
     }, [])
 
     return (
         <NavigationContainer>
             <SafeAreaView style={{ flex: 1 }}>
                 {
-                    isAuthenticated ? (<DrawNav />) : (<UnAuthNav />)
+                    isAuthenticated && token ? (<DrawNav token={token} />) : (<UnAuthNav />)
                 }
             </SafeAreaView>
         </NavigationContainer>
