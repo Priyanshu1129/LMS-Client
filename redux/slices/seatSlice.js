@@ -16,7 +16,7 @@ const initialState = {
         status: null,
         error: null,
         data: null
-    }
+    },
 }
 
 
@@ -110,7 +110,7 @@ const seatSlice = createSlice({
         clearAllSeatsStatus: (state, action) => {
             state.allSeats.status = null;
         },
-        clearDeleteSEatError: (state) => {
+        clearDeleteSeatError: (state) => {
             state.deleteSeat.error = null;
         },
         clearAllSeatsError: (state) => {

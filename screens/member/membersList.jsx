@@ -10,10 +10,11 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { getAllMember } from "../../redux/actions/memberActions";
 import PageLoader from "../../components/pageLoader";
+import StatusFilterMenu from "../../components/filterMenu";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { memberActions } from "../../redux/slices/memberSlice";
 
-const MembersPage = ({ navigation }) => {
+const MembersList = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [token, setToken] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -64,14 +65,17 @@ const MembersPage = ({ navigation }) => {
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
-  const openStatusFilter = () => setStatusFilterVisible(true);
-
-  const closeStatusFilter = () => setStatusFilterVisible(false);
-
   const onDismissSnackBar = () => {
     setVisible(false);
     setMessage(null);
   };
+
+  const filterMenuOptions = [
+    { title: "All", value: "all" },
+    { title: "Active", value: "active" },
+    { title: "Inactive", value: "inactive" },
+    { title: "Expired", value: "expired" },
+  ];
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -100,44 +104,12 @@ const MembersPage = ({ navigation }) => {
             onChangeText={onChangeSearch}
             style={{ flex: 1, marginRight: 10 }}
           />
-          <Menu
+          <StatusFilterMenu
             visible={statusFilterVisible}
-            onDismiss={closeStatusFilter}
-            anchor={
-              <Button onPress={openStatusFilter} style={{ marginRight: 10 }}>
-                {filterOption.charAt(0).toUpperCase() + filterOption.slice(1)}
-              </Button>
-            }
-          >
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("all");
-                closeStatusFilter();
-              }}
-              title="All"
-            />
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("active");
-                closeStatusFilter();
-              }}
-              title="Active"
-            />
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("inactive");
-                closeStatusFilter();
-              }}
-              title="Inactive"
-            />
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("expired");
-                closeStatusFilter();
-              }}
-              title="Expired"
-            />
-          </Menu>
+            setVisible={setStatusFilterVisible}
+            onChange={(option) => setFilterOption(option)}
+            options={filterMenuOptions}
+          />
         </View>
 
         {loading ? (
@@ -198,4 +170,4 @@ const MembersPage = ({ navigation }) => {
   );
 };
 
-export default MembersPage;
+export default MembersList;

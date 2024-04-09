@@ -16,7 +16,9 @@ const UserProfile = ({ route, navigation }) => {
   const [dialogVisible, setDialogVisible] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const avatarUri = "https://randomuser.me/api/portraits/men/1.jpg";
+
   const dispatch = useDispatch();
+  
   const {
     status: deleteStatus,
     data: deleteData,

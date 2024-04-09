@@ -12,8 +12,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllSeats } from "../../redux/actions/seatActions";
 import PageLoader from "../../components/pageLoader";
 import { seatActions } from "../../redux/slices/seatSlice";
+import NoDataPage from "../../components/NotAvailable";
 
-const SeatsPage = ({ navigation }) => {
+const AllSeats = ({ navigation }) => {
   const [seats, setSeats] = useState([]);
   const [token, setToken] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -43,7 +44,7 @@ const SeatsPage = ({ navigation }) => {
       setLoading(true);
     } else if (status === "success" && data.status === "success") {
       setSeats(data.data);
-      setMessage("Member Fetched Successfully");
+      setMessage("Seats Fetched Successfully");
       setVisible(true);
       setLoading(false);
       dispatch(seatActions.clearAllSeatsStatus());
@@ -87,7 +88,11 @@ const SeatsPage = ({ navigation }) => {
           placeholder="Search Seat"
           style={styles.searchBar}
         />
-        <Button mode="contained" style={styles.addButton}>
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate("AddSeat")}
+          style={styles.addButton}
+        >
           Add Seat
         </Button>
       </View>
@@ -96,7 +101,7 @@ const SeatsPage = ({ navigation }) => {
       ) : seats.length > 0 ? (
         <View style={styles.bottomSection}>{renderSeats()}</View>
       ) : (
-        <Text>No Seats Available</Text>
+        <NoDataPage message={"No Seats Available"} />
       )}
       {message && (
         <Snackbar
@@ -132,10 +137,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   addButton: {
-    width: "25%",
+    width: "40%",
   },
   searchBar: {
-    width: "70%",
+    width: "50%",
   },
   bottomSection: {
     flexDirection: "row",
@@ -163,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SeatsPage;
+export default AllSeats;

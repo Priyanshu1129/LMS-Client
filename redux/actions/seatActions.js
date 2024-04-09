@@ -51,24 +51,29 @@ export const getSeat = (seatId) => async (dispatch) => {
     }
 };
 
-export const createSeat = (seatData) => async (dispatch) => {
+export const createSeat = (seatData, token) => async (dispatch) => {
     try {
-        console.log("create-paymentData", paymentData);
+        console.log("create-seat-data", seatData, token);
         dispatch(seatActions.createSeatRequest());
+        let path = "";
+        if (!seatData.createSingleSeat) {
+            path = "create_multiple_seats"
+        }
 
         const data = await axios.post(
-            `${route}/seat`,
-            paymentData,
+            `${route}/${path}`,
+            seatData,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": token
                 },
             }
         );
         console.log('create-seat-res-data', data.data);
         dispatch(seatActions.createSeatSuccess(data.data));
     } catch (error) {
-        console.log("error", error)
+        console.log("create-seat-error", error)
         let errorMessage = "An error occurred";
         if (error.response) {
             errorMessage = error.response.data.message || "Server error";

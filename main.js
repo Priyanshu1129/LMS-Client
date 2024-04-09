@@ -9,18 +9,19 @@ import ForgotPassword from './screens/auth/forgotPassword';
 import Home from './screens/home/Home';
 import Profile from './screens/profile/profile';
 import UpdateProfile from './screens/profile/updateProfile';
-import Members from './screens/member/members';
+import MembersList from './screens/member/membersList';
 import MemberDetails from './screens/member/memberDetails';
 import AddMember from './screens/member/addMember';
 import PaymentList from './screens/payment/paymentList';
 import PaymentDetails from './screens/payment/paymentDetails';
 import MakePayment from './screens/payment/makePayment';
-import SeatList from './screens/seat/seatList';
+import AllSeats from './screens/seat/allSeats';
 import SeatDetails from './screens/seat/seatDetails';
 import Search from './screens/search/search';
 import Notifications from './screens/notification/notification';
 import Subscription from './screens/subscription/subscription';
 import ChangePassword from './screens/changePassword/changePassword';
+import AddSeat from './screens/seat/addSeat';
 import StaffsList from './screens/staff/staffsList';
 import StaffDetails from './screens/staff/staffDetails';
 import AddStaff from './screens/staff/addStaff';
@@ -35,7 +36,6 @@ import DrawerContent from './components/drawerContent';
 
 
 const Stack = createNativeStackNavigator();
-
 
 
 const UnAuthNav = () => {
@@ -115,7 +115,7 @@ const StackNav = ({ token }) => {
             <Stack.Screen
                 name='Members'
                 initialParams={token}
-                component={Members}
+                component={MembersList}
             />
             <Stack.Screen
                 name='AddMember'
@@ -179,9 +179,14 @@ const StackNav = ({ token }) => {
                 component={PaymentDetails}
             />
             <Stack.Screen
-                name='SeatList'
+                name='AllSeats'
                 initialParams={token}
-                component={SeatList}
+                component={AllSeats}
+            />
+            <Stack.Screen
+                name='AddSeat'
+                initialParams={token}
+                component={AddSeat}
             />
             <Stack.Screen
                 name='SeatDetails'

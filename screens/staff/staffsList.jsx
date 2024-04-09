@@ -1,66 +1,76 @@
-import React, { useState } from "react";
-import { View, ScrollView } from "react-native";
-import { Button, TextInput, DataTable, Menu } from "react-native-paper";
+import React, { useState, useEffect, useMemo } from "react";
+import { View, ScrollView, Text } from "react-native";
+import { Button, TextInput, DataTable, Snackbar } from "react-native-paper";
+import { useSelector, useDispatch } from "react-redux";
+import { getAllMember } from "../../redux/actions/memberActions";
+import PageLoader from "../../components/pageLoader";
+import NoDataPage from "../../components/NotAvailable";
+import StatusFilterMenu from "../../components/filterMenu";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { memberActions } from "../../redux/slices/memberSlice";
 
-const StaffList = ({ navigation }) => {
+const MembersList = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [token, setToken] = useState(null);
+  const [visible, setVisible] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(true);
+  // const [ refreshRequest , setRefreshRequest ] = useState(false);
   const [statusFilterVisible, setStatusFilterVisible] = useState(false);
-  const [columnFilterVisible, setColumnFilterVisible] = useState(false);
   const [filterOption, setFilterOption] = useState("all");
-  const [displayColumns, setDisplayColumns] = useState({
-    id: true,
-    name: true,
-    status: true,
-    phone: false,
-    email: false,
-    gender: false,
-  });
-  const [staffs, setStaffs] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      status: "Active",
-      phone: "1234567890",
-      email: "john@example.com",
-      gender: "Male",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      status: "Inactive",
-      phone: "9876543210",
-      email: "jane@example.com",
-      gender: "Female",
-    },
-    // Add more members as needed
-  ]);
+
+  const [members, setMembers] = useState([]);
+
+  const getToken = async () => {
+    const storedToken = await AsyncStorage.getItem("token");
+    setToken(storedToken);
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  const dispatch = useDispatch();
+  const { status, data, error } = useSelector(
+    (state) => state.member.allMembers
+  );
+
+  useMemo(() => {
+    if (token) {
+      dispatch(getAllMember(token));
+    }
+  }, [token]);
+
+  useMemo(() => {
+    if (status === "pending") {
+      setLoading(true);
+    } else if (status === "success" && data.status === "success") {
+      setMembers(data.data);
+      setMessage("Member Fetched Successfully");
+      setVisible(true);
+      setLoading(false);
+      dispatch(memberActions.clearAllMembersStatus());
+    } else {
+      setMessage(error);
+      setVisible(true);
+      setLoading(false);
+      dispatch(memberActions.clearAllMembersError());
+    }
+  }, [status]);
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
-  const openStatusFilter = () => setStatusFilterVisible(true);
-
-  const closeStatusFilter = () => setStatusFilterVisible(false);
-
-  const openColumnFilter = () => setColumnFilterVisible(true);
-
-  const closeColumnFilter = () => setColumnFilterVisible(false);
-
-  const toggleColumn = (column) => {
-    setDisplayColumns({ ...displayColumns, [column]: !displayColumns[column] });
+  const onDismissSnackBar = () => {
+    setVisible(false);
+    setMessage(null);
   };
 
-  const setDefaultColumns = () => {
-    const defaultColumns = {
-      id: true,
-      name: true,
-      status: true,
-      phone: false,
-      email: false,
-      gender: false,
-    };
-    setDisplayColumns(defaultColumns);
-    setColumnFilterVisible(false);
-  };
+  const filterMenuOptions = [
+    { title: "All", value: "all" },
+    { title: "Active", value: "active" },
+    { title: "Inactive", value: "inactive" },
+    { title: "Expired", value: "expired" },
+  ];
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -70,10 +80,10 @@ const StaffList = ({ navigation }) => {
             icon="account-plus"
             mode="contained"
             onPress={() => {
-              navigation.navigate("AddStaff");
+              navigation.navigate("AddMember");
             }}
           >
-            Add Staff
+            Add Member
           </Button>
         </View>
         <View
@@ -89,91 +99,70 @@ const StaffList = ({ navigation }) => {
             onChangeText={onChangeSearch}
             style={{ flex: 1, marginRight: 10 }}
           />
-          <Menu
+          <StatusFilterMenu
             visible={statusFilterVisible}
-            onDismiss={closeStatusFilter}
-            anchor={
-              <Button onPress={openStatusFilter} style={{ marginRight: 10 }}>
-                {filterOption.charAt(0).toUpperCase() + filterOption.slice(1)}
-              </Button>
-            }
-          >
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("all");
-                closeStatusFilter();
-              }}
-              title="All"
-            />
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("active");
-                closeStatusFilter();
-              }}
-              title="Active"
-            />
-            <Menu.Item
-              onPress={() => {
-                setFilterOption("inactive");
-                closeStatusFilter();
-              }}
-              title="Inactive"
-            />
-          </Menu>
-          <Menu
-            visible={columnFilterVisible}
-            onDismiss={closeColumnFilter}
-            anchor={
-              <Button onPress={openColumnFilter} style={{ flex: 1 }}>
-                Columns
-              </Button>
-            }
-          >
-            <Menu.Item onPress={setDefaultColumns} title="Default" />
-            {Object.keys(displayColumns).map((column) => (
-              <Menu.Item
-                key={column}
-                onPress={() => toggleColumn(column)}
-                title={column.charAt(0).toUpperCase() + column.slice(1)}
-                status={displayColumns[column] ? "checked" : "unchecked"}
-              />
-            ))}
-          </Menu>
+            setVisible={setStatusFilterVisible}
+            onChange={(option) => setFilterOption(option)}
+            options={filterMenuOptions}
+          />
         </View>
-        <DataTable>
-          <DataTable.Header>
-            {Object.keys(displayColumns).map(
-              (column) =>
-                displayColumns[column] && (
-                  <DataTable.Title key={column}>{column}</DataTable.Title>
-                )
-            )}
-          </DataTable.Header>
-          {staffs
-            .filter((staff) =>
-              staff.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-            .filter(
-              (staff) =>
-                filterOption === "all" ||
-                staff.status.toLowerCase() === filterOption.toLowerCase()
-            )
-            .map((staff) => (
-              <DataTable.Row key={staff.id}>
-                {Object.entries(displayColumns).map(
-                  ([column, display]) =>
-                    display && (
-                      <DataTable.Cell key={column}>
-                        {staff[column]}
-                      </DataTable.Cell>
-                    )
-                )}
-              </DataTable.Row>
-            ))}
-        </DataTable>
+
+        {loading ? (
+          <PageLoader />
+        ) : members.length < 0 ? (
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title key="sno">SNo.</DataTable.Title>
+              <DataTable.Title key="name">Name</DataTable.Title>
+              <DataTable.Title key="membershipStatus">
+                Membership
+              </DataTable.Title>
+            </DataTable.Header>
+            {members
+              .filter((member) =>
+                member.name.toLowerCase().includes(searchQuery.toLowerCase())
+              )
+              .filter(
+                (member) =>
+                  filterOption === "all" ||
+                  member.membershipStatus.toLowerCase() ===
+                    filterOption.toLowerCase()
+              )
+              .map((member, index) => (
+                <DataTable.Row
+                  key={member._id}
+                  onPress={() =>
+                    navigation.navigate("MemberDetails", { member })
+                  }
+                >
+                  <DataTable.Cell key={"sno"}>{index + 1}</DataTable.Cell>
+                  <DataTable.Cell key={"name"}>{member.name}</DataTable.Cell>
+                  <DataTable.Cell key={"membershipStatus"}>
+                    {member.membershipStatus}
+                  </DataTable.Cell>
+                </DataTable.Row>
+              ))}
+          </DataTable>
+        ) : (
+          <NoDataPage message={"Staffs Not Available"} />
+        )}
       </View>
+      {message && (
+        <Snackbar
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: "Hide",
+            onPress: () => {
+              onDismissSnackBar();
+            },
+          }}
+        >
+          {message}
+        </Snackbar>
+      )}
     </ScrollView>
   );
 };
 
-export default StaffList;
+export default MembersList;
