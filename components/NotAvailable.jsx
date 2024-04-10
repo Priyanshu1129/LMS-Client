@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: "#fff",
     padding: 20,
-    justifyContent: "space-between", // Add this line
+    justifyContent: "center", // Add this line
   },
   message: {
     fontSize: 20,

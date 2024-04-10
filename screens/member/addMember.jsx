@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { createMember } from "../../redux/actions/memberActions";
 import { memberActions } from "../../redux/slices/memberSlice";
 import PageLoader from "../../components/pageLoader";
-import { fetchToken } from "../../config/fetchAsyncStorage.js";
 
 const memberSchema = object({
   name: string().required("Name is required"),
@@ -29,27 +28,17 @@ const memberSchema = object({
     .max(100000, "Monthly seat fee cannot exceed 100000"),
 });
 
-const AddMemberPage = ({ navigation }) => {
+const AddMemberPage = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const [token, setToken] = useState("");
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const { status, data, error } = useSelector(
     (state) => state.member.memberDetails
   );
-
-  const getToken = async () => {
-    const storedToken = await fetchToken();
-    setToken(storedToken);
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
+  let token = route.params.token;
 
   const handleRegister = (values) => {
-    console.log("member", values);
     dispatch(createMember(values, token));
   };
 

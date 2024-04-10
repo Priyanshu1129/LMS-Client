@@ -8,8 +8,7 @@ import { fetchToken } from "../../config/fetchAsyncStorage.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 
 const UserProfile = ({ route, navigation }) => {
-  const { member } = route.params;
-  const [token, setToken] = useState(null);
+  const { member, token } = route.params;
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
@@ -43,15 +42,6 @@ const UserProfile = ({ route, navigation }) => {
       dispatch(memberActions.clearDeleteMemberError());
     }
   }, [deleteStatus]);
-
-  const getToken = async () => {
-    const storedToken = await fetchToken();
-    setToken(storedToken);
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
 
   useEffect(() => {
     if (deleteConfirmation) {

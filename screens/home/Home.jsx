@@ -3,6 +3,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 const Home = ({ route }) => {
+  const token = route.params.token;
   return (
     <View>
       <Text>Home</Text>

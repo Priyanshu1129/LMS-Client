@@ -29,9 +29,8 @@ const memberSchema = object({
     .max(100000, "Monthly seat fee cannot exceed 100000"),
 });
 
-const AddMemberPage = ({ navigation }) => {
+const AddMemberPage = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const [token, setToken] = useState("");
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -39,17 +38,9 @@ const AddMemberPage = ({ navigation }) => {
     (state) => state.member.memberDetails
   );
 
-  const getToken = async () => {
-    const storedToken = await fetchToken();
-    setToken(storedToken);
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
+  let token = route.params.token;
 
   const handleRegister = (values) => {
-    console.log("member", values);
     dispatch(createMember(values, token));
   };
 

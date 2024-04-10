@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
 import { Button, List, TextInput } from "react-native-paper";
 import Dropdown from "../../components/dropdown";
@@ -8,7 +9,7 @@ import { paymentActions } from "../../redux/slices/paymentSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import PageLoader from "../../components/pageLoader";
 
-const PaymentHistoryPage = ({ navigation }) => {
+const PaymentHistoryPage = ({ navigation, route }) => {
   const [payments, setPayments] = useState([
     // {
     //   id: 1,
@@ -19,7 +20,6 @@ const PaymentHistoryPage = ({ navigation }) => {
     // }
   ]);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(null);
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [nameFilter, setNameFilter] = useState("");
@@ -31,20 +31,17 @@ const PaymentHistoryPage = ({ navigation }) => {
     (state) => state.payment.allPayments
   );
 
-  const getToken = async () => {
-    const storedToken = await AsyncStorage.getItem("token");
-    setToken(storedToken);
-  };
+  let token = route.params.token;
 
-  useEffect(() => {
-    getToken();
-  }, []);
-
-  useMemo(() => {
+  const fetAllPayments = useCallback(() => {
     if (token) {
       dispatch(getAllPayment(token));
     }
-  }, [token]);
+  }, [token, dispatch]);
+
+  useEffect(() => {
+    fetAllPayments();
+  }, [fetAllPayments]);
 
   useMemo(() => {
     if (status === "pending") {
@@ -72,6 +69,12 @@ const PaymentHistoryPage = ({ navigation }) => {
     if (methodFilter !== "all" && payment.method !== methodFilter) return false;
     return true;
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetAllPayments();
+    }, [fetAllPayments])
+  );
 
   const renderPayments = () =>
     payments

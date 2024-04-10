@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   View,
   ScrollView,
@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Button, TextInput, Snackbar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -14,9 +15,8 @@ import PageLoader from "../../components/pageLoader";
 import { seatActions } from "../../redux/slices/seatSlice";
 import NoDataPage from "../../components/NotAvailable";
 
-const AllSeats = ({ navigation }) => {
+const AllSeats = ({ navigation, route }) => {
   const [seats, setSeats] = useState([]);
-  const [token, setToken] = useState(null);
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -24,20 +24,17 @@ const AllSeats = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  const getToken = async () => {
-    const storedToken = await AsyncStorage.getItem("token");
-    setToken(storedToken);
-  };
+  let token = route.params.token;
 
-  useEffect(() => {
-    getToken();
-  }, []);
-
-  useMemo(() => {
+  const fetchAllSeats = useCallback(() => {
     if (token) {
       dispatch(getAllSeats(token));
     }
-  }, [token]);
+  }, []);
+
+  useEffect(() => {
+    fetchAllSeats();
+  }, [fetchAllSeats]);
 
   useMemo(() => {
     if (status === "pending") {
@@ -79,6 +76,12 @@ const AllSeats = ({ navigation }) => {
     setVisible(false);
     setMessage(null);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchAllSeats();
+    }, [fetchAllSeats])
+  );
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

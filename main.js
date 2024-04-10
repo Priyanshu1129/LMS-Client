@@ -109,22 +109,22 @@ const StackNav = ({ token }) => {
             />
             <Stack.Screen
                 name="MyOrganization"
-                initialParams={token}
+                initialParams={{token}}
                 component={MyOrganization}
             />
             <Stack.Screen
                 name='Members'
-                initialParams={token}
+                initialParams={{token}}
                 component={MembersList}
             />
             <Stack.Screen
                 name='AddMember'
-                initialParams={token}
+                initialParams={{token}}
                 component={AddMember}
             />
             <Stack.Screen
                 name='MemberDetails'
-                initialParams={token}
+                initialParams={{token}}
                 component={MemberDetails}
             />
             <Stack.Screen
@@ -145,62 +145,62 @@ const StackNav = ({ token }) => {
             />
             <Stack.Screen
                 name='UpdateProfile'
-                initialParams={token}
+                initialParams={{token}}
                 component={UpdateProfile}
             />
             <Stack.Screen
                 name='StaffsList'
-                initialParams={token}
+                initialParams={{token}}
                 component={StaffsList}
             />
             <Stack.Screen
                 name='AddStaff'
-                initialParams={token}
+                initialParams={{token}}
                 component={AddStaff}
             />
             <Stack.Screen
                 name='StaffDetails'
-                initialParams={token}
+                initialParams={{token}}
                 component={StaffDetails}
             />
             <Stack.Screen
                 name='PaymentList'
-                initialParams={token}
+                initialParams={{token}}
                 component={PaymentList}
             />
             <Stack.Screen
                 name='MakePayment'
-                initialParams={token}
+                initialParams={{token}}
                 component={MakePayment}
             />
             <Stack.Screen
                 name='PaymentDetails'
-                initialParams={token}
+                initialParams={{token}}
                 component={PaymentDetails}
             />
             <Stack.Screen
                 name='AllSeats'
-                initialParams={token}
+                initialParams={{token}}
                 component={AllSeats}
             />
             <Stack.Screen
                 name='AddSeat'
-                initialParams={token}
+                initialParams={{token}}
                 component={AddSeat}
             />
             <Stack.Screen
                 name='SeatDetails'
-                initialParams={token}
+                initialParams={{token}}
                 component={SeatDetails}
             />
             <Stack.Screen
                 name='Subscription'
-                initialParams={token}
+                initialParams={{token}}
                 component={Subscription}
             />
             <Stack.Screen
                 name='Search'
-                initialParams={token}
+                initialParams={{token}}
                 component={Search}
                 options={{
                     headerShown: false
@@ -208,12 +208,12 @@ const StackNav = ({ token }) => {
             />
             <Stack.Screen
                 name='Notifications'
-                initialParams={token}
+                initialParams={{token}}
                 component={Notifications}
             />
             <Stack.Screen
                 name='ChangePassword'
-                initialParams={token}
+                initialParams={{token}}
                 component={ChangePassword}
             />
             <Stack.Screen

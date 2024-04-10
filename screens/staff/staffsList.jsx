@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { View, ScrollView, Text } from "react-native";
 import { Button, TextInput, DataTable, Snackbar } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,9 +10,9 @@ import StatusFilterMenu from "../../components/filterMenu";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { memberActions } from "../../redux/slices/memberSlice";
 
-const MembersList = ({ navigation }) => {
+
+const MembersList = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [token, setToken] = useState(null);
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,26 +22,22 @@ const MembersList = ({ navigation }) => {
 
   const [members, setMembers] = useState([]);
 
-  const getToken = async () => {
-    const storedToken = await AsyncStorage.getItem("token");
-    setToken(storedToken);
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
-
   const dispatch = useDispatch();
   const { status, data, error } = useSelector(
     (state) => state.member.allMembers
   );
 
-  useMemo(() => {
+  let token = route.params.token;
+
+  const fetchMembers = useCallback(() => {
     if (token) {
       dispatch(getAllMember(token));
     }
-  }, [token]);
+  }, [dispatch, token]);
 
+  useEffect(() => {
+    fetchMembers();
+  }, [fetchMembers]);
   useMemo(() => {
     if (status === "pending") {
       setLoading(true);
@@ -72,9 +69,15 @@ const MembersList = ({ navigation }) => {
     { title: "Expired", value: "expired" },
   ];
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchMembers();
+    }, [fetchMembers])
+  );
+
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={{ padding: 20 }}>
+      <View style={{ padding: 20, flex: 1 }}>
         <View style={{ marginBottom: 20 }}>
           <Button
             icon="account-plus"
@@ -109,7 +112,7 @@ const MembersList = ({ navigation }) => {
 
         {loading ? (
           <PageLoader />
-        ) : members.length < 0 ? (
+        ) : members.length > 0 ? (
           <DataTable>
             <DataTable.Header>
               <DataTable.Title key="sno">SNo.</DataTable.Title>

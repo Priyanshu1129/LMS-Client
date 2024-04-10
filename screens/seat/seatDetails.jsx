@@ -17,14 +17,13 @@ const SeatDetailsPage = ({ navigation, route }) => {
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [token, setToken] = useState("");
   const [message, setMessage] = useState("");
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [member, setMember] = useState(null);
   const [membersLoading, setMembersLoading] = useState(false);
   const [fetchedMembers, setFetchedMembers] = useState([]);
   const [members, setMembers] = useState([]);
-  const { seat } = route.params;
+  const { seat, token } = route.params;
 
   const {
     status: membersStatus,
@@ -41,20 +40,11 @@ const SeatDetailsPage = ({ navigation, route }) => {
     error: deleteError,
   } = useSelector((state) => state.seat.deleteSeat);
 
-  const getToken = async () => {
-    const storedToken = await fetchToken();
-    setToken(storedToken);
-  };
-
   useMemo(() => {
     if (token) {
       dispatch(getAllMember(token));
     }
   }, [token]);
-
-  useEffect(() => {
-    getToken();
-  }, []);
 
   useMemo(() => {
     if (membersStatus === "pending") {
@@ -120,7 +110,7 @@ const SeatDetailsPage = ({ navigation, route }) => {
       setMessage(deleteData.message);
       setVisibleSnackBar(true);
       dispatch(seatActions.clearDeleteSeatStatus());
-      console.log("msg-delete",deleteData.message);
+      console.log("msg-delete", deleteData.message);
       navigation.goBack();
     } else if (deleteStatus === "failed") {
       setLoading(false);

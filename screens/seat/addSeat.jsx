@@ -7,7 +7,7 @@ import { seatActions } from "../../redux/slices/seatSlice";
 import { fetchToken } from "../../config/fetchAsyncStorage";
 import PageLoader from "../../components/pageLoader";
 
-const AddSeatPage = ({ navigation }) => {
+const AddSeatPage = ({ navigation, route }) => {
   const [createSingleSeat, setCreateSingleSeat] = useState(true);
   const [seatNumber, setSeatNumber] = useState("");
   const [description, setDescription] = useState("");
@@ -15,10 +15,11 @@ const AddSeatPage = ({ navigation }) => {
   const [endNumber, setEndNumber] = useState("");
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState("");
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
+
+  let token = route.params.token;
 
   const { status, data, error } = useSelector(
     (state) => state.seat.seatDetails
@@ -40,15 +41,6 @@ const AddSeatPage = ({ navigation }) => {
       console.log("Creating multiple seats:", { startNumber, endNumber });
     }
   };
-
-  const getToken = async () => {
-    const storedToken = await fetchToken();
-    setToken(storedToken);
-  };
-
-  useEffect(() => {
-    getToken();
-  }, []);
 
   useEffect(() => {
     if (status === "pending") {

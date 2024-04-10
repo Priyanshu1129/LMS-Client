@@ -10,9 +10,8 @@ import { paymentActions } from "../../redux/slices/paymentSlice.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import { getAllMember } from "../../redux/actions/memberActions.js";
 
-const MakePaymentPage = ({ navigation }) => {
+const MakePaymentPage = ({ navigation , route}) => {
   const dispatch = useDispatch();
-  const [token, setToken] = useState("");
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [membersLoading, setMembersLoading] = useState(false);
@@ -42,21 +41,13 @@ const MakePaymentPage = ({ navigation }) => {
   const [method, setMethod] = useState("");
   const [type, setType] = useState("");
 
-  const getToken = async () => {
-    const storedToken = await fetchToken();
-    setToken(storedToken);
-  };
-
+  let token = route.params.token;
+  
   useMemo(() => {
     if (token) {
       dispatch(getAllMember(token));
     }
   }, [token]);
-
-  useEffect(() => {
-    getToken();
-  }, []);
-
   const handleConfirm = () => {
     dispatch(createPayment({ amount, paidBy, method, type }, token));
   };
