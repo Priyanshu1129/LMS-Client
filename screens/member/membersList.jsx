@@ -12,7 +12,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { getAllMember } from "../../redux/actions/memberActions";
 import PageLoader from "../../components/pageLoader";
 import StatusFilterMenu from "../../components/filterMenu";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { memberActions } from "../../redux/slices/memberSlice";
 import NoDataPage from "../../components/NotAvailable";
 

@@ -7,9 +7,7 @@ import { getAllMember } from "../../redux/actions/memberActions";
 import PageLoader from "../../components/pageLoader";
 import NoDataPage from "../../components/NotAvailable";
 import StatusFilterMenu from "../../components/filterMenu";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { memberActions } from "../../redux/slices/memberSlice";
-
 
 const MembersList = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState("");

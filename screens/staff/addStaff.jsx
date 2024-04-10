@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { createMember } from "../../redux/actions/memberActions";
 import { memberActions } from "../../redux/slices/memberSlice";
 import PageLoader from "../../components/pageLoader";
-import { fetchToken } from "../../config/fetchAsyncStorage.js";
 
 const memberSchema = object({
   name: string().required("Name is required"),

@@ -4,7 +4,6 @@ import { View, StyleSheet } from "react-native";
 import { Button, TextInput, Snackbar } from "react-native-paper";
 import Dropdown from "../../components/dropdown";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchToken } from "../../config/fetchAsyncStorage.js";
 import { createPayment } from "../../redux/actions/paymentActions";
 import { paymentActions } from "../../redux/slices/paymentSlice.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";

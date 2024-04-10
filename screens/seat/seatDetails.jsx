@@ -4,7 +4,6 @@ import { Button, Snackbar } from "react-native-paper";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import { getAllMember } from "../../redux/actions/memberActions.js";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchToken } from "../../config/fetchAsyncStorage.js";
 import PageLoader from "../../components/pageLoader";
 import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { Title } from "react-native-paper";

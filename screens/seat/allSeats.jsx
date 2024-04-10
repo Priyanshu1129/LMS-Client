@@ -9,7 +9,6 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import { Button, TextInput, Snackbar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAllSeats } from "../../redux/actions/seatActions";
 import PageLoader from "../../components/pageLoader";
 import { seatActions } from "../../redux/slices/seatSlice";

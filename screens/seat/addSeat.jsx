@@ -4,7 +4,6 @@ import { Button, RadioButton, TextInput, Snackbar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { createSeat } from "../../redux/actions/seatActions";
 import { seatActions } from "../../redux/slices/seatSlice";
-import { fetchToken } from "../../config/fetchAsyncStorage";
 import PageLoader from "../../components/pageLoader";
 
 const AddSeatPage = ({ navigation, route }) => {

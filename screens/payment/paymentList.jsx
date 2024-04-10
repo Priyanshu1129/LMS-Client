@@ -6,7 +6,6 @@ import Dropdown from "../../components/dropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllPayment } from "../../redux/actions/paymentActions";
 import { paymentActions } from "../../redux/slices/paymentSlice";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import PageLoader from "../../components/pageLoader";
 
 const PaymentHistoryPage = ({ navigation, route }) => {

@@ -4,7 +4,6 @@ import { Avatar, Button, Card, Title, Paragraph } from "react-native-paper";
 import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteMember } from "../../redux/actions/memberActions.js";
-import { fetchToken } from "../../config/fetchAsyncStorage.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 
 const UserProfile = ({ route, navigation }) => {
