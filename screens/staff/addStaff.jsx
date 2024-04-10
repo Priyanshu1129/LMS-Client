@@ -4,11 +4,11 @@ import { Button, TextInput, RadioButton, Snackbar } from "react-native-paper";
 import { object, string, number, date } from "yup";
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { createMember } from "../../redux/actions/memberActions";
-import { memberActions } from "../../redux/slices/memberSlice";
+import { createStaff } from "../../redux/actions/staffActions";
+import { staffActions } from "../../redux/slices/staffSlice";
 import PageLoader from "../../components/pageLoader";
 
-const memberSchema = object({
+const staffSchema = object({
   name: string().required("Name is required"),
   email: string().email("Invalid email address").required("Email is required"),
   phone: number()
@@ -16,31 +16,22 @@ const memberSchema = object({
     .min(1000000000, "Phone number must be 10 digits")
     .max(9999999999, "Phone number must be 10 digits"),
   gender: string().required("Gender is required"),
-  preparation: string().required("Preparation is required"),
-  address: string().required("Address is required"),
-  monthlySeatFee: number()
-    .required("Monthly seat fee is required")
-    .test(
-      "non-zero",
-      "Monthly seat fee must start with a non-zero digit",
-      (value) => /^[1-9]\d*$/.test(value)
-    )
-    .max(100000, "Monthly seat fee cannot exceed 100000"),
+  password: string().required("Password is required"),
 });
 
-const AddMemberPage = ({ navigation, route }) => {
+const AddStaffPage = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const { status, data, error } = useSelector(
-    (state) => state.member.memberDetails
+    (state) => state.staff.staffDetails
   );
 
   let token = route.params.token;
 
   const handleRegister = (values) => {
-    dispatch(createMember(values, token));
+    dispatch(createStaff(values, token));
   };
 
   const handleCancel = () => {
@@ -52,16 +43,16 @@ const AddMemberPage = ({ navigation, route }) => {
       setLoading(true);
     } else if (status === "success") {
       setLoading(false);
-      setMessage("Member Added Successfully");
+      setMessage("Staff Added Successfully");
       setVisible(true);
-      dispatch(memberActions.clearMemberDetailsStatus());
+      dispatch(staffActions.clearStaffDetailsStatus());
       navigation.goBack();
     } else if (status === "failed") {
       setLoading(false);
       setMessage(error);
       setVisible(true);
-      dispatch(memberActions.clearMemberDetailsStatus());
-      memberActions.clearMemberDetailsError();
+      dispatch(staffActions.clearStaffDetailsStatus());
+      staffActions.clearStaffDetailsError();
     }
   }, [status]);
 
@@ -81,11 +72,9 @@ const AddMemberPage = ({ navigation, route }) => {
             phone: "",
             email: "",
             gender: "",
-            monthlySeatFee: 500,
-            address: "",
-            preparation: "",
+            password: "",
           }}
-          validationSchema={memberSchema}
+          validationSchema={staffSchema}
           onSubmit={handleRegister}
         >
           {({
@@ -160,37 +149,17 @@ const AddMemberPage = ({ navigation, route }) => {
                 ) : null}
               </View>
               <TextInput
-                label="Monthly Fee"
-                value={values.monthlySeatFee}
-                mode="outlined"
-                maxLength={4}
-                onChangeText={handleChange("monthlySeatFee")}
-                keyboardType="numeric"
+                secureTextEntry
                 style={styles.input}
-              />
-              {errors.monthlySeatFee && touched.monthlySeatFee ? (
-                <Text>{errors.monthlySeatFee}</Text>
-              ) : null}
-              <TextInput
-                label="Address"
-                value={values.address}
-                onChangeText={handleChange("address")}
-                style={styles.input}
+                placeholder="Password"
+                value={values.password}
                 mode="outlined"
+                onChangeText={handleChange("password")}
               />
-              {errors.address && touched.address ? (
-                <Text>{errors.address}</Text>
+              {errors.password && touched.password ? (
+                <Text>{errors.password}</Text>
               ) : null}
-              <TextInput
-                label="Preparation"
-                value={values.preparation}
-                mode="outlined"
-                onChangeText={handleChange("preparation")}
-                style={styles.input}
-              />
-              {errors.preparation && touched.preparation ? (
-                <Text>{errors.preparation}</Text>
-              ) : null}
+
               <View style={styles.buttonContainer}>
                 <Button
                   mode="contained"
@@ -270,4 +239,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddMemberPage;
+export default AddStaffPage;

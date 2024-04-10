@@ -81,10 +81,10 @@ const MembersList = ({ navigation, route }) => {
             icon="account-plus"
             mode="contained"
             onPress={() => {
-              navigation.navigate("AddMember");
+              navigation.navigate("AddStaff");
             }}
           >
-            Add Member
+            Add Staff
           </Button>
         </View>
         <View

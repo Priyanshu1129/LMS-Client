@@ -4,6 +4,7 @@ import updateProfileSlice from './slices/updateProfileSlice.js';
 import memberSlice from './slices/memberSlice.js';
 import paymentSlice from './slices/paymentSlice.js';
 import seatSlice from './slices/seatSlice.js';
+import staffSlice from './slices/staffSlice.js'
 
 
 
@@ -13,7 +14,8 @@ const store = configureStore({
         updateProfile: updateProfileSlice,
         member: memberSlice,
         payment: paymentSlice,
-        seat: seatSlice
+        seat: seatSlice,
+        staff: staffSlice
     }
 });
 
