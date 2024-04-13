@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
-import { Button, List, TextInput } from "react-native-paper";
+import { Button, List, TextInput, Avatar } from "react-native-paper";
 import Dropdown from "../../components/dropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllPayment } from "../../redux/actions/paymentActions";
@@ -81,9 +81,16 @@ const PaymentHistoryPage = ({ navigation, route }) => {
       .map((payment) => (
         <List.Item
           key={payment._id}
-          title={`${payment.createdAt}`}
+          title={`${payment.paidBy.name}`}
           description={`${payment.method}, ${payment.paidBy.name}`}
           right={() => <Text style={styles.amount}>{payment.amount}</Text>}
+          left={() => (
+            <Avatar.Image
+              size={48}
+              source={"https://randomuser.me/api/portraits/men/1.jpg"}
+              rounded={false}
+            />
+          )}
           style={styles.listItem}
           titleStyle={styles.listItemTitle}
           descriptionStyle={styles.listItemDescription}
@@ -92,6 +99,7 @@ const PaymentHistoryPage = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
+      <Text>{JSON.stringify(payments[0])}</Text>
       <View style={styles.filterContainer}>
         <TextInput
           label="Search by Member Name"
@@ -149,9 +157,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   listItem: {
+    padding: 10,
     backgroundColor: "#ffffff",
     marginBottom: 10,
     borderRadius: 10,
+    height: 100,
     elevation: 2,
   },
   listItemTitle: {

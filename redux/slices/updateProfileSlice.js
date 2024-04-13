@@ -10,7 +10,6 @@ const initialState = {
 }
 
 
-
 const updateProfileSlice = createSlice({
     name: "updateProfile",
     initialState: initialState,
