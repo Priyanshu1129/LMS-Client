@@ -20,5 +20,5 @@ export default function App() {
         <Main />
       </PaperProvider>
     </Provider>
-  );
+  );a
 }

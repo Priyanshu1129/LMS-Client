@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { View, ScrollView, Text } from "react-native";
+import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
+import SearchBar from "../../components/searchBar";
+import { StyleSheet } from "react-native";
+import AntDesign from 'react-native-vector-icons/AntDesign'
+
 import {
   Button,
   TextInput,
@@ -14,6 +18,7 @@ import PageLoader from "../../components/pageLoader";
 import StatusFilterMenu from "../../components/filterMenu";
 import { memberActions } from "../../redux/slices/memberSlice";
 import NoDataPage from "../../components/NotAvailable";
+import UserListCard from "../../components/userListCard";
 
 const MembersList = ({ route, navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -83,49 +88,40 @@ const MembersList = ({ route, navigation }) => {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={{ padding: 20, flex: 1 }}>
-        <View style={{ marginBottom: 20 }}>
-          <Button
-            icon="account-plus"
-            mode="contained"
-            onPress={() => {
-              navigation.navigate("AddMember");
-            }}
-          >
-            Add Member
-          </Button>
-        </View>
+        
         <View
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 20,
+            marginBottom : 20
           }}
         >
-          <TextInput
-            label="Search"
-            value={searchQuery}
+          <SearchBar
+            value={{ searchQuery }}
             onChangeText={onChangeSearch}
-            style={{ flex: 1, marginRight: 10 }}
+            onPress={() => {
+              navigation.navigate("AddMember");
+            }}
           />
-          <StatusFilterMenu
-            visible={statusFilterVisible}
-            setVisible={setStatusFilterVisible}
-            onChange={(option) => setFilterOption(option)}
-            options={filterMenuOptions}
-          />
+          <View style={{flexDirection : "row", gap : 5 , margin : 5}}>
+            <TouchableOpacity style={styles.optionButton} onPress={()=>navigation.navigate("AddMember")} >
+              <AntDesign name="adduser" size={20} color="white" />
+            </TouchableOpacity>
+
+            <StatusFilterMenu
+            style={styles.optionButton} 
+              visible={statusFilterVisible}
+              setVisible={setStatusFilterVisible}
+              onChange={(option) => setFilterOption(option)}
+              options={filterMenuOptions}
+            />
+          </View>
         </View>
 
         {loading ? (
           <PageLoader />
         ) : members.length > 0 ? (
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title key="sno">SNo.</DataTable.Title>
-              <DataTable.Title key="name">Name</DataTable.Title>
-              <DataTable.Title key="membershipStatus">
-                Membership
-              </DataTable.Title>
-            </DataTable.Header>
+          <View>
             {members
               .filter((member) =>
                 member.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -137,20 +133,22 @@ const MembersList = ({ route, navigation }) => {
                     filterOption.toLowerCase()
               )
               .map((member, index) => (
-                <DataTable.Row
-                  key={member._id}
+                <TouchableOpacity
                   onPress={() =>
                     navigation.navigate("MemberDetails", { member })
                   }
+                  activeOpacity={0.8}
                 >
-                  <DataTable.Cell key={"sno"}>{index + 1}</DataTable.Cell>
-                  <DataTable.Cell key={"name"}>{member.name}</DataTable.Cell>
-                  <DataTable.Cell key={"membershipStatus"}>
-                    {member.membershipStatus}
-                  </DataTable.Cell>
-                </DataTable.Row>
+                  <UserListCard
+                    key={member._id}
+                    name={member.name}
+                    balance={member.account.balance}
+                    membershipStatus={member.membershipStatus}
+                    seatNumber={member?.seat?.seatNumber}
+                  />
+                </TouchableOpacity>
               ))}
-          </DataTable>
+          </View>
         ) : (
           <NoDataPage message={"Members Not Available"} />
         )}
@@ -172,5 +170,20 @@ const MembersList = ({ route, navigation }) => {
     </ScrollView>
   );
 };
+
+
+
+const styles = StyleSheet.create({
+  
+ 
+  optionButton: {
+    backgroundColor: '#007bff',
+    borderRadius: 2,
+    padding:8
+    
+  },
+});
+
+
 
 export default MembersList;

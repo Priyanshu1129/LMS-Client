@@ -128,10 +128,10 @@ const AddMemberPage = ({ navigation, route }) => {
                 <Text>{errors.email}</Text>
               ) : null}
               <View style={styles.row}>
-                <Text style={{ marginRight: 20 }}>Gender :</Text>
+                <Text style={styles.label}>Gender :</Text>
 
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View style={styles.radioView}>
+                <View style={styles.radioView}>
+                  <View style={styles.radio}>
                     <Text style={styles.radioText}>Male</Text>
                     <RadioButton
                       value="M"
@@ -142,7 +142,7 @@ const AddMemberPage = ({ navigation, route }) => {
                       }}
                     />
                   </View>
-                  <View style={styles.radioView}>
+                  <View style={styles.radio}>
                     <Text style={styles.radioText}>Female</Text>
                     <RadioButton
                       value="F"
@@ -196,6 +196,8 @@ const AddMemberPage = ({ navigation, route }) => {
                   disabled={!isValid}
                   onPress={handleSubmit}
                   style={styles.button}
+                  labelStyle={styles.buttonLabel}
+                  contentStyle={styles.buttonContent}
                 >
                   Register
                 </Button>
@@ -203,6 +205,8 @@ const AddMemberPage = ({ navigation, route }) => {
                   mode="outlined"
                   onPress={handleCancel}
                   style={styles.button}
+                  labelStyle={styles.buttonLabel}
+                  contentStyle={styles.buttonContent}
                 >
                   Cancel
                 </Button>
@@ -220,6 +224,7 @@ const AddMemberPage = ({ navigation, route }) => {
                 onDismissSnackBar();
               },
             }}
+            style={styles.snackbar}
           >
             {message}
           </Snackbar>
@@ -237,18 +242,21 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
   },
-  heading: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
   radioView: {
     flexDirection: "row",
     alignItems: "center",
   },
+  radio: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20,
+  },
+  radioText: {
+    marginRight: 10,
+  },
   input: {
     marginBottom: 10,
+    borderRadius: 4,
   },
   row: {
     flexDirection: "row",
@@ -266,6 +274,16 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: 5,
+    borderRadius: 4,
+  },
+  buttonLabel: {
+    color: "white",
+  },
+  buttonContent: {
+    height: 45,
+  },
+  snackbar: {
+    borderRadius: 4,
   },
 });
 
