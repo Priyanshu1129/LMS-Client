@@ -105,6 +105,7 @@ const MembersList = ({ route, navigation }) => {
             label="Search"
             value={searchQuery}
             onChangeText={onChangeSearch}
+            mode="outlined"
             style={{ flex: 1, marginRight: 10 }}
           />
           <StatusFilterMenu

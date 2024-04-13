@@ -80,7 +80,7 @@ const AddMemberPage = ({ navigation, route }) => {
             phone: "",
             email: "",
             gender: "",
-            monthlySeatFee: 500,
+            monthlySeatFee: "",
             address: "",
             preparation: "",
           }}

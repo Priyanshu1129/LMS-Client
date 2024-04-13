@@ -1,27 +1,32 @@
-import React, { useState } from 'react';
-import { View, TextInput, FlatList, StyleSheet } from 'react-native';
-import { Avatar, List, Divider, IconButton } from 'react-native-paper';
+import React, { useState } from "react";
+import { View, TextInput, FlatList, StyleSheet } from "react-native";
+import {
+  Avatar,
+  List,
+  Divider,
+  IconButton,
+  Searchbar,
+} from "react-native-paper";
 
 const SearchPage = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showClearButton, setShowClearButton] = useState(false);
 
   const handleSearch = (text) => {
-    // Perform search operation here
-    // For now, dummy data is used
     const dummyData = [
-      { id: '1', username: 'user1', fullName: 'User One' },
-      { id: '2', username: 'user2', fullName: 'User Two' },
-      // Add more dummy data as needed
+      { id: "1", username: "user1", fullName: "Raj" },
+      { id: "2", username: "user2", fullName: "Naman" },
     ];
-    const filteredResults = dummyData.filter(user => user.username.toLowerCase().startsWith(text.toLowerCase()));
-    setSearchResults(filteredResults);
+    const filteredResults = dummyData.filter((user) =>
+      user.fullName.toLowerCase().startsWith(text.toLowerCase())
+    );
+    setSearchResults(text.length == 0 ? [] : filteredResults);
     setShowClearButton(text.length > 0);
   };
 
   const handleClearSearch = () => {
-    setSearchQuery('');
+    setSearchQuery("");
     setSearchResults([]);
     setShowClearButton(false);
   };
@@ -30,37 +35,33 @@ const SearchPage = () => {
     <List.Item
       title={item.fullName}
       description={`@${item.username}`}
-      left={props => <Avatar.Text {...props} label={item.username.charAt(0).toUpperCase()} />}
-      onPress={() => console.log('User profile clicked:', item)}
+      left={(props) => (
+        <Avatar.Text {...props} label={item.username.charAt(0).toUpperCase()} />
+      )}
+      onPress={() => console.log("User profile clicked:", item)}
     />
   );
 
   return (
     <View style={styles.container}>
       <View style={styles.searchBarContainer}>
-        <TextInput
-          placeholder="Search for users"
-          value={searchQuery}
-          onChangeText={text => {
+        <Searchbar
+          placeholder="Search User"
+          mode="bar"
+          style={styles.searchInput}
+          onChangeText={(text) => {
             setSearchQuery(text);
             handleSearch(text);
           }}
-          style={styles.searchInput}
+          onClearIconPress={handleClearSearch}
+          value={searchQuery}
         />
-        {showClearButton && (
-          <IconButton
-            icon="close"
-            size={20}
-            onPress={handleClearSearch}
-            style={styles.clearButton}
-          />
-        )}
       </View>
       <Divider />
       <FlatList
         data={searchResults}
         renderItem={renderUserItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         style={styles.flatList}
       />
     </View>
@@ -70,22 +71,18 @@ const SearchPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    paddingTop: 50,
+    backgroundColor: "#ffffff",
+    paddingTop: 10,
   },
   searchBarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 10,
+    marginTop: 20,
   },
   searchInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#cccccc',
     borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    margin: 10,
+    // padding:0
   },
   clearButton: {
     marginLeft: 10,

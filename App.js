@@ -9,8 +9,8 @@ export default function App() {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      primary: 'tomato',
-      secondary: 'yellow',
+      // primary: '#0066FF',
+      // secondary: 'yellow',
     },
   };
 

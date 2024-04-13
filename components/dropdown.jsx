@@ -20,6 +20,7 @@ const DropdownComponent = ({
       iconStyle={styles.iconStyle}
       data={data}
       search={search}
+      mode="contained"
       maxHeight={300}
       labelField="label"
       valueField="value"

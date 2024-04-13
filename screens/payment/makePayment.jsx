@@ -9,7 +9,7 @@ import { paymentActions } from "../../redux/slices/paymentSlice.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import { getAllMember } from "../../redux/actions/memberActions.js";
 
-const MakePaymentPage = ({ navigation , route}) => {
+const MakePaymentPage = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -41,7 +41,7 @@ const MakePaymentPage = ({ navigation , route}) => {
   const [type, setType] = useState("");
 
   let token = route.params.token;
-  
+
   useMemo(() => {
     if (token) {
       dispatch(getAllMember(token));
@@ -169,7 +169,6 @@ const MakePaymentPage = ({ navigation , route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     padding: 20,
     backgroundColor: "#fff",
