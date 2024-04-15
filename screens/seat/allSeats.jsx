@@ -21,12 +21,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import RadioFilter from "../../components/radioFilter";
 const AllSeats = ({ navigation, route }) => {
   const [seats, setSeats] = useState([]);
+  const [filteredSeats, setFilteredSeats] = useState([]);
+
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const { status, data, error } = useSelector((state) => state.seat.allSeats);
   
-  const [schedule, setSchedule] = useState("morning");
+  const [schedule, setSchedule] = useState("fullDay");
   const [seatStatus, setSeatStatus] = useState(null);
 
   const dispatch = useDispatch();
@@ -37,17 +39,23 @@ const AllSeats = ({ navigation, route }) => {
     if (token) {
       dispatch(getAllSeats(token));
     }
+    
   }, []);
 
-  useEffect(() => {
-    fetchAllSeats();
-  }, [fetchAllSeats, seatStatus, schedule]);
+  useEffect(async () => {
+     fetchAllSeats();
+  }, []);
+
+  useEffect(()=>{
+    getFilteredSeats();
+  },[schedule, seats]);
 
   useMemo(() => {
     if (status === "pending") {
       setLoading(true);
     } else if (status === "success" && data.status === "success") {
       setSeats(data.data);
+      setFilteredSeats(data.data)
       setMessage("Seats Fetched Successfully");
       setVisible(true);
       setLoading(false);
@@ -60,7 +68,21 @@ const AllSeats = ({ navigation, route }) => {
       dispatch(seatActions.clearAllSeatsStatus());
     }
   }, [status]);
+  
+  const getFilteredSeats = ()=>{
+    console.log("filtered seat called-------------------")
+       const fseats = seats.map((seat)=>{
+        let isOccupied = true;
+        if(seat.schedule[schedule].occupant != null){
+          isOccupied = true;
+        }else{
+          isOccupied = false;
+        }
+        return ({...seat, isOccupied : isOccupied})
+       })
+       setFilteredSeats(fseats);
 
+  }
   const renderSeats = (theme) => {
     const styles = {
       occupiedSeat: {
@@ -95,20 +117,13 @@ const AllSeats = ({ navigation, route }) => {
         borderRadius: 4,
       },
     };
-    return seats.map((seat, index) => { 
-      if(seat.schedule[schedule].occupant == null){
-        seat.isOccupied = false;
-      }else{
-        seat.isOccupied = true;
-      }
-      console.log("------------------",seat.schedule[schedule].occupant)
-      console.log("////////////////",seat.isOccupied)
+    return filteredSeats.map((seat, index) => { 
       return (
       <View
         key={index}
         style={[
           styles.seat,
-          seat.occupied ? styles.occupiedSeat : styles.unoccupiedSeat,
+          seat.isOccupied ? styles.occupiedSeat : styles.unoccupiedSeat,
         ]}
       >
         <TouchableOpacity
@@ -116,7 +131,7 @@ const AllSeats = ({ navigation, route }) => {
         >
           <Text
             style={
-              seat.occupied
+              seat.isOccupied
                 ? styles.occupiedSeatText
                 : styles.unoccupiedSeatText
             }
@@ -171,10 +186,6 @@ const AllSeats = ({ navigation, route }) => {
     {
       label: "Full Day",
       value: "fullDay",
-    },
-    {
-      label: "All",
-      value: null,
     },
   ];
 
