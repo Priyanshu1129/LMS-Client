@@ -16,6 +16,16 @@ const initialState = {
         status: null,
         error: null,
         data: null,
+    },
+    createMember: {
+        status: null,
+        error: null,
+        data: null,
+    },
+    updateMember: {
+        status: null,
+        error: null,
+        data: null,
     }
 }
 
@@ -48,26 +58,26 @@ const memberSlice = createSlice({
             state.memberDetails.error = action.payload;
         },
         createMemberRequest: (state, action) => {
-            state.memberDetails.status = 'pending'
+            state.createMember.status = 'pending'
         },
         createMemberSuccess: (state, action) => {
-            state.memberDetails.status = 'success'
-            state.memberDetails.data = action.payload;
+            state.createMember.status = 'success'
+            state.createMember.data = action.payload;
         },
         createMemberFailure: (state, action) => {
-            state.memberDetails.status = 'failed'
-            state.memberDetails.error = action.payload;
+            state.createMember.status = 'failed'
+            state.createMember.error = action.payload;
         },
         updateMemberRequest: (state, action) => {
-            state.memberDetails.status = 'pending'
+            state.updateMember.status = 'pending'
         },
         updateMemberSuccess: (state, action) => {
-            state.memberDetails.status = 'success'
-            state.memberDetails.data = action.payload;
+            state.updateMember.status = 'success'
+            state.updateMember.data = action.payload;
         },
         updateMemberFailure: (state, action) => {
-            state.memberDetails.status = 'failed'
-            state.memberDetails.error = action.payload;
+            state.updateMember.status = 'failed'
+            state.updateMember.error = action.payload;
         },
         deleteMemberRequest: (state, action) => {
             state.deleteMember.status = 'pending'
@@ -86,6 +96,12 @@ const memberSlice = createSlice({
         clearMemberDetailsStatus: (state) => {
             state.memberDetails.status = null;
         },
+        clearCreateMemberStatus: (state) => {
+            state.createMember.status = null;
+        },
+        clearUpdateMemberStatus: (state) => {
+            state.updateMember.status = null;
+        },
         clearDeleteMemberStatus: (state) => {
             state.deleteMember.status = null;
         },
@@ -95,9 +111,15 @@ const memberSlice = createSlice({
         clearMemberDetailsError: (state) => {
             state.memberDetails.error = null;
         },
+        clearCreateMemberError: (state) => {
+            state.createMember.error = null;
+        },
+        clearUpdateMemberError: (state) => {
+            state.updateMember.error = null;
+        },
         clearDeleteMemberError: (state) => {
             state.deleteMember.error = null;
-        }
+        },
     }
 })
 

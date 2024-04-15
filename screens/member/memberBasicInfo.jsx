@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import React from "react";
 
-const MemberBasicInfo = ({ user }) => (
+const MemberBasicInfo = ({ user, setDeleteDialogVisible }) => (
   <View style={styles.tabContent}>
     <View style={styles.userInfo}>
       <View style={styles.userInfoRow}>
@@ -48,6 +48,7 @@ const MemberBasicInfo = ({ user }) => (
         mode="contained"
         style={styles.button}
         labelStyle={styles.buttonLabel}
+        onPress={() => setDeleteDialogVisible(true)}
       >
         Delete
       </Button>

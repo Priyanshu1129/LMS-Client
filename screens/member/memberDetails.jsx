@@ -7,6 +7,7 @@ import { deleteMember } from "../../redux/actions/memberActions.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import MemberBasicInfo from "./memberBasicInfo.jsx";
 import MemberAccountDetails from "./memberAccountDetails.jsx";
+import { getAllMember } from "../../redux/actions/memberActions.js";
 
 const MemberProfilePage = ({ route, navigation }) => {
   const { member, token } = route.params;
@@ -29,11 +30,13 @@ const MemberProfilePage = ({ route, navigation }) => {
       setLoading(true);
     } else if (deleteStatus === "success") {
       setLoading(false);
-      setMessage(deleteData.message);
-      setVisibleSnackBar(true);
+      dispatch(getAllMember(token));
       dispatch(memberActions.clearDeleteMemberStatus());
-      console.log("msg-delete", deleteData.message);
-      navigation.goBack();
+      navigation.navigate({
+        name: "Members",
+        params: { memberDeleted: true },
+        merge: true,
+      });
     } else if (deleteStatus === "failed") {
       setLoading(false);
       setMessage(deleteError);
@@ -95,10 +98,19 @@ const MemberProfilePage = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
       {activeTab === "basicInfo" ? (
-        <MemberBasicInfo user={user} />
+        <MemberBasicInfo
+          user={user}
+          setDeleteDialogVisible={setDialogVisible}
+        />
       ) : (
         <MemberAccountDetails />
       )}
+      <ConfirmationDialog
+        visible={dialogVisible}
+        setVisible={setDialogVisible}
+        message={"Confirm Delete Member"}
+        setConfirmation={setDeleteConfirmation}
+      />
     </View>
   );
 };

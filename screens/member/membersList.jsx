@@ -4,14 +4,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import SearchBar from "../../components/searchBar";
 import { StyleSheet } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
-import {
-  Button,
-  TextInput,
-  DataTable,
-  Menu,
-  Snackbar,
-} from "react-native-paper";
+import { Button, Snackbar } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllMember } from "../../redux/actions/memberActions";
 import PageLoader from "../../components/pageLoader";
@@ -29,14 +22,13 @@ const MembersList = ({ route, navigation }) => {
   const [statusFilterVisible, setStatusFilterVisible] = useState(false);
   const [filterOption, setFilterOption] = useState("all");
 
-  const [members, setMembers] = useState([]);
-
-  let token = route.params.token;
+  const { token, memberCreated, memberDeleted } = route.params;
 
   const dispatch = useDispatch();
   const { status, data, error } = useSelector(
     (state) => state.member.allMembers
   );
+  const [members, setMembers] = useState(data?.data ? [...data?.data] : []);
 
   const fetchMembers = useCallback(() => {
     if (token) {
@@ -45,7 +37,9 @@ const MembersList = ({ route, navigation }) => {
   }, [dispatch, token]);
 
   useEffect(() => {
-    fetchMembers();
+    if (!data?.data) {
+      fetchMembers();
+    }
   }, [fetchMembers]);
 
   useMemo(() => {
@@ -53,8 +47,6 @@ const MembersList = ({ route, navigation }) => {
       setLoading(true);
     } else if (status === "success" && data.status === "success") {
       setMembers(data.data);
-      setMessage("Member Fetched Successfully");
-      setVisible(true);
       setLoading(false);
       dispatch(memberActions.clearAllMembersStatus());
     } else {
@@ -64,6 +56,22 @@ const MembersList = ({ route, navigation }) => {
       dispatch(memberActions.clearAllMembersError());
     }
   }, [status]);
+
+  useEffect(() => {
+    if (memberCreated && !loading) {
+      setMessage("Member Added Successfully");
+      setVisible(true);
+    } else if (memberDeleted && !loading) {
+      setMessage("Member Deleted Successfully");
+      setVisible(true);
+    }
+  }, [memberCreated, memberDeleted, loading]);
+
+  useMemo(() => {
+    if (members.length) {
+      setLoading(false);
+    }
+  }, [members]);
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
@@ -79,12 +87,6 @@ const MembersList = ({ route, navigation }) => {
     { title: "Expired", value: "expired" },
   ];
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchMembers();
-    }, [fetchMembers])
-  );
-
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={{ padding: 20, flex: 1 }}>
@@ -92,7 +94,7 @@ const MembersList = ({ route, navigation }) => {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 20
+            marginBottom: 20,
           }}
         >
           <SearchBar value={{ searchQuery }} onChangeText={onChangeSearch} />
@@ -134,7 +136,7 @@ const MembersList = ({ route, navigation }) => {
                   onPress={() =>
                     navigation.navigate("MemberDetails", { member })
                   }
-                  activeOpacity={0.8}
+                  activeOpacity={0.2}
                 >
                   <UserListCard
                     key={member._id}

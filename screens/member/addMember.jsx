@@ -8,6 +8,7 @@ import { createMember } from "../../redux/actions/memberActions";
 import { memberActions } from "../../redux/slices/memberSlice";
 import PageLoader from "../../components/pageLoader";
 import Dropdown from "../../components/dropdown";
+import { getAllMember } from "../../redux/actions/memberActions";
 
 const memberSchema = object({
   name: string().required("Name is required"),
@@ -36,7 +37,7 @@ const AddMemberPage = ({ navigation, route }) => {
   const [message, setMessage] = useState("");
   const [gender, setGender] = useState("");
   const { status, data, error } = useSelector(
-    (state) => state.member.memberDetails
+    (state) => state.member.createMember
   );
   let token = route.params.token;
 
@@ -53,16 +54,19 @@ const AddMemberPage = ({ navigation, route }) => {
       setLoading(true);
     } else if (status === "success") {
       setLoading(false);
-      setMessage("Member Added Successfully");
-      setVisible(true);
-      dispatch(memberActions.clearMemberDetailsStatus());
-      navigation.goBack();
+      dispatch(getAllMember(token));
+      dispatch(memberActions.clearCreateMemberStatus());
+      navigation.navigate({
+        name: "Members",
+        params: { memberCreated: true },
+        merge: true,
+      });
     } else if (status === "failed") {
       setLoading(false);
       setMessage(error);
       setVisible(true);
-      dispatch(memberActions.clearMemberDetailsStatus());
-      memberActions.clearMemberDetailsError();
+      dispatch(memberActions.clearCreateMemberError());
+      dispatch(memberActions.clearCreateMemberStatus());
     }
   }, [status]);
 
