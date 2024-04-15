@@ -30,6 +30,8 @@ import MyOrganization from './screens/myOrganization/myOrganization';
 import { fetchToken } from './config/fetchAsyncStorage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import { Provider,   MD3LightTheme as DefaultTheme, } from 'react-native-paper';
+
 
 import React, { useState, useEffect } from 'react';
 import DrawerContent from './components/drawerContent';
