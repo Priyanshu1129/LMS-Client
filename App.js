@@ -1,18 +1,12 @@
 import { Main } from './main';
 import store from './redux/store';
 import { Provider } from 'react-redux';
+import { useColorScheme } from 'react-native';
 import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
-
+import { CustomDarkTheme, CustomDefaultTheme } from './themes/themeProvider';
 export default function App() {
-
-  const theme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      // primary: '#0066FF',
-      // secondary: 'yellow',
-    },
-  };
+  const colorScheme = useColorScheme();
+  const theme = CustomDefaultTheme
 
   return (
     <Provider store={store}>
@@ -20,5 +14,5 @@ export default function App() {
         <Main />
       </PaperProvider>
     </Provider>
-  );
+  ); a
 }

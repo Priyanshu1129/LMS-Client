@@ -10,7 +10,6 @@ const DropdownComponent = ({
   value,
   setValue,
 }) => {
-
   return (
     <Dropdown
       style={styles.dropdown}
@@ -31,7 +30,7 @@ const DropdownComponent = ({
         setValue(item.value);
       }}
       renderLeftIcon={() => (
-        <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
+        <AntDesign style={styles.icon} color="black" name="user" size={20} />
       )}
     />
   );

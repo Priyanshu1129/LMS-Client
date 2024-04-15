@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { createMember } from "../../redux/actions/memberActions";
 import { memberActions } from "../../redux/slices/memberSlice";
 import PageLoader from "../../components/pageLoader";
+import Dropdown from "../../components/dropdown";
 
 const memberSchema = object({
   name: string().required("Name is required"),
@@ -33,6 +34,7 @@ const AddMemberPage = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [gender, setGender] = useState("");
   const { status, data, error } = useSelector(
     (state) => state.member.memberDetails
   );
@@ -69,6 +71,11 @@ const AddMemberPage = ({ navigation, route }) => {
     setMessage(null);
   };
 
+  const genderMenuOptions = [
+    { label: "Male", value: "male" },
+    { label: "Female", value: "female" },
+  ];
+
   return loading ? (
     <PageLoader />
   ) : (
@@ -96,9 +103,15 @@ const AddMemberPage = ({ navigation, route }) => {
             isValid,
           }) => (
             <View style={styles.formContainer}>
+              <Dropdown
+                data={genderMenuOptions}
+                placeholder={"Select Gender"}
+                value={gender}
+                setValue={setGender}
+              />
               <TextInput
                 label="Name"
-                mode="outlined"
+                // mode="outlined"
                 value={values.name}
                 onChangeText={handleChange("name")}
                 style={styles.input}
@@ -107,7 +120,7 @@ const AddMemberPage = ({ navigation, route }) => {
               <TextInput
                 label="Phone"
                 value={values.phone}
-                mode="outlined"
+                // mode="outlined"
                 maxLength={10}
                 onChangeText={handleChange("phone")}
                 keyboardType="numeric"
@@ -119,7 +132,7 @@ const AddMemberPage = ({ navigation, route }) => {
               <TextInput
                 label="Email"
                 value={values.email}
-                mode="outlined"
+                // mode="outlined"
                 onChangeText={handleChange("email")}
                 keyboardType="email-address"
                 style={styles.input}
@@ -128,10 +141,10 @@ const AddMemberPage = ({ navigation, route }) => {
                 <Text>{errors.email}</Text>
               ) : null}
               <View style={styles.row}>
-                <Text style={{ marginRight: 20 }}>Gender :</Text>
+                <Text style={styles.label}>Gender :</Text>
 
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <View style={styles.radioView}>
+                <View style={styles.radioView}>
+                  <View style={styles.radio}>
                     <Text style={styles.radioText}>Male</Text>
                     <RadioButton
                       value="M"
@@ -142,7 +155,7 @@ const AddMemberPage = ({ navigation, route }) => {
                       }}
                     />
                   </View>
-                  <View style={styles.radioView}>
+                  <View style={styles.radio}>
                     <Text style={styles.radioText}>Female</Text>
                     <RadioButton
                       value="F"
@@ -161,7 +174,7 @@ const AddMemberPage = ({ navigation, route }) => {
               <TextInput
                 label="Monthly Fee"
                 value={values.monthlySeatFee}
-                mode="outlined"
+                // mode="outlined"
                 maxLength={4}
                 onChangeText={handleChange("monthlySeatFee")}
                 keyboardType="numeric"
@@ -175,7 +188,7 @@ const AddMemberPage = ({ navigation, route }) => {
                 value={values.address}
                 onChangeText={handleChange("address")}
                 style={styles.input}
-                mode="outlined"
+                // mode="outlined"
               />
               {errors.address && touched.address ? (
                 <Text>{errors.address}</Text>
@@ -183,7 +196,7 @@ const AddMemberPage = ({ navigation, route }) => {
               <TextInput
                 label="Preparation"
                 value={values.preparation}
-                mode="outlined"
+                // mode=""
                 onChangeText={handleChange("preparation")}
                 style={styles.input}
               />
@@ -196,13 +209,17 @@ const AddMemberPage = ({ navigation, route }) => {
                   disabled={!isValid}
                   onPress={handleSubmit}
                   style={styles.button}
+                  labelStyle={styles.buttonLabel}
+                  contentStyle={styles.buttonContent}
                 >
                   Register
                 </Button>
                 <Button
                   mode="outlined"
                   onPress={handleCancel}
-                  style={styles.button}
+                  style={styles.rightButton}
+                  labelStyle={styles.buttonLabel}
+                  contentStyle={styles.buttonContent}
                 >
                   Cancel
                 </Button>
@@ -220,6 +237,7 @@ const AddMemberPage = ({ navigation, route }) => {
                 onDismissSnackBar();
               },
             }}
+            style={styles.snackbar}
           >
             {message}
           </Snackbar>
@@ -237,18 +255,22 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
   },
-  heading: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
   radioView: {
     flexDirection: "row",
     alignItems: "center",
   },
+  radio: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 20,
+  },
+  radioText: {
+    marginRight: 10,
+  },
   input: {
     marginBottom: 10,
+    backgroundColor: "transparent",
+    borderWidth: 0,
   },
   row: {
     flexDirection: "row",
@@ -266,6 +288,21 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: 5,
+    borderRadius: 4,
+  },
+  rightButton: {
+    flex: 1,
+    marginHorizontal: 5,
+    borderRadius: 4,
+  },
+  buttonLabel: {
+    color: "white",
+  },
+  buttonContent: {
+    height: 45,
+  },
+  snackbar: {
+    borderRadius: 4,
   },
 });
 
