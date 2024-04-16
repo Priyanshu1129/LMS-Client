@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { Button, RadioButton, TextInput, Snackbar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { createSeat } from "../../redux/actions/seatActions";
+import { createSeat, getAllSeats } from "../../redux/actions/seatActions";
 import { seatActions } from "../../redux/slices/seatSlice";
 import PageLoader from "../../components/pageLoader";
 
@@ -46,10 +46,16 @@ const AddSeatPage = ({ navigation, route }) => {
       setLoading(true);
     } else if (status === "success") {
       setLoading(false);
-      setMessage("Seat Added Successfully");
-      setVisible(true);
+      dispatch(getAllSeats(token));
       dispatch(seatActions.clearSeatDetailsStatus());
-      navigation.goBack();
+      navigation.navigate({
+        name: "AllSeats",
+        params: {
+          operationSuccess: true,
+          operationMessage: "Seat Added Successfully",
+        },
+        merge: true,
+      });
     } else if (status === "failed") {
       setLoading(false);
       setMessage(error);
@@ -129,7 +135,7 @@ const AddSeatPage = ({ navigation, route }) => {
         </Button>
         <Button
           mode="outlined"
-          onPress={() => console.log("Cancelled")}
+          onPress={() => navigation.goBack()}
           style={styles.button}
         >
           Cancel

@@ -9,7 +9,7 @@ import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { Title } from "react-native-paper";
 import SlotCard from "./slotCard.jsx";
 import { seatActions } from "../../redux/slices/seatSlice.js";
-import { deleteSeat } from "../../redux/actions/seatActions.js";
+import { deleteSeat, getAllSeats } from "../../redux/actions/seatActions.js";
 
 const SeatDetailsPage = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -106,17 +106,22 @@ const SeatDetailsPage = ({ navigation, route }) => {
       setLoading(true);
     } else if (deleteStatus === "success") {
       setLoading(false);
-      setMessage(deleteData.message);
-      setVisibleSnackBar(true);
+      dispatch(getAllSeats(token));
       dispatch(seatActions.clearDeleteSeatStatus());
-      console.log("msg-delete", deleteData.message);
-      navigation.goBack();
+      navigation.navigate({
+        name: "AllSeats",
+        params: {
+          operationSuccess: true,
+          operationMessage: deleteData.message,
+        },
+        merge: true,
+      });
     } else if (deleteStatus === "failed") {
       setLoading(false);
       setMessage(deleteError);
       setVisibleSnackBar(true);
       dispatch(seatActions.clearDeleteSeatStatus());
-      dispatch(seatActions.clearDeleteSEatError());
+      dispatch(seatActions.clearDeleteSeatError());
     }
   }, [deleteStatus]);
 

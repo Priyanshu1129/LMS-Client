@@ -43,7 +43,7 @@ const MembersList = ({ route, navigation }) => {
 
   useEffect(() => {
     if (!data?.data) {
-      fetchMembers(1);
+      fetchMembers();
     }
   }, [fetchMembers]);
 
@@ -92,7 +92,7 @@ const MembersList = ({ route, navigation }) => {
     { title: "Inactive", value: "inactive" },
     { title: "Expired", value: "expired" },
   ];
-  console.log(data?.data?.totalMembers);
+
   return (
     <>
       <View style={{ padding: 20, flex: 1 }}>
@@ -204,7 +204,7 @@ const MembersList = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   optionButton: {
-    borderRadius: 2,
+    borderRadius: 6,
   },
 });
 

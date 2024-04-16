@@ -1,36 +1,39 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
-import { Button, List, TextInput, Avatar } from "react-native-paper";
+import { Button, List, TextInput, Avatar, Snackbar } from "react-native-paper";
 import Dropdown from "../../components/dropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllPayment } from "../../redux/actions/paymentActions";
 import { paymentActions } from "../../redux/slices/paymentSlice";
 import PageLoader from "../../components/pageLoader";
-
+import PaymentListCard from "../../components/paymentListCard";
+import SearchBar from "../../components/searchBar";
+import ModeFilterMenu from "../../components/filterMenu";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 const PaymentHistoryPage = ({ navigation, route }) => {
-  const [payments, setPayments] = useState([
-    // {
-    //   id: 1,
-    //   date: "2024-04-01",
-    //   amount: 500,
-    //   method: "Cash",
-    //   paidBy: "John Doe",
-    // }
-  ]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [nameFilter, setNameFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [methodFilter, setMethodFilter] = useState("all");
+  const [modeFilterVisible, setModeFilterVisible] = useState(false);
 
   const dispatch = useDispatch();
   const { status, data, error } = useSelector(
     (state) => state.payment.allPayments
   );
 
-  let token = route.params.token;
+  const [payments, setPayments] = useState(data?.data ? data.data : []);
+  const { token, paymentCreated } = route.params;
+
+  useEffect(() => {
+    if (paymentCreated && !loading) {
+      setMessage("Payment Created Successfully");
+      setVisible(true);
+    }
+  }, [paymentCreated, loading]);
 
   const fetAllPayments = useCallback(() => {
     if (token) {
@@ -39,7 +42,9 @@ const PaymentHistoryPage = ({ navigation, route }) => {
   }, [token, dispatch]);
 
   useEffect(() => {
-    fetAllPayments();
+    if (!data?.data) {
+      fetAllPayments();
+    }
   }, [fetAllPayments]);
 
   useMemo(() => {
@@ -69,65 +74,61 @@ const PaymentHistoryPage = ({ navigation, route }) => {
     return true;
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetAllPayments();
-    }, [fetAllPayments])
-  );
-
   const renderPayments = () =>
     payments
       .filter(filterPayments)
-      .map((payment) => (
-        <List.Item
-          key={payment._id}
-          title={`${payment.paidBy.name}`}
-          description={`${payment.method}, ${payment.paidBy.name}`}
-          right={() => <Text style={styles.amount}>{payment.amount}</Text>}
-          left={() => (
-            <Avatar.Image
-              size={48}
-              source={"https://randomuser.me/api/portraits/men/1.jpg"}
-              rounded={false}
-            />
-          )}
-          style={styles.listItem}
-          titleStyle={styles.listItemTitle}
-          descriptionStyle={styles.listItemDescription}
-        />
-      ));
+      .map((payment) => <PaymentListCard payment={payment} />);
+
+  const onChangeSearch = (query) => setNameFilter(query);
+
+  const onDismissSnackBar = () => {
+    setVisible(false);
+    setMessage(null);
+  };
+
+  const filterMenuOptions = [
+    { title: "All", value: "all" },
+    { title: "Cash", value: "cash" },
+    { title: "Online", value: "online" },
+  ];
 
   return (
     <View style={styles.container}>
-      <Text>{JSON.stringify(payments[0])}</Text>
-      <View style={styles.filterContainer}>
-        <TextInput
-          label="Search by Member Name"
-          value={nameFilter}
-          onChangeText={setNameFilter}
-          style={styles.input}
-        />
-        <Button
-          mode="contained"
-          onPress={() => navigation.navigate("MakePayment")}
-          style={styles.addButton}
-        >
-          Make Payment
-        </Button>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginBottom: 20,
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <SearchBar value={{ nameFilter }} onChangeText={onChangeSearch} />
+        </View>
+        <View style={{ flexDirection: "row", gap: 5, margin: 5 }}>
+          <ModeFilterMenu
+            style={styles.optionButton}
+            visible={modeFilterVisible}
+            setVisible={setModeFilterVisible}
+            onChange={(option) => setMethodFilter(option)}
+            options={filterMenuOptions}
+          />
+          <Button
+            style={styles.optionButton}
+            onPress={() => navigation.navigate("MakePayment")}
+            mode="contained"
+          >
+            <MaterialIcon name="person-add-alt" size={20} color="white" />
+          </Button>
+          <Button
+            style={styles.optionButton}
+            onPress={() => fetAllPayments()}
+            mode="contained"
+          >
+            <MaterialIcon name="refresh" size={20} color="white" />
+          </Button>
+        </View>
       </View>
 
-      <View style={styles.filterContainer}>
-        <Dropdown
-          placeholder="Method Filter"
-          value={methodFilter}
-          data={[
-            { label: "All", value: "all" },
-            { label: "Cash", value: "Cash" },
-            { label: "Online", value: "Online" },
-          ]}
-          setValue={setMethodFilter}
-        />
-      </View>
       <ScrollView contentContainerStyle={styles.listContainer}>
         {loading ? (
           <PageLoader />
@@ -137,6 +138,20 @@ const PaymentHistoryPage = ({ navigation, route }) => {
           <Text>No Payments Available</Text>
         )}
       </ScrollView>
+      {message && (
+        <Snackbar
+          visible={visible}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: "Hide",
+            onPress: () => {
+              onDismissSnackBar();
+            },
+          }}
+        >
+          {message}
+        </Snackbar>
+      )}
     </View>
   );
 };
@@ -149,6 +164,9 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     marginBottom: 10,
+  },
+  optionButton: {
+    borderRadius: 6,
   },
   input: {
     marginBottom: 10,

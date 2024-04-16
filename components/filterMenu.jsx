@@ -46,7 +46,7 @@ const FilterMenu = ({ visible, setVisible, onChange, options }) => {
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 2, // Ensure the button has rounded corners
+    borderRadius: 6, // Ensure the button has rounded corners
     justifyContent: "center", // Center content vertically
     alignItems: "center", // Center content horizontally
     padding: 0,

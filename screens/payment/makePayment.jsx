@@ -8,6 +8,7 @@ import { createPayment } from "../../redux/actions/paymentActions";
 import { paymentActions } from "../../redux/slices/paymentSlice.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import { getAllMember } from "../../redux/actions/memberActions.js";
+import { getAllPayment } from "../../redux/actions/paymentActions";
 
 const MakePaymentPage = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -68,7 +69,7 @@ const MakePaymentPage = ({ navigation, route }) => {
       membersStatus === "success" &&
       membersData.status === "success"
     ) {
-      setFetchedMembers([...membersData.data]);
+      setFetchedMembers([...membersData.data.allMembers]);
       setMembersLoading(false);
     } else {
       setMessage(membersError);
@@ -91,10 +92,13 @@ const MakePaymentPage = ({ navigation, route }) => {
       setLoading(true);
     } else if (status === "success") {
       setLoading(false);
-      setMessage("Member Added Successfully");
-      setVisible(true);
-      navigation.goBack();
+      dispatch(getAllPayment(token));
       dispatch(paymentActions.clearPaymentDetailsStatus());
+      navigation.navigate({
+        name: "PaymentList",
+        params: { paymentCreated: true },
+        merge: true,
+      });
     } else if (status === "failed") {
       setLoading(false);
       setMessage(error);

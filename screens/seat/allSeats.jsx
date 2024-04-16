@@ -18,33 +18,42 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import RadioFilter from "../../components/radioFilter";
 const AllSeats = ({ navigation, route }) => {
-  const [seats, setSeats] = useState([]);
   const [filteredSeats, setFilteredSeats] = useState([]);
 
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const { status, data, error } = useSelector((state) => state.seat.allSeats);
+  const [seats, setSeats] = useState(data?.data ? data.data : []);
 
   const [schedule, setSchedule] = useState("fullDay");
 
   const dispatch = useDispatch();
 
-  let token = route.params.token;
+  const { token, operationSuccess, operationMessage } = route.params;
 
   const fetchAllSeats = useCallback(() => {
     if (token) {
       dispatch(getAllSeats(token));
     }
-  }, []);
+  }, [token, dispatch]);
 
-  useEffect(async () => {
-    fetchAllSeats();
-  }, []);
+  useEffect(() => {
+    if (!data?.data) {
+      fetchAllSeats();
+    }
+  }, [fetchAllSeats]);
 
   useEffect(() => {
     getFilteredSeats();
   }, [schedule, seats]);
+
+  useEffect(() => {
+    if (operationSuccess && !loading) {
+      setMessage(operationMessage);
+      setVisible(true);
+    }
+  }, [operationSuccess, loading]);
 
   useMemo(() => {
     if (status === "pending") {
@@ -52,8 +61,6 @@ const AllSeats = ({ navigation, route }) => {
     } else if (status === "success" && data.status === "success") {
       setSeats(data.data);
       setFilteredSeats(data.data);
-      setMessage("Seats Fetched Successfully");
-      setVisible(true);
       setLoading(false);
       dispatch(seatActions.clearAllSeatsStatus());
     } else {
@@ -139,12 +146,6 @@ const AllSeats = ({ navigation, route }) => {
     setVisible(false);
     setMessage(null);
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchAllSeats();
-    }, [fetchAllSeats])
-  );
 
   const theme = useTheme();
 
@@ -246,13 +247,22 @@ const AllSeats = ({ navigation, route }) => {
             setChecked={setSchedule}
           />
         </View>
-        <Button
-          mode="contained"
-          onPress={() => navigation.navigate("AddSeat")}
-          style={styles.addButton}
-        >
-          Add Seat
-        </Button>
+        <View style={{ flexDirection: "row", gap: 4 }}>
+          <Button
+            mode="contained"
+            onPress={() => navigation.navigate("AddSeat")}
+            style={styles.addButton}
+          >
+            Add Seat
+          </Button>
+          <Button
+            mode="contained"
+            onPress={() => fetchAllSeats()}
+            style={styles.addButton}
+          >
+            <MaterialIcons name="refresh" size={20} color="white" />
+          </Button>
+        </View>
       </View>
       {loading ? (
         <PageLoader />
@@ -280,9 +290,6 @@ const AllSeats = ({ navigation, route }) => {
   );
 };
 
-const numberOfSeatsPerRow = 5;
-const totalMargin = 0.05; // 1% margin for each side of each seat
-
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -296,7 +303,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   addButton: {
-    width: "40%",
+    borderRadius: 2,
   },
   searchBar: {
     width: "50%",

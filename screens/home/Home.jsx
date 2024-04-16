@@ -1,18 +1,18 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import UserListCard from "../../components/userListCard";
+import PaymentListCard from "../../components/paymentListCard";
 import SearchBar from "../../components/searchBar";
 import { useTheme } from "react-native-paper";
 
 const Home = ({ route }) => {
   const token = route.params.token;
   const theme = useTheme();
-  
+
   return (
-    <View>
+    <View styles={{ padding: 20 }}>
       <Text>Home</Text>
-      <UserListCard />
+      <PaymentListCard />
       <SearchBar />
     </View>
   );
