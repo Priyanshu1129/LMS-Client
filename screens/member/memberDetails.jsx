@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Avatar } from "react-native-paper";
+import { Avatar, Snackbar } from "react-native-paper";
 import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteMember } from "../../redux/actions/memberActions.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import MemberBasicInfo from "./memberBasicInfo.jsx";
 import MemberAccountDetails from "./memberAccountDetails.jsx";
-import { getAllMember } from "../../redux/actions/memberActions.js";
+import { getAllMember, getMember } from "../../redux/actions/memberActions.js";
+import PageLoader from "../../components/pageLoader.jsx";
 
 const MemberProfilePage = ({ route, navigation }) => {
   const { member, token } = route.params;
+  const [memberDetails, setMemberDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
@@ -18,6 +20,34 @@ const MemberProfilePage = ({ route, navigation }) => {
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (member && token) {
+      dispatch(getMember(member._id, token));
+    }
+  }, [member]);
+
+  const {
+    status: getMemberStatus,
+    data: getMemberData,
+    error: getMemberError,
+  } = useSelector((state) => state.member.memberDetails);
+
+  useEffect(() => {
+    if (getMemberStatus == "pending") {
+      setLoading(true);
+    } else if (getMemberStatus == "success") {
+      setMemberDetails(getMemberData.data);
+      setLoading(false);
+      dispatch(memberActions.clearMemberDetailsStatus());
+    } else if (getMemberStatus == "failed") {
+      setLoading(false);
+      setMessage(getMemberError);
+      setVisibleSnackBar(true);
+      dispatch(memberActions.clearMemberDetailsStatus());
+      dispatch(memberActions.clearMemberDetailsError());
+    }
+  }, [getMemberStatus]);
 
   const {
     status: deleteStatus,
@@ -53,20 +83,28 @@ const MemberProfilePage = ({ route, navigation }) => {
   }, [deleteConfirmation]);
 
   const user = {
-    name: member?.name || "N/A",
-    email: member?.email || "N/A",
-    phone: member?.phone || "N/A",
-    gender: member?.gender || "N/A",
-    monthlySeatFee: member?.monthlySeatFee || "N/A",
+    name: memberDetails?.name || "N/A",
+    email: memberDetails?.email || "N/A",
+    phone: memberDetails?.phone || "N/A",
+    gender: memberDetails?.gender || "N/A",
+    monthlySeatFee: memberDetails?.monthlySeatFee || "N/A",
     avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-    address: member?.address || "",
-    membershipStatus: member?.membershipStatus || "N/A",
-    createdAt: member?.createdAt || "N/A",
+    address: memberDetails?.address || "",
+    membershipStatus: memberDetails?.membershipStatus || "N/A",
+    createdAt: memberDetails?.createdAt || "N/A",
   };
 
   const [activeTab, setActiveTab] = useState("basicInfo");
 
-  return (
+  const onDismissSnackBar = () => {
+    setVisibleSnackBar(false);
+    setMessage(null);
+  };
+
+
+  return loading && !memberDetails ? (
+    <PageLoader />
+  ) : (
     <View style={styles.container}>
       <View style={styles.header}>
         <Avatar.Image
@@ -111,6 +149,20 @@ const MemberProfilePage = ({ route, navigation }) => {
         message={"Confirm Delete Member"}
         setConfirmation={setDeleteConfirmation}
       />
+      {message && (
+        <Snackbar
+          visible={visibleSnackBar}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: "Hide",
+            onPress: () => {
+              onDismissSnackBar();
+            },
+          }}
+        >
+          {message}
+        </Snackbar>
+      )}
     </View>
   );
 };

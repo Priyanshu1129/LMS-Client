@@ -17,7 +17,6 @@ const MembersList = ({ route, navigation }) => {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [ refreshRequest , setRefreshRequest ] = useState(false);
   const [statusFilterVisible, setStatusFilterVisible] = useState(false);
   const [filterOption, setFilterOption] = useState("all");
 

@@ -31,13 +31,17 @@ export const getAllMember = (token) => async (dispatch) => {
     }
 };
 
-export const getMember = (memberId) => async (dispatch) => {
+export const getMember = (memberId, token) => async (dispatch) => {
     try {
-        console.log("get-memberData", memberId);
+        console.log("get-member-data", memberId);
         dispatch(memberActions.getMemberRequest());
 
-        const data = await axios.get(`${route}/member/${memberId}`);
-        console.log('get-member-res-data', data);
+        const data = await axios.get(`${route}/${memberId}`, {
+            headers: {
+                "authorization": token
+            }
+        });
+        console.log('get-member-details-res-data', data.data);
         dispatch(memberActions.getMemberSuccess(data.data));
     } catch (error) {
         console.log("error", error)
