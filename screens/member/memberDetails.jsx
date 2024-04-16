@@ -101,7 +101,6 @@ const MemberProfilePage = ({ route, navigation }) => {
     setMessage(null);
   };
 
-
   return loading && !memberDetails ? (
     <PageLoader />
   ) : (
@@ -113,7 +112,26 @@ const MemberProfilePage = ({ route, navigation }) => {
         />
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.email}>{user.email}</Text>
-        <Text style={styles.status}>{user.membershipStatus}</Text>
+        <View
+          style={[
+            styles.statusWrapper,
+            {
+              backgroundColor:
+                user.membershipStatus === "active" ? "#D1FAE5" : "#FFEDD5",
+            },
+          ]}
+        >
+          <Text
+            style={[
+              styles.status,
+              {
+                color: user.membershipStatus === "active" ? "green" : "orange",
+              },
+            ]}
+          >
+            {user.membershipStatus}
+          </Text>
+        </View>
       </View>
       <View style={styles.tabBar}>
         <TouchableOpacity
@@ -190,8 +208,12 @@ const styles = StyleSheet.create({
   },
   status: {
     fontSize: 16,
-    marginTop: 5,
-    color: "#00a000",
+  },
+  statusWrapper: {
+    marginTop: 8,
+    borderRadius: 16,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
   },
   tabBar: {
     flexDirection: "row",

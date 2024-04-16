@@ -5,11 +5,11 @@ import { serverURL } from "../../config/config";
 
 const route = `${serverURL}/member`
 
-export const getAllMember = (token) => async (dispatch) => {
+export const getAllMember = (pageNumber, token) => async (dispatch) => {
     try {
         dispatch(memberActions.getAllMemberRequest());
-        console.log('getAllMemberToken', token);
-        const data = await axios.get(`${route}/`, {
+        console.log('getAllMemberToken', token, pageNumber);
+        const data = await axios.get(`${route}/${pageNumber}`, {
             headers: {
                 "authorization": token
             }
@@ -36,7 +36,7 @@ export const getMember = (memberId, token) => async (dispatch) => {
         console.log("get-member-data", memberId);
         dispatch(memberActions.getMemberRequest());
 
-        const data = await axios.get(`${route}/${memberId}`, {
+        const data = await axios.get(`${route}/details/${memberId}`, {
             headers: {
                 "authorization": token
             }
