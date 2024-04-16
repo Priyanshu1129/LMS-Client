@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { View, ScrollView, Text, TouchableOpacity } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 import SearchBar from "../../components/searchBar";
 import { StyleSheet } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { Button, Snackbar } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllMember } from "../../redux/actions/memberActions";
@@ -99,14 +98,6 @@ const MembersList = ({ route, navigation }) => {
         >
           <SearchBar value={{ searchQuery }} onChangeText={onChangeSearch} />
           <View style={{ flexDirection: "row", gap: 5, margin: 5 }}>
-            <Button
-              style={styles.optionButton}
-              onPress={() => navigation.navigate("AddMember")}
-              mode="contained"
-            >
-              <AntDesign name="adduser" size={20} color="white" />
-            </Button>
-
             <StatusFilterMenu
               style={styles.optionButton}
               visible={statusFilterVisible}
@@ -114,6 +105,20 @@ const MembersList = ({ route, navigation }) => {
               onChange={(option) => setFilterOption(option)}
               options={filterMenuOptions}
             />
+            <Button
+              style={styles.optionButton}
+              onPress={() => navigation.navigate("AddMember")}
+              mode="contained"
+            >
+              <MaterialIcon name="person-add-alt" size={20} color="white" />
+            </Button>
+            <Button
+              style={styles.optionButton}
+              onPress={() => fetchMembers()}
+              mode="contained"
+            >
+              <MaterialIcon name="refresh" size={20} color="white" />
+            </Button>
           </View>
         </View>
 
