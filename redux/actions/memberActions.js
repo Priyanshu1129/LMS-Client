@@ -9,12 +9,13 @@ export const getAllMember = (pageNumber, token) => async (dispatch) => {
     try {
         dispatch(memberActions.getAllMemberRequest());
         console.log('getAllMemberToken', token, pageNumber);
-        const data = await axios.get(`${route}`, {
+        console.log("----------get all member route ", route)
+        const data = await axios.get(`${route}/`, {
             headers: {
                 "authorization": token
             }
         });
-
+         
         console.log('get-all-member-res-data', data.data);
         dispatch(memberActions.getAllMemberSuccess(data.data));
     } catch (error) {
