@@ -52,7 +52,7 @@ const SeatDetailsPage = ({ navigation, route }) => {
       membersStatus === "success" &&
       membersData.status === "success"
     ) {
-      setFetchedMembers([...membersData.data]);
+      setFetchedMembers([...membersData.data.allMembers]);
       setMembersLoading(false);
     } else {
       setMessage(membersError);

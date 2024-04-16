@@ -35,24 +35,17 @@ const MembersList = ({ route, navigation }) => {
     data?.data?.totalMembers || 0
   );
 
-  const fetchMembers = useCallback(
-    (pageNumber) => {
-      if (token) {
-        dispatch(getAllMember(pageNumber, token));
-      }
-    },
-    [dispatch, token]
-  );
+  const fetchMembers = useCallback(() => {
+    if (token) {
+      dispatch(getAllMember(token));
+    }
+  }, [dispatch, token]);
 
   useEffect(() => {
     if (!data?.data) {
       fetchMembers(1);
     }
   }, [fetchMembers]);
-
-  useMemo(() => {
-    fetchMembers(pageNumber);
-  }, [pageNumber]);
 
   useMemo(() => {
     if (status === "pending") {
@@ -131,7 +124,7 @@ const MembersList = ({ route, navigation }) => {
             </Button>
             <Button
               style={styles.optionButton}
-              onPress={() => [fetchMembers(1), setPageNumber(1)]}
+              onPress={() => [fetchMembers(), setPageNumber(1)]}
               mode="contained"
             >
               <MaterialIcon name="refresh" size={20} color="white" />
@@ -167,13 +160,16 @@ const MembersList = ({ route, navigation }) => {
                       }
                       activeOpacity={0.2}
                     >
-                      <UserListCard
-                        key={member._id}
-                        name={member.name}
-                        balance={member.account.balance}
-                        membershipStatus={member.membershipStatus}
-                        seatNumber={member?.seat?.seatNumber}
-                      />
+                      {index >= (pageNumber - 1) * 10 &&
+                        index < pageNumber * 10 && (
+                          <UserListCard
+                            key={member._id}
+                            name={member.name}
+                            balance={member.account.balance}
+                            membershipStatus={member.membershipStatus}
+                            seatNumber={member?.seat?.seatNumber}
+                          />
+                        )}
                     </TouchableOpacity>
                   ))}
               </View>

@@ -5,10 +5,10 @@ import { serverURL } from "../../config/config";
 
 const route = `${serverURL}/member`
 
-export const getAllMember = (pageNumber, token) => async (dispatch) => {
+export const getAllMember = (token) => async (dispatch) => {
     try {
         dispatch(memberActions.getAllMemberRequest());
-        console.log('getAllMemberToken', token, pageNumber);
+        console.log('getAllMemberToken', token);
         console.log("----------get all member route ", route)
         const data = await axios.get(`${route}/`, {
             headers: {
