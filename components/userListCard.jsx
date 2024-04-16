@@ -4,6 +4,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import React, { useState } from "react";
+import { useTheme } from "react-native-paper";
 
 const windowWidth = Dimensions.get("window").width;
 const baseUnit = windowWidth / 20;
@@ -11,16 +12,18 @@ const baseUnit = windowWidth / 20;
 const UserListCard = ({ membershipStatus = 'expired' , balance = 30, name = "example" , seatNumber = "N/A" ,profileImage = "https://th.bing.com/th/id/OIP.tvaMwK3QuFxhTYg4PSNNVAHaHa?rs=1&pid=ImgDetMain"}) => {
   const [isClicked, setIsClicked] = useState(false);
   const balanceColor = balance <= 0 ? 'green' : 'orange' 
-  const balanceBg = balance <= 0 ?  '#D1FAE5' : '#FFEDD5' 
+  const balanceBg = balance <= 0 ?  '#D1FAE5' : '#FFEDD5'
+  const theme = useTheme(); 
 
   const handlePress = () => {
     setIsClicked(!isClicked);
   };
 
+
   return (
     <View
       
-      style={[styles.container, { backgroundColor: isClicked ? '#f0f0f0' : 'white' }]}
+      style={[styles.container, { backgroundColor: isClicked ? '#f0f0f0' : 'white', backdrop : theme.colors.backdrop}]}
     >
       <View style={styles.profileWrapper}>
         <View style={styles.imageWrapper}>
@@ -38,7 +41,7 @@ const UserListCard = ({ membershipStatus = 'expired' , balance = 30, name = "exa
           <FontAwesome name="rupee" size={16} color={balanceColor}  />
           <Text style={[styles.balanceText, {color : balanceColor}]}> {balance < 0 ? "- " : "+ " }{Math.abs(balance)}</Text>
         </View>
-        <View style={styles.seatWraper}>
+        <View style={[ {backgroundColor : theme.colors.surfaceVariant} ,styles.seatWraper]}>
            <MaterialIcons name="event-seat" size={16}/>
            <Text style={styles.balanceText}> {seatNumber}</Text>
         </View>
@@ -120,7 +123,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     marginRight: 6,
-    paddingHorizontal : 6,
-    backgroundColor : '#F3F4F6'
+    paddingHorizontal : 6
   }
 });

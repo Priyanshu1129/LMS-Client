@@ -16,8 +16,8 @@ import { seatActions } from "../../redux/slices/seatSlice";
 import NoDataPage from "../../components/NotAvailable";
 import { RadioButton } from "react-native-paper";
 import RadioButtonsExample from "../../components/radioFilter";
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import AntDesign from "react-native-vector-icons/AntDesign";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import RadioFilter from "../../components/radioFilter";
 const AllSeats = ({ navigation, route }) => {
   const [seats, setSeats] = useState([]);
@@ -27,35 +27,34 @@ const AllSeats = ({ navigation, route }) => {
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const { status, data, error } = useSelector((state) => state.seat.allSeats);
-  
+
   const [schedule, setSchedule] = useState("fullDay");
   const [seatStatus, setSeatStatus] = useState(null);
 
   const dispatch = useDispatch();
 
   let token = route.params.token;
-  
+
   const fetchAllSeats = useCallback(() => {
     if (token) {
       dispatch(getAllSeats(token));
     }
-    
   }, []);
 
   useEffect(async () => {
-     fetchAllSeats();
+    fetchAllSeats();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     getFilteredSeats();
-  },[schedule, seats]);
+  }, [schedule, seats]);
 
   useMemo(() => {
     if (status === "pending") {
       setLoading(true);
     } else if (status === "success" && data.status === "success") {
       setSeats(data.data);
-      setFilteredSeats(data.data)
+      setFilteredSeats(data.data);
       setMessage("Seats Fetched Successfully");
       setVisible(true);
       setLoading(false);
@@ -68,33 +67,31 @@ const AllSeats = ({ navigation, route }) => {
       dispatch(seatActions.clearAllSeatsStatus());
     }
   }, [status]);
-  
-  const getFilteredSeats = ()=>{
-    console.log("filtered seat called-------------------")
-       const fseats = seats.map((seat)=>{
-        let isOccupied = true;
-        if(seat.schedule[schedule].occupant != null){
-          isOccupied = true;
-        }else{
-          isOccupied = false;
-        }
-        return ({...seat, isOccupied : isOccupied})
-       })
-       setFilteredSeats(fseats);
 
-  }
+  const getFilteredSeats = () => {
+    console.log("filtered seat called-------------------");
+    const fseats = seats.map((seat) => {
+      let isOccupied = true;
+      if (seat.schedule[schedule].occupant != null) {
+        isOccupied = true;
+      } else {
+        isOccupied = false;
+      }
+      return { ...seat, isOccupied: isOccupied };
+    });
+    setFilteredSeats(fseats);
+  };
   const renderSeats = (theme) => {
     const styles = {
       occupiedSeat: {
         backgroundColor: theme.colors.primary,
         borderColor: theme.colors.primary,
-        shadow : 2
+        shadow: 2,
       },
       unoccupiedSeat: {
         backgroundColor: theme.colors.background,
         borderColor: theme.colors.primary,
         elevation: 4, // Apply elevation here
-    
       },
       occupiedSeatText: {
         color: theme.colors.background,
@@ -117,32 +114,31 @@ const AllSeats = ({ navigation, route }) => {
         borderRadius: 4,
       },
     };
-    return filteredSeats.map((seat, index) => { 
+    return filteredSeats.map((seat, index) => {
       return (
-      <View
-        key={index}
-        style={[
-          styles.seat,
-          seat.isOccupied ? styles.occupiedSeat : styles.unoccupiedSeat,
-        ]}
-      >
-        <TouchableOpacity
-          onPress={() => navigation.navigate("SeatDetails", { seat })}
+        <View
+          key={index}
+          style={[
+            styles.seat,
+            seat.isOccupied ? styles.occupiedSeat : styles.unoccupiedSeat,
+          ]}
         >
-          <Text
-            style={
-              seat.isOccupied
-                ? styles.occupiedSeatText
-                : styles.unoccupiedSeatText
-            }
+          <TouchableOpacity
+            onPress={() => navigation.navigate("SeatDetails", { seat })}
           >
-            {seat.seatNumber}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-    )
-  });
+            <Text
+              style={
+                seat.isOccupied
+                  ? styles.occupiedSeatText
+                  : styles.unoccupiedSeatText
+              }
+            >
+              {seat.seatNumber}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    });
   };
 
   const onDismissSnackBar = () => {
@@ -218,24 +214,49 @@ const AllSeats = ({ navigation, route }) => {
       >
         <View
           style={{
-            borderBottomColor: theme.colors.background,
-            borderBottomWidth: 2,
-            padding: 2,
-            paddingBottom :10
+            flexDirection: "row",
+            alignContent: "center",
+            gap: 4,
+            justifyContent: "center",
           }}
         >
-          <View style={{flexDirection : "row" , justifyContent : "start", gap : 2}}>
           <Text
             style={{
               alignSelf: "center",
-              color : theme.colors.primary,
-              marginBottom: 10,
               fontWeight: 500,
+              color: theme.colors.primary,
             }}
           >
-            Schedule
+            Filter
           </Text>
-          <MaterialIcons name="schedule" size={20} color={theme.colors.primary} />
+          <AntDesign name="filter" size={20} color={theme.colors.primary} />
+        </View>
+        <View
+          style={{
+            borderTopColor: theme.colors.background,
+            borderTopWidth: 2,
+            padding: 2,
+            paddingBottom: 10,
+          }}
+        >
+          <View
+            style={{ flexDirection: "row", justifyContent: "start", gap: 2 }}
+          >
+            <Text
+              style={{
+                alignSelf: "center",
+                color: theme.colors.primary,
+                marginBottom: 10,
+                fontWeight: 500,
+              }}
+            >
+              Schedule
+            </Text>
+            <MaterialIcons
+              name="schedule"
+              size={20}
+              color={theme.colors.primary}
+            />
           </View>
           <RadioFilter
             options={scheduleOptions}
@@ -243,23 +264,13 @@ const AllSeats = ({ navigation, route }) => {
             setChecked={setSchedule}
           />
         </View>
-         <View style={{flexDirection : "row", alignContent : "center", gap : 4}}>  
-        <Text
-          style={{
-            alignSelf: "center",
-            fontWeight: 500,
-            color : theme.colors.primary
-          }}
+        <Button
+          mode="contained"
+          onPress={() => navigation.navigate("AddSeat")}
+          style={styles.addButton}
         >
-          Status
-        </Text>
-        <MaterialIcons name="event-available" size={20} color={theme.colors.primary} />
-        </View>
-        <RadioFilter
-          options={statusOptions}
-          checked={seatStatus}
-          setChecked={setSeatStatus}
-        />
+          Add Seat
+        </Button>
       </View>
       {loading ? (
         <PageLoader />
@@ -268,13 +279,7 @@ const AllSeats = ({ navigation, route }) => {
       ) : (
         <NoDataPage message={"No Seats Available"} />
       )}
-      <Button
-        mode="contained"
-        onPress={() => navigation.navigate("AddSeat")}
-        style={styles.addButton}
-      >
-        Add Seat
-      </Button>
+
       {message && (
         <Snackbar
           visible={visible}
