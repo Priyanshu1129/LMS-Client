@@ -14,8 +14,6 @@ import { getAllSeats } from "../../redux/actions/seatActions";
 import PageLoader from "../../components/pageLoader";
 import { seatActions } from "../../redux/slices/seatSlice";
 import NoDataPage from "../../components/NotAvailable";
-import { RadioButton } from "react-native-paper";
-import RadioButtonsExample from "../../components/radioFilter";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import RadioFilter from "../../components/radioFilter";
@@ -29,7 +27,6 @@ const AllSeats = ({ navigation, route }) => {
   const { status, data, error } = useSelector((state) => state.seat.allSeats);
 
   const [schedule, setSchedule] = useState("fullDay");
-  const [seatStatus, setSeatStatus] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -116,27 +113,24 @@ const AllSeats = ({ navigation, route }) => {
     };
     return filteredSeats.map((seat, index) => {
       return (
-        <View
-          key={index}
+        <TouchableOpacity
           style={[
             styles.seat,
             seat.isOccupied ? styles.occupiedSeat : styles.unoccupiedSeat,
           ]}
+          key={index}
+          onPress={() => navigation.navigate("SeatDetails", { seat })}
         >
-          <TouchableOpacity
-            onPress={() => navigation.navigate("SeatDetails", { seat })}
+          <Text
+            style={
+              seat.isOccupied
+                ? styles.occupiedSeatText
+                : styles.unoccupiedSeatText
+            }
           >
-            <Text
-              style={
-                seat.isOccupied
-                  ? styles.occupiedSeatText
-                  : styles.unoccupiedSeatText
-              }
-            >
-              {seat.seatNumber}
-            </Text>
-          </TouchableOpacity>
-        </View>
+            {seat.seatNumber}
+          </Text>
+        </TouchableOpacity>
       );
     });
   };
@@ -153,18 +147,6 @@ const AllSeats = ({ navigation, route }) => {
   );
 
   const theme = useTheme();
-
-  const style = {
-    filterContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 20,
-    },
-    filterWraper: {
-      flexDirection: "row",
-    },
-  };
 
   scheduleOptions = [
     {
