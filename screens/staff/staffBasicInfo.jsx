@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-paper";
 import React from "react";
 
-const MemberBasicInfo = ({ user, setDeleteDialogVisible }) => (
+const StaffBasicInfo = ({ user, setDeleteDialogVisible }) => (
   <View style={styles.tabContent}>
     <View style={styles.userInfo}>
       <View style={styles.userInfoRow}>
@@ -16,18 +16,6 @@ const MemberBasicInfo = ({ user, setDeleteDialogVisible }) => (
       <View style={styles.userInfoRow}>
         <Text style={styles.label}>Gender:</Text>
         <Text style={styles.value}>{user?.gender}</Text>
-      </View>
-      <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Monthly Fee:</Text>
-        <Text style={styles.value}>{user?.monthlySeatFee}</Text>
-      </View>
-      <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Address:</Text>
-        <Text style={styles.value}>{user?.address}</Text>
-      </View>
-      <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Membership:</Text>
-        <Text style={styles.value}>{user?.membershipStatus}</Text>
       </View>
       <View style={styles.userInfoRow}>
         <Text style={styles.label}>Created At:</Text>
@@ -109,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MemberBasicInfo;
+export default StaffBasicInfo;

@@ -2,12 +2,13 @@ import axios from "axios";
 import { staffActions } from "../slices/staffSlice";
 import { serverURL } from "../../config/config";
 
-const route = `${serverURL}`
+const route = `${serverURL}/staff`
 
 export const getAllStaff = (token) => async (dispatch) => {
     try {
         dispatch(staffActions.getAllStaffRequest());
         console.log('getAllStaffToken', token);
+
         const data = await axios.get(`${route}/`, {
             headers: {
                 "authorization": token
@@ -15,6 +16,7 @@ export const getAllStaff = (token) => async (dispatch) => {
         });
 
         console.log('get-all-staff-res-data', data.data);
+
         dispatch(staffActions.getAllStaffSuccess(data.data));
     } catch (error) {
         console.log("error", error)
@@ -30,12 +32,16 @@ export const getAllStaff = (token) => async (dispatch) => {
     }
 };
 
-export const getStaff = (staffId) => async (dispatch) => {
+export const getStaff = (staffId, token) => async (dispatch) => {
     try {
         console.log("get-staffData", staffId);
         dispatch(staffActions.getStaffRequest());
 
-        const data = await axios.get(`${route}/staff/${staffId}`);
+        const data = await axios.get(`${route}/${staffId}`, {
+            headers: {
+                "authorization": token
+            }
+        });
         console.log('get-staff-res-data', data);
         dispatch(staffActions.getStaffSuccess(data.data));
     } catch (error) {
@@ -57,7 +63,7 @@ export const createStaff = (staffData, token) => async (dispatch) => {
         console.log("create-staffData", staffData);
         dispatch(staffActions.createStaffRequest());
         const data = await axios.post(
-            `${route}/auth/create_staff`,
+            `${route}/`,
             staffData,
             {
                 headers: {
@@ -88,7 +94,7 @@ export const updateStaff = (staffData) => async (dispatch) => {
         dispatch(staffActions.updateStaffRequest());
 
         const data = await axios.put(
-            `${route}/staff`,
+            `${route}/`,
             staffData,
             {
                 headers: {

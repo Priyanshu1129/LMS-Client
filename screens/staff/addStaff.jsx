@@ -4,7 +4,7 @@ import { Button, TextInput, RadioButton, Snackbar } from "react-native-paper";
 import { object, string, number, date } from "yup";
 import { Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { createStaff } from "../../redux/actions/staffActions";
+import { createStaff, getAllStaff } from "../../redux/actions/staffActions";
 import { staffActions } from "../../redux/slices/staffSlice";
 import PageLoader from "../../components/pageLoader";
 
@@ -17,6 +17,7 @@ const staffSchema = object({
     .max(9999999999, "Phone number must be 10 digits"),
   gender: string().required("Gender is required"),
   password: string().required("Password is required"),
+  password_confirmation: string().required("Password Does Not Match"),
 });
 
 const AddStaffPage = ({ navigation, route }) => {
@@ -24,9 +25,7 @@ const AddStaffPage = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-  const { status, data, error } = useSelector(
-    (state) => state.staff.staffDetails
-  );
+  const { status, error } = useSelector((state) => state.staff.staffDetails);
 
   let token = route.params.token;
 
@@ -43,10 +42,13 @@ const AddStaffPage = ({ navigation, route }) => {
       setLoading(true);
     } else if (status === "success") {
       setLoading(false);
-      setMessage("Staff Added Successfully");
-      setVisible(true);
       dispatch(staffActions.clearStaffDetailsStatus());
-      navigation.goBack();
+      dispatch(getAllStaff(token));
+      navigation.navigate({
+        name: "StaffsList",
+        params: { staffCreated: true },
+        merge: true,
+      });
     } else if (status === "failed") {
       setLoading(false);
       setMessage(error);
@@ -73,6 +75,7 @@ const AddStaffPage = ({ navigation, route }) => {
             email: "",
             gender: "",
             password: "",
+            password_confirmation: "",
           }}
           validationSchema={staffSchema}
           onSubmit={handleRegister}
@@ -158,6 +161,17 @@ const AddStaffPage = ({ navigation, route }) => {
               />
               {errors.password && touched.password ? (
                 <Text>{errors.password}</Text>
+              ) : null}
+              <TextInput
+                secureTextEntry
+                style={styles.input}
+                placeholder="Confirm Password"
+                value={values.password_confirmation}
+                mode="outlined"
+                onChangeText={handleChange("password_confirmation")}
+              />
+              {errors.password_confirmation && touched.password_confirmation ? (
+                <Text>{errors.password_confirmation}</Text>
               ) : null}
 
               <View style={styles.buttonContainer}>

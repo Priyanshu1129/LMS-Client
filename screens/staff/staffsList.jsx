@@ -1,57 +1,70 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { View, ScrollView, Text } from "react-native";
-import { Button, TextInput, DataTable, Snackbar } from "react-native-paper";
+import { View, ScrollView, TouchableOpacity } from "react-native";
+import SearchBar from "../../components/searchBar";
+import { StyleSheet } from "react-native";
+import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+import { Button, Snackbar } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
-import { getAllMember } from "../../redux/actions/memberActions";
+import { getAllStaff } from "../../redux/actions/staffActions";
 import PageLoader from "../../components/pageLoader";
+import { staffActions } from "../../redux/slices/staffSlice";
 import NoDataPage from "../../components/NotAvailable";
-import StatusFilterMenu from "../../components/filterMenu";
-import { memberActions } from "../../redux/slices/memberSlice";
+import StaffListCard from "../../components/staffListCard";
 
-const MembersList = ({ navigation, route }) => {
+const StaffsList = ({ route, navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const [ refreshRequest , setRefreshRequest ] = useState(false);
-  const [statusFilterVisible, setStatusFilterVisible] = useState(false);
-  const [filterOption, setFilterOption] = useState("all");
 
-  const [members, setMembers] = useState([]);
+  const { token, staffCreated, staffDeleted } = route.params;
 
   const dispatch = useDispatch();
-  const { status, data, error } = useSelector(
-    (state) => state.member.allMembers
-  );
+  const { status, data, error } = useSelector((state) => state.staff.allStaffs);
+  const [staffs, setStaffs] = useState(data?.data ? [...data?.data] : []);
 
-  let token = route.params.token;
-
-  const fetchMembers = useCallback(() => {
+  const fetchStaffs = useCallback(() => {
     if (token) {
-      dispatch(getAllMember(token));
+      dispatch(getAllStaff(token));
     }
   }, [dispatch, token]);
 
   useEffect(() => {
-    fetchMembers();
-  }, [fetchMembers]);
+    if (!data?.data) {
+      fetchStaffs();
+    }
+  }, [fetchStaffs]);
+
   useMemo(() => {
     if (status === "pending") {
       setLoading(true);
     } else if (status === "success" && data.status === "success") {
-      setMembers(data.data);
-      setMessage("Member Fetched Successfully");
-      setVisible(true);
+      setStaffs(data.data);
       setLoading(false);
-      dispatch(memberActions.clearAllMembersStatus());
+      dispatch(staffActions.clearAllStaffsStatus());
     } else {
       setMessage(error);
       setVisible(true);
       setLoading(false);
-      dispatch(memberActions.clearAllMembersError());
+      dispatch(staffActions.clearAllStaffsError());
     }
   }, [status]);
+
+  useEffect(() => {
+    if (staffCreated && !loading) {
+      setMessage("Staff Added Successfully");
+      setVisible(true);
+    } else if (staffDeleted && !loading) {
+      setMessage("Staff Deleted Successfully");
+      setVisible(true);
+    }
+  }, [staffCreated, staffDeleted, loading]);
+
+  useMemo(() => {
+    if (staffs.length) {
+      setLoading(false);
+    }
+  }, [staffs]);
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
@@ -60,33 +73,9 @@ const MembersList = ({ navigation, route }) => {
     setMessage(null);
   };
 
-  const filterMenuOptions = [
-    { title: "All", value: "all" },
-    { title: "Active", value: "active" },
-    { title: "Inactive", value: "inactive" },
-    { title: "Expired", value: "expired" },
-  ];
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchMembers();
-    }, [fetchMembers])
-  );
-
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <>
       <View style={{ padding: 20, flex: 1 }}>
-        <View style={{ marginBottom: 20 }}>
-          <Button
-            icon="account-plus"
-            mode="contained"
-            onPress={() => {
-              navigation.navigate("AddStaff");
-            }}
-          >
-            Add Staff
-          </Button>
-        </View>
         <View
           style={{
             flexDirection: "row",
@@ -94,56 +83,53 @@ const MembersList = ({ navigation, route }) => {
             marginBottom: 20,
           }}
         >
-          <TextInput
-            label="Search"
-            value={searchQuery}
-            onChangeText={onChangeSearch}
-            style={{ flex: 1, marginRight: 10 }}
-          />
-          <StatusFilterMenu
-            visible={statusFilterVisible}
-            setVisible={setStatusFilterVisible}
-            onChange={(option) => setFilterOption(option)}
-            options={filterMenuOptions}
-          />
+          <View style={{ flex: 1 }}>
+            <SearchBar value={{ searchQuery }} onChangeText={onChangeSearch} />
+          </View>
+          <View style={{ flexDirection: "row", gap: 5, margin: 5 }}>
+            <Button
+              style={styles.optionButton}
+              onPress={() => navigation.navigate("AddStaff")}
+              mode="contained"
+            >
+              <MaterialIcon name="person-add-alt" size={20} color="white" />
+            </Button>
+            <Button
+              style={styles.optionButton}
+              onPress={() => [fetchStaffs()]}
+              mode="contained"
+            >
+              <MaterialIcon name="refresh" size={20} color="white" />
+            </Button>
+          </View>
         </View>
 
         {loading ? (
           <PageLoader />
-        ) : members.length > 0 ? (
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title key="sno">SNo.</DataTable.Title>
-              <DataTable.Title key="name">Name</DataTable.Title>
-              <DataTable.Title key="membershipStatus">
-                Membership
-              </DataTable.Title>
-            </DataTable.Header>
-            {members
-              .filter((member) =>
-                member.name.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .filter(
-                (member) =>
-                  filterOption === "all" ||
-                  member.membershipStatus.toLowerCase() ===
-                    filterOption.toLowerCase()
-              )
-              .map((member, index) => (
-                <DataTable.Row
-                  key={member._id}
-                  onPress={() =>
-                    navigation.navigate("MemberDetails", { member })
-                  }
-                >
-                  <DataTable.Cell key={"sno"}>{index + 1}</DataTable.Cell>
-                  <DataTable.Cell key={"name"}>{member.name}</DataTable.Cell>
-                  <DataTable.Cell key={"membershipStatus"}>
-                    {member.membershipStatus}
-                  </DataTable.Cell>
-                </DataTable.Row>
-              ))}
-          </DataTable>
+        ) : staffs.length > 0 ? (
+          <>
+            <ScrollView
+              contentContainerStyle={{ flexGrow: 1 }}
+              showsVerticalScrollIndicator={false}
+            >
+              <View>
+                {staffs
+                  .filter((staff) =>
+                    staff.name.toLowerCase().includes(searchQuery.toLowerCase())
+                  )
+                  .map((staff, index) => (
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate("StaffDetails", { staff })
+                      }
+                      activeOpacity={0.2}
+                    >
+                      <StaffListCard key={staff._id} name={staff.name} />
+                    </TouchableOpacity>
+                  ))}
+              </View>
+            </ScrollView>
+          </>
         ) : (
           <NoDataPage message={"Staffs Not Available"} />
         )}
@@ -162,8 +148,14 @@ const MembersList = ({ navigation, route }) => {
           {message}
         </Snackbar>
       )}
-    </ScrollView>
+    </>
   );
 };
 
-export default MembersList;
+const styles = StyleSheet.create({
+  optionButton: {
+    borderRadius: 6,
+  },
+});
+
+export default StaffsList;
