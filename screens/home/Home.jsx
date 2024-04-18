@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import PaymentListCard from "../../components/paymentListCard";
 import SearchBar from "../../components/searchBar";
 import { useTheme } from "react-native-paper";
+import ImagePickerExample from "../member/ImagePickerCom";
 
 const Home = ({ route }) => {
   const token = route.params.token;
@@ -14,6 +15,7 @@ const Home = ({ route }) => {
       <Text>Home</Text>
       <PaymentListCard />
       <SearchBar />
+      <ImagePickerExample/>
     </View>
   );
 };

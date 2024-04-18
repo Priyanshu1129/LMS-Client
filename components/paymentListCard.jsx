@@ -1,15 +1,6 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import React, { useState } from "react";
+import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useTheme } from "react-native-paper";
 
 const windowWidth = Dimensions.get("window").width;
@@ -21,6 +12,18 @@ const PaymentListCard = ({ payment }) => {
   const [isClicked, setIsClicked] = useState(false);
 
   const theme = useTheme();
+
+  // Function to format date and time
+  const formatDateTime = (dateTime) => {
+    const date = new Date(dateTime);
+    const formattedDate = `${date.getDate()}/${date.getMonth() +
+      1}/${date.getFullYear()}`;
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    const formattedTime = `${hours % 12}:${minutes < 10 ? "0" : ""}${minutes} ${ampm}`;
+    return `${formattedDate} ${formattedTime}`;
+  };
 
   return (
     <View
@@ -35,12 +38,14 @@ const PaymentListCard = ({ payment }) => {
     >
       <View style={styles.leftWrapper}>
         <View style={styles.imageWrapper}>
-          <Image source={{ uri: `${profileImage}` }} style={styles.image} />
+          <Image source={{ uri: profileImage }} style={styles.image} />
         </View>
         <View>
           <Text style={styles.title}>{payment?.paidBy?.name}</Text>
-          <View style={[styles.dateWrapper]}>
-            <Text style={[styles.dateText]}>Paid On {payment?.createdAt}</Text>
+          <View style={styles.dateWrapper}>
+            <Text style={styles.dateText}>
+             {formatDateTime(payment?.createdAt)}
+            </Text>
           </View>
         </View>
       </View>
@@ -52,9 +57,9 @@ const PaymentListCard = ({ payment }) => {
             { backgroundColor: theme.colors.surfaceVariant },
           ]}
         >
-          <Text style={[styles.modeText]}>{payment?.method}</Text>
+          <Text style={styles.modeText}>{payment?.method}</Text>
         </View>
-        <View style={[styles.amountWrapper]}>
+        <View style={styles.amountWrapper}>
           <MaterialIcons name="add" size={14} />
           <MaterialIcons name="currency-rupee" size={17} />
           <Text style={styles.amountText}>{payment?.amount}</Text>
@@ -85,16 +90,6 @@ const styles = StyleSheet.create({
     height: "100%",
     borderRadius: 100,
     borderWidth: 2,
-  },
-  statusIndicator: {
-    position: "absolute",
-    top: 30,
-    right: -2,
-    width: 15,
-    height: 15,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: "white",
   },
   leftWrapper: {
     flexDirection: "row",

@@ -10,6 +10,12 @@ import PageLoader from "../../components/pageLoader";
 import Dropdown from "../../components/dropdown";
 import { getAllMember } from "../../redux/actions/memberActions";
 
+import { TouchableOpacity } from "react-native-gesture-handler";
+import TakePhotoOptions from "../../components/takePhotoOptions";
+import EditProfilePic from "../../components/EditProfilePic";
+
+
+
 const memberSchema = object({
   name: string().required("Name is required"),
   email: string().email("Invalid email address").required("Email is required"),
@@ -36,6 +42,7 @@ const AddMemberPage = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [gender, setGender] = useState("");
+  const [profileUrl, setProfileUrl] = useState("https://image.freepik.com/free-vector/businessman-profile-cartoon_18591-58479.jpg")
   const { status, data, error } = useSelector(
     (state) => state.member.createMember
   );
@@ -80,11 +87,33 @@ const AddMemberPage = ({ navigation, route }) => {
     { label: "Female", value: "female" },
   ];
 
+  // const handleEditProfileImage =  async ()=>{
+  //   console.log("edit profile called")
+  //   let result =  await launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+
+  //   console.log(result);
+
+  //   if (!result.canceled) {
+  //     setProfileUrl(result.assets[0].uri);
+  //   }
+  // }
+
+  
+
+
   return loading ? (
     <PageLoader />
   ) : (
     <>
       <ScrollView contentContainerStyle={styles.container}>
+       
+        <EditProfilePic profileUrl={profileUrl} setProfileUrl={setProfileUrl}/>
+       
         <Formik
           initialValues={{
             name: "",
@@ -252,6 +281,10 @@ const AddMemberPage = ({ navigation, route }) => {
 };
 
 const styles = StyleSheet.create({
+  logoContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
   container: {
     flexGrow: 1,
     padding: 20,
