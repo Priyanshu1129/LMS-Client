@@ -1,38 +1,83 @@
 import { StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, TextInput } from "react-native-paper";
 import React from "react";
 
 const MemberBasicInfo = ({ user, setDeleteDialogVisible }) => (
   <View style={styles.tabContent}>
     <View style={styles.userInfo}>
-      <View style={styles.userInfoRow}>
+      {/* <View style={styles.userInfoRow}>
         <Text style={styles.label}>Email:</Text>
         <Text style={styles.value}>{user?.email}</Text>
-      </View>
+      </View> */}
       <View style={styles.userInfoRow}>
+        <TextInput
+          label="Email"
+          value={user?.email}
+          mode="outlined"
+          keyboardType="email-address"
+          style={styles.input}
+        />
+      </View>
+      {/* <View style={styles.userInfoRow}>
         <Text style={styles.label}>Phone:</Text>
         <Text style={styles.value}>{user?.phone}</Text>
-      </View>
+      </View> */}
       <View style={styles.userInfoRow}>
+        <TextInput
+          label="Phone"
+          value={user?.phone}
+          mode="outlined"
+          keyboardType="email-address"
+          style={styles.input}
+        />
+      </View>
+      {/* <View style={styles.userInfoRow}>
         <Text style={styles.label}>Gender:</Text>
         <Text style={styles.value}>{user?.gender}</Text>
-      </View>
+      </View> */}
       <View style={styles.userInfoRow}>
+        <TextInput
+          label="Gender"
+          value={user?.gender}
+          mode="outlined"
+          keyboardType="email-address"
+          style={styles.input}
+        />
+      </View>
+      {/* <View style={styles.userInfoRow}>
         <Text style={styles.label}>Monthly Fee:</Text>
         <Text style={styles.value}>{user?.monthlySeatFee}</Text>
-      </View>
+      </View> */}
       <View style={styles.userInfoRow}>
+        <TextInput
+          label="Address"
+          value={user?.address}
+          mode="outlined"
+          keyboardType="email-address"
+          style={styles.input}
+        />
+      </View>
+      {/* <View style={styles.userInfoRow}>
         <Text style={styles.label}>Address:</Text>
         <Text style={styles.value}>{user?.address}</Text>
-      </View>
+      </View> */}
       <View style={styles.userInfoRow}>
+        <TextInput
+          label="Membership"
+          value={user?.membershipStatus}
+          mode="outlined"
+          keyboardType="email-address"
+          style={styles.input}
+        />
+      </View>
+      {/* <View style={styles.userInfoRow}>
         <Text style={styles.label}>Membership:</Text>
         <Text style={styles.value}>{user?.membershipStatus}</Text>
-      </View>
-      <View style={styles.userInfoRow}>
+      </View> */}
+      {/* <View style={styles.userInfoRow}>
         <Text style={styles.label}>Created At:</Text>
         <Text style={styles.value}>{user?.createdAt}</Text>
-      </View>
+      </View> */}
     </View>
     <View style={styles.buttonContainer}>
       <Button
@@ -71,6 +116,9 @@ const styles = StyleSheet.create({
   avatar: {
     marginRight: 20,
   },
+  input: {
+    flex: 1,
+  },
   userInfo: {
     // backgroundColor: "yellow",
     display: "flex",
@@ -99,7 +147,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   button: {
-    backgroundColor: "#0070BB",
     fontSize: 20,
     paddingVertical: 6,
     paddingHorizontal: 8,

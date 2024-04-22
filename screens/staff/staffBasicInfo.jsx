@@ -47,7 +47,6 @@ const StaffBasicInfo = ({ user, setDeleteDialogVisible }) => (
 const styles = StyleSheet.create({
   tabContent: {
     padding: 40,
-    // backgroundColor: "red",
     display: "flex",
     justifyContent: "center",
   },
@@ -60,7 +59,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   userInfo: {
-    // backgroundColor: "yellow",
     display: "flex",
     justifyContent: "space-between",
   },
@@ -87,7 +85,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   button: {
-    backgroundColor: "#0070BB",
     fontSize: 20,
     paddingVertical: 6,
     paddingHorizontal: 8,

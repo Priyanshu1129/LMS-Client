@@ -107,26 +107,6 @@ const StaffProfilePage = ({ route, navigation }) => {
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.email}>{user.email}</Text>
       </View>
-      <View style={styles.tabBar}>
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab === "basicInfo" && styles.activeTab,
-          ]}
-          onPress={() => setActiveTab("basicInfo")}
-        >
-          <Text style={styles.tabButtonText}>Basic Info</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab === "accountDetails" && styles.activeTab,
-          ]}
-          onPress={() => setActiveTab("accountDetails")}
-        >
-          <Text style={styles.tabButtonText}>Account Details</Text>
-        </TouchableOpacity>
-      </View>
 
       <StaffBasicInfo user={user} setDeleteDialogVisible={setDialogVisible} />
       <ConfirmationDialog
@@ -155,14 +135,11 @@ const StaffProfilePage = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
+    flex: 1
   },
   header: {
     alignItems: "center",
     padding: 20,
-    // borderBottomWidth: 1,
-    // borderBottomColor: "#ccc",
   },
   name: {
     fontSize: 20,

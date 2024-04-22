@@ -29,10 +29,6 @@ const UserListCard = ({
   const balanceBg = balance <= 0 ? "#D1FAE5" : "#FFEDD5";
   const theme = useTheme();
 
-  const handlePress = () => {
-    setIsClicked(!isClicked);
-  };
-
   return (
     <View
       key={key}

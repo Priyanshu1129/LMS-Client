@@ -188,7 +188,6 @@ const MemberProfilePage = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   header: {
     alignItems: "center",
@@ -219,7 +218,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
   },
