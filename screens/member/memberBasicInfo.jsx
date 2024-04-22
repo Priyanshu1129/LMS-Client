@@ -119,7 +119,7 @@ const MemberBasicInfo = ({
         {edit ? (
           <>
             <Button
-              icon="update"
+              icon="cancel"
               mode="contained"
               style={[
                 styles.button,

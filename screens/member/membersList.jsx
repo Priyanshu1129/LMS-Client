@@ -22,7 +22,7 @@ const MembersList = ({ route, navigation }) => {
   const [filterOption, setFilterOption] = useState("all");
   const [pageNumber, setPageNumber] = useState(1);
 
-  const { token, memberCreated, memberDeleted } = route.params;
+  const { token, operationPerformed } = route.params;
 
   const dispatch = useDispatch();
   const { status, data, error } = useSelector(
@@ -64,14 +64,17 @@ const MembersList = ({ route, navigation }) => {
   }, [status]);
 
   useEffect(() => {
-    if (memberCreated && !loading) {
+    if (operationPerformed === "memberCreated" && !loading) {
       setMessage("Member Added Successfully");
       setVisible(true);
-    } else if (memberDeleted && !loading) {
+    } else if (operationPerformed === "memberDeleted" && !loading) {
       setMessage("Member Deleted Successfully");
       setVisible(true);
+    } else if (operationPerformed === "memberUpdated" && !loading) {
+      setMessage("Member Updated Successfully");
+      setVisible(true);
     }
-  }, [memberCreated, memberDeleted, loading]);
+  }, [operationPerformed, loading]);
 
   useMemo(() => {
     if (members.length) {
@@ -207,7 +210,6 @@ const styles = StyleSheet.create({
   optionButton: {
     borderRadius: 6,
   },
-  
 });
 
 export default MembersList;

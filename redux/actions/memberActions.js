@@ -150,7 +150,7 @@ export const updateMember = (memberData, token, memberId) => async (dispatch) =>
                 },
             }
         );
-        console.log('update-member-res-data', data);
+        console.log('update-member-res-data', data.data);
         dispatch(memberActions.updateMemberSuccess(data.data));
     } catch (error) {
         console.log("error", error)

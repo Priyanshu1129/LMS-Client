@@ -63,6 +63,33 @@ const MemberProfilePage = ({ route, navigation }) => {
     data: deleteData,
     error: deleteError,
   } = useSelector((state) => state.member.deleteMember);
+  const {
+    status: updateStatus,
+    data: updateData,
+    error: updateError,
+  } = useSelector((state) => state.member.updateMember);
+
+  useEffect(() => {
+    if (updateStatus === "pending") {
+      setLoading(true);
+    } else if (updateStatus === "success") {
+      setLoading(false);
+
+      dispatch(getAllMember(token));
+      dispatch(memberActions.clearUpdateMemberStatus());
+      navigation.navigate({
+        name: "Members",
+        params: { operationPerformed: "memberUpdated" },
+        merge: true,
+      });
+    } else if (updateStatus === "failed") {
+      setLoading(false);
+      setMessage(updateError);
+      setVisibleSnackBar(true);
+      dispatch(memberActions.clearUpdateMemberStatus());
+      dispatch(memberActions.clearUpdateMemberError());
+    }
+  }, [updateStatus]);
 
   useEffect(() => {
     if (deleteStatus === "pending") {
@@ -73,7 +100,7 @@ const MemberProfilePage = ({ route, navigation }) => {
       dispatch(memberActions.clearDeleteMemberStatus());
       navigation.navigate({
         name: "Members",
-        params: { memberDeleted: true },
+        params: { operationPerformed: "memberDeleted" },
         merge: true,
       });
     } else if (deleteStatus === "failed") {

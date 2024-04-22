@@ -66,7 +66,7 @@ const AddMemberPage = ({ navigation, route }) => {
       dispatch(memberActions.clearCreateMemberStatus());
       navigation.navigate({
         name: "Members",
-        params: { memberCreated: true },
+        params: { operationPerformed: "memberCreated" },
         merge: true,
       });
     } else if (status === "failed") {
