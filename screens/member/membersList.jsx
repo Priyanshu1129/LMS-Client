@@ -168,6 +168,7 @@ const MembersList = ({ route, navigation }) => {
                             balance={member.account.balance}
                             membershipStatus={member.membershipStatus}
                             seatNumber={member?.seat?.seatNumber}
+                            profileImage={member?.avatar}
                           />
                         )}
                     </TouchableOpacity>
@@ -206,6 +207,7 @@ const styles = StyleSheet.create({
   optionButton: {
     borderRadius: 6,
   },
+  
 });
 
 export default MembersList;

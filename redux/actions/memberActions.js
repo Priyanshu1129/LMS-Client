@@ -62,12 +62,35 @@ export const createMember = (memberData, token) => async (dispatch) => {
     try {
         console.log("create-memberData", memberData);
         dispatch(memberActions.createMemberRequest());
+        const formData = new FormData();
+
+        // Append other form data to FormData
+        Object.entries(memberData).forEach(([key, value]) => {
+            if(key != 'avatarUri'){
+            formData.append(key, value);
+            }
+        });
+        
+        const fileName = memberData.avatarUri.split('/').pop();
+        // Determine file type based on file extension
+        const fileType = fileName.split('.').pop();
+        
+        // Append avatar file to FormData
+        formData.append("avatar", {
+            uri: memberData.avatarUri,
+            type: `image/${fileType}`,
+            name: fileName
+        });
+
+        console.log("formdata-----before")
+        console.log("formdata-----",formData)
+
         const data = await axios.post(
             `${route}/`,
-            memberData,
+            formData,
             {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                     "authorization": token
                 },
             }
@@ -88,17 +111,42 @@ export const createMember = (memberData, token) => async (dispatch) => {
     }
 };
 
-export const updateMember = (memberData) => async (dispatch) => {
-    try {
-        console.log("update-memberData", memberData);
-        dispatch(memberActions.updateMemberRequest());
+export const updateMember = (memberData, token, memberId) => async (dispatch) => {
+    console.log("updaing member id--------", memberId);
+    console.log("updated avatar uri --------", memberData.avatarUri);
 
+    // Append other form data to FormData
+    const formData = new FormData();
+    Object.entries(memberData).forEach(([key, value]) => {
+        if(key != 'avatarUri'){
+        formData.append(key, value);
+        }
+    });
+    
+    if(memberData?.avatarUri){
+    const fileName = memberData.avatarUri.split('/').pop();
+    // Determine file type based on file extension
+    const fileType = fileName.split('.').pop();
+    
+    // Append avatar file to FormData
+    formData.append("avatar", {
+        uri: memberData.avatarUri,
+        type: `image/${fileType}`,
+        name: fileName
+    });
+    }
+
+    try {
+        console.log("update-memberData", memberData,);
+        dispatch(memberActions.updateMemberRequest());
+        console.log("updation url----------", `${route}/${memberId}`);
         const data = await axios.put(
-            `${route}/member`,
-            memberData,
+            `${route}/${memberId}`,
+            formData,
             {
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
+                    "authorization": token
                 },
             }
         );

@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Avatar, Snackbar } from "react-native-paper";
+import { Avatar, Snackbar, useTheme } from "react-native-paper";
 import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteMember } from "../../redux/actions/memberActions.js";
+import { deleteMember, updateMember } from "../../redux/actions/memberActions.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import MemberBasicInfo from "./memberBasicInfo.jsx";
 import MemberAccountDetails from "./memberAccountDetails.jsx";
 import { getAllMember, getMember } from "../../redux/actions/memberActions.js";
 import PageLoader from "../../components/pageLoader.jsx";
+import { defaultAvatar } from "../../constant.js";
+import EditProfilePic from "../../components/EditProfilePic.jsx";
+import { ScrollView } from "react-native-gesture-handler";
 
 const MemberProfilePage = ({ route, navigation }) => {
   const { member, token } = route.params;
@@ -18,9 +21,12 @@ const MemberProfilePage = ({ route, navigation }) => {
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
-
+  const [profileUrl, setProfileUrl] = useState(defaultAvatar);
+  const [editedDetails, setEditedDetails] = useState({});
   const dispatch = useDispatch();
+  const theme = useTheme();
 
+  
   useEffect(() => {
     if (member && token) {
       dispatch(getMember(member._id, token));
@@ -38,6 +44,7 @@ const MemberProfilePage = ({ route, navigation }) => {
       setLoading(true);
     } else if (getMemberStatus == "success") {
       setMemberDetails(getMemberData.data);
+      setProfileUrl(getMemberData.data.avatar);
       setLoading(false);
       dispatch(memberActions.clearMemberDetailsStatus());
     } else if (getMemberStatus == "failed") {
@@ -82,16 +89,17 @@ const MemberProfilePage = ({ route, navigation }) => {
     }
   }, [deleteConfirmation]);
 
+
   const user = {
     name: memberDetails?.name || "N/A",
     email: memberDetails?.email || "N/A",
     phone: memberDetails?.phone || "N/A",
     gender: memberDetails?.gender || "N/A",
     monthlySeatFee: memberDetails?.monthlySeatFee || "N/A",
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
     address: memberDetails?.address || "",
     membershipStatus: memberDetails?.membershipStatus || "N/A",
     createdAt: memberDetails?.createdAt || "N/A",
+    avatar: memberDetails?.avatar || defaultAvatar,
   };
 
   const [activeTab, setActiveTab] = useState("basicInfo");
@@ -101,15 +109,23 @@ const MemberProfilePage = ({ route, navigation }) => {
     setMessage(null);
   };
 
+  const handlUpdateMember = () =>{
+    //apending the avatarUri if the profile pic has been changed
+    if(profileUrl !== memberDetails.avatar){
+      editedDetails.avatarUri = profileUrl;
+    }
+    console.log("memberDetails--------", memberDetails)
+    dispatch(updateMember(editedDetails, token, memberDetails._id));
+    console.log("member edited successfully")
+  }
+  
   return loading && !memberDetails ? (
     <PageLoader />
   ) : (
+    <ScrollView>
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Avatar.Image
-          size={100}
-          source={require("../../assets/avatar.jpg")} // Provide path to actual avatar image
-        />
+      <View style={[styles.header, {backgroundColor : theme.colors.secondaryContainer}]}>
+        <EditProfilePic profileUrl={profileUrl} setProfileUrl={setProfileUrl} />
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.email}>{user.email}</Text>
         <View
@@ -133,31 +149,61 @@ const MemberProfilePage = ({ route, navigation }) => {
           </Text>
         </View>
       </View>
+
       <View style={styles.tabBar}>
+        <ScrollView horizontal >
+
         <TouchableOpacity
           style={[
             styles.tabButton,
-            activeTab === "basicInfo" && styles.activeTab,
+            activeTab == "basicInfo" ? {...styles.activeTab, backgroundColor : theme.colors.primary} : {backgroundColor : theme.colors.secondaryContainer}
           ]}
           onPress={() => setActiveTab("basicInfo")}
         >
-          <Text style={styles.tabButtonText}>Basic Info</Text>
+          <Text style={[styles.tabButtonText , {  color : activeTab === "basicInfo" ? theme.colors.background : theme.colors.primary }, ]}>Basic Info</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.tabButton,
-            activeTab === "accountDetails" && styles.activeTab,
+            activeTab == "accountDetails" ? {...styles.activeTab, backgroundColor : theme.colors.primary} : {backgroundColor : theme.colors.secondaryContainer}
           ]}
           onPress={() => setActiveTab("accountDetails")}
         >
-          <Text style={styles.tabButtonText}>Account Details</Text>
+          <Text style={[styles.tabButtonText , { color : activeTab === "accountDetails" ? theme.colors.background : theme.colors.primary }, ]}>Account Details</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            activeTab == "seatDetail" ? {...styles.activeTab, backgroundColor : theme.colors.primary} : {backgroundColor : theme.colors.secondaryContainer}
+          ]}
+          onPress={() => setActiveTab("seatDetail")}
+        >
+          <Text style={[styles.tabButtonText , { color : activeTab === "seatDetail" ? theme.colors.background : theme.colors.primary }, ]}>Seat Detail</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            activeTab == "lockerDetail" ? {...styles.activeTab, backgroundColor : theme.colors.primary} : {backgroundColor : theme.colors.secondaryContainer}
+          ]}
+          onPress={() => setActiveTab("lockerDetail")}
+        >
+          <Text style={[styles.tabButtonText , { color : activeTab === "lockerDetail" ? theme.colors.background : theme.colors.primary }, ]}>Loker Details</Text>
+        </TouchableOpacity>
+
+
+        </ScrollView>
       </View>
       {activeTab === "basicInfo" ? (
+        <ScrollView>
         <MemberBasicInfo
+          editedDetails={editedDetails}
+          setEditedDetails = {setEditedDetails}
           user={user}
           setDeleteDialogVisible={setDialogVisible}
+          handlUpdateMember={handlUpdateMember}
+
         />
+        </ScrollView>
       ) : (
         <MemberAccountDetails />
       )}
@@ -182,6 +228,7 @@ const MemberProfilePage = ({ route, navigation }) => {
         </Snackbar>
       )}
     </View>
+    </ScrollView>
   );
 };
 
@@ -192,14 +239,15 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    padding: 20,
+    padding: 10,
+    
     // borderBottomWidth: 1,
     // borderBottomColor: "#ccc",
   },
   name: {
     fontSize: 20,
     fontWeight: "bold",
-    marginTop: 10,
+    marginTop: 0,
   },
   email: {
     fontSize: 16,
@@ -211,7 +259,7 @@ const styles = StyleSheet.create({
   },
   statusWrapper: {
     marginTop: 8,
-    borderRadius: 16,
+    borderRadius: 5,
     paddingVertical: 4,
     paddingHorizontal: 12,
   },
@@ -225,17 +273,19 @@ const styles = StyleSheet.create({
   },
   tabButton: {
     flex: 1,
-    paddingVertical: 15,
+    paddingVertical: 8,
     alignItems: "center",
+    backgroundColor : '#fff',
+    width : 150
   },
   activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#0070BB",
+    borderBottomWidth: 0,
+    borderBottomColor: "#fff",
+    borderRadius : 2
   },
   tabButtonText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
   },
   tabContent: {
     flex: 1,
@@ -246,6 +296,32 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
   },
+  input: {
+    marginBottom: 10,
+    backgroundColor: "#f2f2f2",
+    padding: 10,
+    borderRadius: 5,
+  },
 });
 
 export default MemberProfilePage;
+
+// const handleUpdate = () => {
+//   // Handle update logic here
+//   console.log("Updated details:", editedDetails);
+// };
+
+// const handleChange = (key, value) => {
+//   setEditedDetails({ ...editedDetails, [key]: value });
+// };
+// <TextInput
+//         style={styles.input}
+//         value={editedDetails.email || user.email}
+//         onChangeText={(value) => handleChange('email', value)}
+//       />
+//       input: {
+//   marginBottom: 10,
+//   backgroundColor: "#f2f2f2",
+//   padding: 10,
+//   borderRadius: 5,
+// },

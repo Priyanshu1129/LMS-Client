@@ -57,7 +57,7 @@ const UserListCard = ({
             ]}
           />
         </View>
-        <Text style={styles.title}>{name}</Text>
+        <Text style={styles.title}>{`${name.slice(0,12)}${name.length > 12 ? "..." : ''}`}</Text>
       </View>
 
       <View style={styles.infoWrapper}>

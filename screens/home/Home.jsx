@@ -15,7 +15,6 @@ const Home = ({ route }) => {
       <Text>Home</Text>
       <PaymentListCard />
       <SearchBar />
-      <ImagePickerExample/>
     </View>
   );
 };

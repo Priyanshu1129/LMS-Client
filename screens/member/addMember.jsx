@@ -9,7 +9,7 @@ import { memberActions } from "../../redux/slices/memberSlice";
 import PageLoader from "../../components/pageLoader";
 import Dropdown from "../../components/dropdown";
 import { getAllMember } from "../../redux/actions/memberActions";
-
+import { defaultAvatar } from "../../constant";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import TakePhotoOptions from "../../components/takePhotoOptions";
 import EditProfilePic from "../../components/EditProfilePic";
@@ -42,13 +42,14 @@ const AddMemberPage = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [gender, setGender] = useState("");
-  const [profileUrl, setProfileUrl] = useState("https://image.freepik.com/free-vector/businessman-profile-cartoon_18591-58479.jpg")
+  const [profileUrl, setProfileUrl] = useState(defaultAvatar)
   const { status, data, error } = useSelector(
     (state) => state.member.createMember
   );
   let token = route.params.token;
 
   const handleRegister = (values) => {
+    console.log("valuels in handleRegister-------", values)
     dispatch(createMember(values, token));
   };
 
@@ -87,25 +88,6 @@ const AddMemberPage = ({ navigation, route }) => {
     { label: "Female", value: "female" },
   ];
 
-  // const handleEditProfileImage =  async ()=>{
-  //   console.log("edit profile called")
-  //   let result =  await launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-
-  //   console.log(result);
-
-  //   if (!result.canceled) {
-  //     setProfileUrl(result.assets[0].uri);
-  //   }
-  // }
-
-  
-
-
   return loading ? (
     <PageLoader />
   ) : (
@@ -115,6 +97,7 @@ const AddMemberPage = ({ navigation, route }) => {
         <EditProfilePic profileUrl={profileUrl} setProfileUrl={setProfileUrl}/>
        
         <Formik
+          enableReinitialize
           initialValues={{
             name: "",
             phone: "",
@@ -123,6 +106,7 @@ const AddMemberPage = ({ navigation, route }) => {
             monthlySeatFee: "",
             address: "",
             preparation: "",
+            avatarUri : profileUrl,
           }}
           validationSchema={memberSchema}
           onSubmit={handleRegister}
@@ -147,6 +131,13 @@ const AddMemberPage = ({ navigation, route }) => {
                 // mode="outlined"
                 value={values.name}
                 onChangeText={handleChange("name")}
+                style={styles.input}
+              />
+              <TextInput
+                label="avatarUri"
+                // mode="outlined"
+                value={profileUrl}
+
                 style={styles.input}
               />
               {errors.name && touched.name ? <Text>{errors.name}</Text> : null}
