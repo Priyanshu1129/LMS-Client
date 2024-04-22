@@ -112,8 +112,6 @@ export const createMember = (memberData, token) => async (dispatch) => {
 };
 
 export const updateMember = (memberData, token, memberId) => async (dispatch) => {
-    console.log("updaing member id--------", memberId);
-    console.log("updated avatar uri --------", memberData.avatarUri);
 
     // Append other form data to FormData
     const formData = new FormData();

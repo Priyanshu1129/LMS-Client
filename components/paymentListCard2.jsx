@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, Dimensions , TextInput} from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Button, useTheme } from "react-native-paper";
-import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { useTheme } from "react-native-paper";
+
 const windowWidth = Dimensions.get("window").width;
 const baseUnit = windowWidth / 20;
 
-const PaymentListCard = ({ payment }) => {
+const PaymentListCard2 = ({ payment }) => {
   const profileImage =
     "https://th.bing.com/th/id/OIP.tvaMwK3QuFxhTYg4PSNNVAHaHa?rs=1&pid=ImgDetMain";
   const [isClicked, setIsClicked] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
 
   const theme = useTheme();
 
@@ -28,8 +26,6 @@ const PaymentListCard = ({ payment }) => {
   };
 
   return (
-    <View>
-      <TouchableOpacity onPress={()=>setShowOptions(state => !state)}>
     <View
       key={payment?._id}
       style={[
@@ -58,7 +54,7 @@ const PaymentListCard = ({ payment }) => {
         <View
           style={[
             styles.modeWrapper,
-            { backgroundColor : payment?.method == 'cash'?  '#4ADE80' :'#68D391'  },
+            { backgroundColor: theme.colors.surfaceVariant },
           ]}
         >
           <Text style={styles.modeText}>{payment?.method}</Text>
@@ -70,70 +66,12 @@ const PaymentListCard = ({ payment }) => {
         </View>
       </View>
     </View>
-    </TouchableOpacity>
-     {/* // sliding memnue for edit and delete payment */}
-     { showOptions && <View style={[styles.slidingOpetionsContainer]}>
-     <View style={styles.userInfoRow}>
-        <Text style={[styles.label, {color : theme.colors.primary}]}>Amount:</Text>
-        <TextInput
-          style={styles.input}
-          value={50}
-          onChangeText={(value) => handleChange("email", value)}
-        />
-      </View>
-          <View style={{flexDirection : 'row', justifyContent : 'center', gap : 4}}>
-            <Button  style={[ styles.optionButton, {backgroundColor : '#14B37D'}]} ><Text style={{color : 'white'}}>update</Text></Button>
-            <Button  style={[ styles.optionButton, {backgroundColor :  '#F87171'}]} ><Text style={{color : 'white'}}>Delete</Text></Button>
-            <Button  style={[ styles.optionButton, {backgroundColor : theme.colors.primary}]} ><Text style={{color : 'white'}} onPress={()=>setShowOptions(false)}>Cancel</Text></Button>
-          </View>
-     </View>
-     }
-    </View>
   );
 };
 
-export default PaymentListCard;
+export default PaymentListCard2;
 
 const styles = StyleSheet.create({
-  slidingOpetionsContainer : {
-     backgroundColor : 'white',
-     paddingHorizontal : 30,
-     borderBottomRightRadius : 8,
-     borderBottomLeftRadius : 8
-  },
-
-  optionButton : {
-    borderRadius : 2,
-    flexDirection : 'row',
-    justifyContent : 'center',
-    alignItems : 'centerS'
-  },
-
-  userInfoRow: {
-    flexDirection: "col",
-    marginBottom: 0,
-    justifyContent: "space-between",
-    // backgroundColor: "green",
-  },
-  label: {
-    fontWeight: "bold",
-    width: 130,
-    color: "#666",
-    fontSize: 15,
-    marginBottom : 2
-  },
-  value: {
-    flex: 1,
-    fontWeight: "bold",
-    fontSize: 18,
-  },
-  input: {
-    marginBottom: 10,
-    backgroundColor: "#f2f2f2",
-    padding: 8,
-    borderRadius: 5,
-  },
-
   container: {
     padding: 8,
     margin: 2,
@@ -176,7 +114,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignSelf: "flex-end",
     alignItems: "center",
-    justifyContent : 'center'
   },
   amountWrapper: {
     paddingVertical: 2,
@@ -184,11 +121,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   modeText: {
-    alignSelf: "center",
-    fontWeight: "500",
+    fontWeight: "400",
     fontSize: 14,
     marginLeft: 7,
-    color : 'white'
   },
   dateText: {
     color: "gray",

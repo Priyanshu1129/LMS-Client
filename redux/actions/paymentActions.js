@@ -28,6 +28,31 @@ export const getAllPayment = (token) => async (dispatch) => {
         dispatch(paymentActions.getAllPaymentFailure(errorMessage));
     }
 };
+export const getAllPaymentsOfMember = (memberId, token) => async (dispatch) => {
+    try {
+        dispatch(paymentActions.getAllPaymentsOfMemberRequest());
+
+        const data = await axios.get(`${route}/member/${memberId}`, {
+            headers: {
+                "authorization": token
+            }
+        });
+        console.log('get-all-payment-of-member-res-data', data.data);
+        dispatch(paymentActions.getAllPaymentsOfMemberSuccess(data.data));
+    } catch (error) {
+        console.log("error", error)
+        let errorMessage = "An error occurred";
+        if (error.response) {
+            errorMessage = error.response.data.message || "Server error";
+        } else if (error.request) {
+            errorMessage = "Network error";
+        } else {
+            errorMessage = error.message || "Unknown error";
+        }
+        dispatch(paymentActions.getAllPaymentsOfMemberFailure(errorMessage));
+    }
+};
+
 
 export const getPayment = (paymentId) => async (dispatch) => {
     try {
