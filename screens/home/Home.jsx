@@ -13,9 +13,8 @@ const Home = ({ route }) => {
   return (
     <View styles={{ padding: 20 }}>
       <Text>Home</Text>
-      {/* <PaymentListCard /> */}
-      {/* <SearchBar /> */}
-      {/* <ImagePickerExample/> */}
+      <PaymentListCard />
+      <SearchBar />
     </View>
   );
 };

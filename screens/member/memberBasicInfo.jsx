@@ -1,106 +1,180 @@
-import { StyleSheet, Text, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import React from "react";
+import { StyleSheet, Text, View, TextInput } from "react-native";
+import { Button, useTheme } from "react-native-paper";
+import React, { useState } from "react";
 
-const MemberBasicInfo = ({ user, setDeleteDialogVisible }) => (
-  <View style={styles.tabContent}>
-    <View style={styles.userInfo}>
-      {/* <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.value}>{user?.email}</Text>
-      </View> */}
-      <View style={styles.userInfoRow}>
-        <TextInput
-          label="Email"
-          value={user?.email}
-          mode="outlined"
-          keyboardType="email-address"
-          style={styles.input}
-        />
-      </View>
-      {/* <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Phone:</Text>
-        <Text style={styles.value}>{user?.phone}</Text>
-      </View> */}
-      <View style={styles.userInfoRow}>
-        <TextInput
-          label="Phone"
-          value={user?.phone}
-          mode="outlined"
-          keyboardType="email-address"
-          style={styles.input}
-        />
-      </View>
-      {/* <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Gender:</Text>
-        <Text style={styles.value}>{user?.gender}</Text>
-      </View> */}
-      <View style={styles.userInfoRow}>
-        <TextInput
-          label="Gender"
-          value={user?.gender}
-          mode="outlined"
-          keyboardType="email-address"
-          style={styles.input}
-        />
-      </View>
-      {/* <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Monthly Fee:</Text>
-        <Text style={styles.value}>{user?.monthlySeatFee}</Text>
-      </View> */}
-      <View style={styles.userInfoRow}>
-        <TextInput
-          label="Address"
-          value={user?.address}
-          mode="outlined"
-          keyboardType="email-address"
-          style={styles.input}
-        />
-      </View>
-      {/* <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Address:</Text>
-        <Text style={styles.value}>{user?.address}</Text>
-      </View> */}
-      <View style={styles.userInfoRow}>
-        <TextInput
-          label="Membership"
-          value={user?.membershipStatus}
-          mode="outlined"
-          keyboardType="email-address"
-          style={styles.input}
-        />
-      </View>
-      {/* <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Membership:</Text>
-        <Text style={styles.value}>{user?.membershipStatus}</Text>
-      </View> */}
-      {/* <View style={styles.userInfoRow}>
-        <Text style={styles.label}>Created At:</Text>
-        <Text style={styles.value}>{user?.createdAt}</Text>
-      </View> */}
-    </View>
-    <View style={styles.buttonContainer}>
-      <Button
-        icon="update"
-        mode="contained"
-        style={styles.button}
-        labelStyle={styles.buttonLabel}
-      >
-        Update
-      </Button>
-      <Button
-        icon="delete"
-        mode="contained"
-        style={styles.button}
-        labelStyle={styles.buttonLabel}
-        onPress={() => setDeleteDialogVisible(true)}
-      >
-        Delete
-      </Button>
-    </View>
-  </View>
-);
+const MemberBasicInfo = ({
+  user,
+  setDeleteDialogVisible,
+  editedDetails,
+  setEditedDetails,
+  handlUpdateMember,
+}) => {
+  const [edit, setEdit] = useState(false);
 
+  const handleChange = (key, value) => {
+    setEditedDetails({ ...editedDetails, [key]: value });
+    console.log(editedDetails);
+  };
+
+  const theme = useTheme();
+  const colors = {
+    labelColor: theme.colors.primary,
+    buttonBackground: theme.colors.primary,
+  };
+  return (
+    <View style={styles.tabContent}>
+      <View style={styles.userInfo}>
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
+            Email:
+          </Text>
+          <TextInput
+            style={styles.input}
+            editable={edit}
+            value={editedDetails?.email || user?.email}
+            onChangeText={(value) => handleChange("email", value)}
+          />
+        </View>
+
+        <View style={{ flexDirection: "row", gap: 8, width: "100%" }}>
+          <View style={[styles.userInfoRow, { width: "60%" }]}>
+            <Text style={[styles.label, { color: colors.labelColor }]}>
+              Phone:
+            </Text>
+            <TextInput
+              style={styles.input}
+              editable={edit}
+              value={editedDetails?.phone || user?.phone}
+              onChangeText={(value) => handleChange("phone", value)}
+            />
+          </View>
+          <View style={[styles.userInfoRow, { width: "37%" }]}>
+            <Text style={[styles.label, { color: colors.labelColor }]}>
+              Gender:
+            </Text>
+            <TextInput
+              style={styles.input}
+              editable={edit}
+              value={editedDetails?.gender || user?.gender}
+              onChangeText={(value) => handleChange("gender", value)}
+            />
+          </View>
+        </View>
+
+        <View style={{ flexDirection: "row", gap: 8, width: "100%" }}>
+          <View style={[styles.userInfoRow, { width: "60%" }]}>
+            <Text style={[styles.label, { color: colors.labelColor }]}>
+              Monthly Fee:
+            </Text>
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              editable={edit}
+              value={
+                editedDetails?.monthlySeatFee?.toString() ||
+                user?.monthlySeatFee?.toString()
+              }
+              onChangeText={(value) =>
+                handleChange("monthlySeatFee", parseFloat(value))
+              }
+            />
+          </View>
+          <View style={[styles.userInfoRow, { width: "37%" }]}>
+            <Text style={[styles.label, { color: colors.labelColor }]}>
+              Membership:
+            </Text>
+            <TextInput
+              style={styles.input}
+              value={editedDetails?.membershipStatus || user?.membershipStatus}
+              onChangeText={(value) => handleChange("monthlySeatFee", value)}
+              editable={false}
+            />
+          </View>
+        </View>
+
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
+            Address:
+          </Text>
+          <TextInput
+            style={styles.input}
+            editable={edit}
+            value={editedDetails?.address || user?.address}
+            onChangeText={(value) => handleChange("address", value)}
+          />
+        </View>
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
+            Created At:
+          </Text>
+          <TextInput
+            style={styles.input}
+            value={editedDetails?.createdAt || user?.createdAt}
+            onChangeText={(value) => handleChange("monthlySeatFee", value)}
+            editable={false}
+          />
+        </View>
+      </View>
+      <View style={styles.buttonContainer}>
+        {edit ? (
+          <>
+            <Button
+              icon="update"
+              mode="contained"
+              style={[
+                styles.button,
+                { backgroundColor: colors.buttonBackground },
+              ]}
+              labelStyle={styles.buttonLabel}
+              onPress={() => setEdit(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              icon="update"
+              mode="contained"
+              style={[
+                styles.button,
+                { backgroundColor: colors.buttonBackground },
+              ]}
+              labelStyle={styles.buttonLabel}
+              onPress={() => handlUpdateMember()}
+            >
+              Update
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              icon="pen"
+              mode="contained"
+              style={[
+                styles.button,
+                { backgroundColor: colors.buttonBackground },
+              ]}
+              labelStyle={styles.buttonLabel}
+              onPress={() => setEdit(true)}
+            >
+              Edit
+            </Button>
+            <Button
+              icon="delete"
+              mode="contained"
+              style={[
+                styles.button,
+                { backgroundColor: colors.buttonBackground },
+              ]}
+              labelStyle={styles.buttonLabel}
+              onPress={() => setDeleteDialogVisible(true)}
+            >
+              Delete
+            </Button>
+          </>
+        )}
+      </View>
+    </View>
+  );
+};
 const styles = StyleSheet.create({
   tabContent: {
     padding: 40,
@@ -125,8 +199,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   userInfoRow: {
-    flexDirection: "row",
-    marginBottom: 20,
+    flexDirection: "col",
+    marginBottom: 0,
     justifyContent: "space-between",
     // backgroundColor: "green",
   },
@@ -134,7 +208,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     width: 130,
     color: "#666",
-    fontSize: 20,
+    fontSize: 15,
+    marginBottom: 2,
   },
   value: {
     flex: 1,
@@ -150,9 +225,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     paddingVertical: 6,
     paddingHorizontal: 8,
+    borderRadius: 5,
   },
   buttonLabel: {
     fontSize: 18,
+  },
+  input: {
+    marginBottom: 10,
+    backgroundColor: "#f2f2f2",
+    padding: 8,
+    borderRadius: 5,
   },
 });
 
