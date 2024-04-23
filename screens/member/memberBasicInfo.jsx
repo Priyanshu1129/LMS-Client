@@ -138,7 +138,7 @@ const MemberBasicInfo = ({
                 { backgroundColor: colors.buttonBackground },
               ]}
               labelStyle={styles.buttonLabel}
-              onPress={() => handlUpdateMember()}
+              onPress={() => [handlUpdateMember(), setEdit(false)]}
             >
               Update
             </Button>

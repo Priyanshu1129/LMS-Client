@@ -15,6 +15,7 @@ import PageLoader from "../../components/pageLoader.jsx";
 import { defaultAvatar } from "../../constant.js";
 import EditProfilePic from "../../components/EditProfilePic.jsx";
 import { ScrollView } from "react-native-gesture-handler";
+import AccountDetails from "./accountDetails.jsx";
 
 const MemberProfilePage = ({ route, navigation }) => {
   const { member, token } = route.params;
@@ -63,6 +64,7 @@ const MemberProfilePage = ({ route, navigation }) => {
     data: deleteData,
     error: deleteError,
   } = useSelector((state) => state.member.deleteMember);
+
   const {
     status: updateStatus,
     data: updateData,
@@ -74,7 +76,6 @@ const MemberProfilePage = ({ route, navigation }) => {
       setLoading(true);
     } else if (updateStatus === "success") {
       setLoading(false);
-
       dispatch(getAllMember(token));
       dispatch(memberActions.clearUpdateMemberStatus());
       navigation.navigate({
@@ -100,7 +101,7 @@ const MemberProfilePage = ({ route, navigation }) => {
       dispatch(memberActions.clearDeleteMemberStatus());
       navigation.navigate({
         name: "Members",
-        params: { operationPerformed: "memberDeleted" },
+        params: { memberDeleted: true },
         merge: true,
       });
     } else if (deleteStatus === "failed") {
@@ -142,9 +143,7 @@ const MemberProfilePage = ({ route, navigation }) => {
     if (profileUrl !== memberDetails.avatar) {
       editedDetails.avatarUri = profileUrl;
     }
-    console.log("memberDetails--------", memberDetails);
     dispatch(updateMember(editedDetails, token, memberDetails._id));
-    console.log("member edited successfully");
   };
 
   return loading && !memberDetails ? (
@@ -306,7 +305,7 @@ const MemberProfilePage = ({ route, navigation }) => {
             />
           </ScrollView>
         ) : (
-          <MemberAccountDetails />
+          <AccountDetails memberId={memberDetails._id} token={token} />
         )}
         <ConfirmationDialog
           visible={dialogVisible}

@@ -11,6 +11,12 @@ const initialState = {
         status: null,
         error: null,
         data: null,
+    },
+    //by ash
+    allPaymentsOfMember : {
+        status: null,
+        error: null,
+        data: null,
     }
 }
 
@@ -19,6 +25,28 @@ const paymentSlice = createSlice({
     name: "payment",
     initialState: initialState,
     reducers: {
+        //by ash
+        getAllPaymentsOfMemberRequest : (state, action)=>{
+          state.allPaymentsOfMember.status = 'pending'
+        },
+        getAllPaymentsOfMemberSuccess : (state, action)=>{
+            state.allPaymentsOfMember.status = 'success'
+            state.allPaymentsOfMember.data = action.payload;
+        },
+        getAllPaymentsOfMemberFailure : (state, action)=>{
+            state.allPaymentsOfMember.status = 'failed'
+            state.allPaymentsOfMember.error = action.payload;
+        },
+        clearAllPaymentsofMemberStatus : (state, action)=>{
+            state.allPaymentsOfMember.status = null
+        },
+        clearAllPaymentsofMemberError : (state, action)=>{
+            state.allPaymentsOfMember.error = null
+        },
+        clearAllPaymentsofMemberData : (state, action)=>{
+            state.allPaymentsOfMember.data = null
+        },
+
         getAllPaymentRequest: (state, action) => {
             state.allPayments.status = 'pending'
         },

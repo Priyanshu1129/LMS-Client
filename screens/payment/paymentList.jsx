@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   optionButton: {
-    borderRadius: 6,
+    borderRadius: 5,
   },
   input: {
     marginBottom: 10,
