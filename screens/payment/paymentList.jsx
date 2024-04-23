@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useFocusEffect } from "@react-navigation/native";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
 import { Button, List, TextInput, Avatar, Snackbar } from "react-native-paper";
 import Dropdown from "../../components/dropdown";
@@ -11,6 +10,7 @@ import PaymentListCard from "../../components/paymentListCard";
 import SearchBar from "../../components/searchBar";
 import ModeFilterMenu from "../../components/filterMenu";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
+
 const PaymentHistoryPage = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
@@ -24,6 +24,28 @@ const PaymentHistoryPage = ({ navigation, route }) => {
   const { status, data, error } = useSelector(
     (state) => state.payment.allPayments
   );
+  const {
+    status: deleteStatus,
+    data: deleteData,
+    error: deleteError,
+  } = useSelector((state) => state.payment.deletePayment);
+
+  useEffect(() => {
+    if (deleteStatus === "pending") {
+      setLoading(true);
+    } else if (deleteStatus === "success") {
+      dispatch(getAllPayment(token));
+      dispatch(paymentActions.clearDeletePaymentStatus());
+      setMessage("Payment Deleted Successfully");
+      setVisible(true);
+    } else if (deleteStatus === "failed") {
+      setLoading(false);
+      setMessage(deleteError);
+      setVisible(true);
+      dispatch(paymentActions.clearDeletePaymentStatus());
+      dispatch(paymentActions.clearDeletePaymentError());
+    }
+  }, [deleteStatus]);
 
   const [payments, setPayments] = useState(data?.data ? data.data : []);
   const { token, paymentCreated } = route.params;
@@ -77,7 +99,7 @@ const PaymentHistoryPage = ({ navigation, route }) => {
   const renderPayments = () =>
     payments
       .filter(filterPayments)
-      .map((payment) => <PaymentListCard payment={payment} />);
+      .map((payment) => <PaymentListCard payment={payment} token={token} />);
 
   const onChangeSearch = (query) => setNameFilter(query);
 

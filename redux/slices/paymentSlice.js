@@ -13,10 +13,13 @@ const initialState = {
         data: null,
     },
     //by ash
-    allPaymentsOfMember : {
+    allPaymentsOfMember: {
         status: null,
         error: null,
         data: null,
+    },
+    deletePayment: {
+
     }
 }
 
@@ -26,24 +29,24 @@ const paymentSlice = createSlice({
     initialState: initialState,
     reducers: {
         //by ash
-        getAllPaymentsOfMemberRequest : (state, action)=>{
-          state.allPaymentsOfMember.status = 'pending'
+        getAllPaymentsOfMemberRequest: (state, action) => {
+            state.allPaymentsOfMember.status = 'pending'
         },
-        getAllPaymentsOfMemberSuccess : (state, action)=>{
+        getAllPaymentsOfMemberSuccess: (state, action) => {
             state.allPaymentsOfMember.status = 'success'
             state.allPaymentsOfMember.data = action.payload;
         },
-        getAllPaymentsOfMemberFailure : (state, action)=>{
+        getAllPaymentsOfMemberFailure: (state, action) => {
             state.allPaymentsOfMember.status = 'failed'
             state.allPaymentsOfMember.error = action.payload;
         },
-        clearAllPaymentsofMemberStatus : (state, action)=>{
+        clearAllPaymentsofMemberStatus: (state, action) => {
             state.allPaymentsOfMember.status = null
         },
-        clearAllPaymentsofMemberError : (state, action)=>{
+        clearAllPaymentsofMemberError: (state, action) => {
             state.allPaymentsOfMember.error = null
         },
-        clearAllPaymentsofMemberData : (state, action)=>{
+        clearAllPaymentsofMemberData: (state, action) => {
             state.allPaymentsOfMember.data = null
         },
 
@@ -92,20 +95,20 @@ const paymentSlice = createSlice({
             state.paymentDetails.error = action.payload;
         },
         deletePaymentRequest: (state, action) => {
-            state.paymentDetails.status = 'pending'
+            state.deletePayment.status = 'pending'
         },
         deletePaymentSuccess: (state, action) => {
-            state.paymentDetails.status = 'success'
-            state.paymentDetails.data = action.payload;
+            state.deletePayment.status = 'success'
+            state.deletePayment.data = action.payload;
         },
         deletePaymentFailure: (state, action) => {
-            state.paymentDetails.status = 'failed'
-            state.paymentDetails.error = action.payload;
+            state.deletePayment.status = 'failed'
+            state.deletePayment.error = action.payload;
         },
-        clearPaymentDetailsStatus: (state, action ) => {
+        clearPaymentDetailsStatus: (state, action) => {
             state.paymentDetails.status = null;
         },
-        clearAllPaymentsStatus: (state, action ) => {
+        clearAllPaymentsStatus: (state, action) => {
             state.allPayments.status = null;
         },
         clearAllPaymentsError: (state) => {
@@ -113,6 +116,12 @@ const paymentSlice = createSlice({
         },
         clearPaymentDetailsError: (state) => {
             state.paymentDetails.error = null;
+        },
+        clearDeletePaymentStatus: (state) => {
+            state.deletePayment.status = null;
+        },
+        clearDeletePaymentError: (state) => {
+            state.deletePayment.error = null;
         }
     }
 })

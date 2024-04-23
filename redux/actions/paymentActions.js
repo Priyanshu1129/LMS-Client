@@ -107,17 +107,18 @@ export const createPayment = (paymentData, token) => async (dispatch) => {
     }
 };
 
-export const updatePayment = (paymentData) => async (dispatch) => {
+export const updatePayment = (paymentData, paymentId, token) => async (dispatch) => {
     try {
         console.log("update-paymentData", paymentData);
         dispatch(paymentActions.updatePaymentRequest());
 
         const data = await axios.put(
-            `${route}/payment`,
+            `${route}/${paymentId}`,
             paymentData,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": token
                 },
             }
         );
@@ -137,17 +138,17 @@ export const updatePayment = (paymentData) => async (dispatch) => {
     }
 };
 
-export const deletePayment = (paymentData) => async (dispatch) => {
+export const deletePayment = (paymentId, token) => async (dispatch) => {
     try {
-        console.log("delete-paymentData", paymentData);
+        console.log("delete-paymentData", paymentId);
         dispatch(paymentActions.deletePaymentRequest());
 
         const data = await axios.delete(
-            `${route}/payment`,
-            paymentData,
+            `${route}/${paymentId}`,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": token
                 },
             }
         );

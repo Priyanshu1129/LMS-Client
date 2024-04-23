@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,16 +10,23 @@ import {
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Button, useTheme } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import ConfirmationDialog from "./confirmationDialog.jsx";
+import { useDispatch } from "react-redux";
+import { deletePayment } from "../redux/actions/paymentActions";
+
 const windowWidth = Dimensions.get("window").width;
 const baseUnit = windowWidth / 20;
 
-const PaymentListCard = ({ payment }) => {
+const PaymentListCard = ({ payment, token }) => {
   const profileImage =
     "https://th.bing.com/th/id/OIP.tvaMwK3QuFxhTYg4PSNNVAHaHa?rs=1&pid=ImgDetMain";
   const [isClicked, setIsClicked] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
 
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   // Function to format date and time
   const formatDateTime = (dateTime) => {
@@ -35,6 +42,12 @@ const PaymentListCard = ({ payment }) => {
     }${minutes} ${ampm}`;
     return `${formattedDate} ${formattedTime}`;
   };
+
+  useEffect(() => {
+    if (deleteConfirmation) {
+      dispatch(deletePayment(payment._id, token));
+    }
+  }, [deleteConfirmation]);
 
   return (
     <View>
@@ -59,23 +72,20 @@ const PaymentListCard = ({ payment }) => {
                 <Text style={styles.dateText}>
                   {formatDateTime(payment?.createdAt)}
                 </Text>
-                <View
-                  style={[
-                    styles.modeWrapper,
-                    {
-                      backgroundColor:
-                        payment?.method == "cash" ? "#4ADE80" : "#68D391",
-                    },
-                  ]}
-                >
-                  <Text style={styles.modeText}>{payment?.method}</Text>
-                </View>
               </View>
             </View>
           </View>
           <View style={styles.rightWrapper}>
-            <View style={{ justifyContent:"flex-start" }}>
-              <MaterialIcons name="edit" size={20} />
+            <View
+              style={[
+                styles.modeWrapper,
+                {
+                  backgroundColor:
+                    payment?.method == "cash" ? "#4ADE80" : "#68D391",
+                },
+              ]}
+            >
+              <Text style={styles.modeText}>{payment?.method}</Text>
             </View>
             <View style={styles.amountWrapper}>
               <MaterialIcons name="add" size={14} />
@@ -104,6 +114,7 @@ const PaymentListCard = ({ payment }) => {
             </Button>
             <Button
               style={[styles.optionButton, { backgroundColor: "#F87171" }]}
+              onPress={() => setDialogVisible(true)}
             >
               <Text style={{ color: "white" }}>Delete</Text>
             </Button>
@@ -123,6 +134,12 @@ const PaymentListCard = ({ payment }) => {
           </View>
         </View>
       )}
+      <ConfirmationDialog
+        visible={dialogVisible}
+        setVisible={setDialogVisible}
+        message={"Confirm Delete Payment"}
+        setConfirmation={setDeleteConfirmation}
+      />
     </View>
   );
 };
