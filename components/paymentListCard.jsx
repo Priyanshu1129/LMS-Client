@@ -6,6 +6,7 @@ import {
   Image,
   Dimensions,
   TextInput,
+  Animated,
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Button, useTheme } from "react-native-paper";
@@ -24,7 +25,7 @@ const PaymentListCard = ({ payment, token }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
-
+  const [slideAnimation] = useState(new Animated.Value(-10));
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -48,6 +49,14 @@ const PaymentListCard = ({ payment, token }) => {
       dispatch(deletePayment(payment._id, token));
     }
   }, [deleteConfirmation]);
+
+  useEffect(() => {
+    Animated.timing(slideAnimation, {
+      toValue: showOptions ? 0 : -100,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [showOptions]);
 
   return (
     <View>
@@ -95,45 +104,27 @@ const PaymentListCard = ({ payment, token }) => {
           </View>
         </View>
       </TouchableOpacity>
-      {/* // sliding memnue for edit and delete payment */}
-      {showOptions && (
-        <View style={[styles.slidingOpetionsContainer]}>
-          <View style={styles.userInfoRow}>
-            <Text style={[styles.label, { color: theme.colors.primary }]}>
-              Amount:
-            </Text>
-            <TextInput style={styles.input} value={50} />
-          </View>
-          <View
-            style={{ flexDirection: "row", justifyContent: "center", gap: 4 }}
-          >
-            <Button
-              style={[styles.optionButton, { backgroundColor: "#14B37D" }]}
-            >
-              <Text style={{ color: "white" }}>update</Text>
-            </Button>
-            <Button
-              style={[styles.optionButton, { backgroundColor: "#F87171" }]}
-              onPress={() => setDialogVisible(true)}
-            >
-              <Text style={{ color: "white" }}>Delete</Text>
-            </Button>
-            <Button
-              style={[
-                styles.optionButton,
-                { backgroundColor: theme.colors.primary },
-              ]}
-            >
-              <Text
-                style={{ color: "white" }}
-                onPress={() => setShowOptions(false)}
-              >
-                Cancel
-              </Text>
-            </Button>
-          </View>
+      {/* // sliding menu for edit and delete payment */}
+      { showOptions && <Animated.View style={[styles.slidingOptionsContainer, { transform: [{ translateY: slideAnimation }] }]}>
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: theme.colors.primary }]}>
+            Amount:
+          </Text>
+          <TextInput style={styles.input} value={50} />
         </View>
-      )}
+        <View style={{ flexDirection: "row", justifyContent: "center", gap: 4 }}>
+          <Button style={[styles.optionButton, { backgroundColor: "#14B37D" }]}>
+            <Text style={{ color: "white" }}>Update</Text>
+          </Button>
+          <Button style={[styles.optionButton, { backgroundColor: "#F87171" }]} onPress={() => setDialogVisible(true)}>
+            <Text style={{ color: "white" }}>Delete</Text>
+          </Button>
+          <Button style={[styles.optionButton, { backgroundColor: theme.colors.primary }]}>
+            <Text style={{ color: "white" }} onPress={() => setShowOptions(false)}>Cancel</Text>
+          </Button>
+        </View>
+      </Animated.View>
+}
       <ConfirmationDialog
         visible={dialogVisible}
         setVisible={setDialogVisible}
@@ -147,24 +138,27 @@ const PaymentListCard = ({ payment, token }) => {
 export default PaymentListCard;
 
 const styles = StyleSheet.create({
-  slidingOpetionsContainer: {
-    backgroundColor: "white",
-    paddingHorizontal: 30,
+  slidingOptionsContainer: {
+    backgroundColor: "gray",
+    margin : 10,
+    paddingHorizontal: 20,
     borderBottomRightRadius: 8,
     borderBottomLeftRadius: 8,
+    marginTop: -5,
+    zIndex : -10
   },
-
   optionButton: {
     borderRadius: 2,
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "centerS",
+    alignItems: "center",
+    marginVertical: 8,
+    flex: 1,
   },
-
   userInfoRow: {
-    flexDirection: "col",
-    marginBottom: 0,
+    flexDirection: "row",
     justifyContent: "space-between",
+    marginVertical: 8,
   },
   label: {
     fontWeight: "bold",
@@ -173,24 +167,22 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 2,
   },
-  value: {
-    flex: 1,
-    fontWeight: "bold",
-    fontSize: 18,
-  },
   input: {
     marginBottom: 10,
     backgroundColor: "#f2f2f2",
     padding: 8,
     borderRadius: 5,
+    flex: 1,
   },
-
   container: {
     padding: 8,
     margin: 2,
     borderRadius: 7,
     flexDirection: "row",
     justifyContent: "space-between",
+    position: 'relative',
+    zIndex: 10,
+    elevation: 5,
   },
   imageWrapper: {
     width: baseUnit * 2.6,
