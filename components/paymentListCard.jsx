@@ -7,6 +7,7 @@ import {
   Dimensions,
   TextInput,
   Animated,
+  LayoutAnimation,
 } from "react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Button, useTheme } from "react-native-paper";
@@ -25,7 +26,7 @@ const PaymentListCard = ({ payment, token }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
-  const [slideAnimation] = useState(new Animated.Value(-10));
+  const [slideAnimation] = useState(new Animated.Value(0));
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -51,16 +52,26 @@ const PaymentListCard = ({ payment, token }) => {
   }, [deleteConfirmation]);
 
   useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  }, [showOptions]);
+
+  const toggleOptions = () => {
+    setShowOptions((state) => !state);
     Animated.timing(slideAnimation, {
-      toValue: showOptions ? 0 : -100,
+      toValue: showOptions ? 0 : 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [showOptions]);
+  };
+
+  const translateY = slideAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-200, 0], // Adjust this value to control the animation
+  });
 
   return (
     <View>
-      <TouchableOpacity onPress={() => setShowOptions((state) => !state)}>
+      <TouchableOpacity onPress={toggleOptions} activeOpacity={0.9}>
         <View
           key={payment?._id}
           style={[
@@ -105,26 +116,49 @@ const PaymentListCard = ({ payment, token }) => {
         </View>
       </TouchableOpacity>
       {/* // sliding menu for edit and delete payment */}
-      { showOptions && <Animated.View style={[styles.slidingOptionsContainer, { transform: [{ translateY: slideAnimation }] }]}>
-        <View style={styles.userInfoRow}>
-          <Text style={[styles.label, { color: theme.colors.primary }]}>
-            Amount:
-          </Text>
-          <TextInput style={styles.input} value={50} />
-        </View>
-        <View style={{ flexDirection: "row", justifyContent: "center", gap: 4 }}>
-          <Button style={[styles.optionButton, { backgroundColor: "#14B37D" }]}>
-            <Text style={{ color: "white" }}>Update</Text>
-          </Button>
-          <Button style={[styles.optionButton, { backgroundColor: "#F87171" }]} onPress={() => setDialogVisible(true)}>
-            <Text style={{ color: "white" }}>Delete</Text>
-          </Button>
-          <Button style={[styles.optionButton, { backgroundColor: theme.colors.primary }]}>
-            <Text style={{ color: "white" }} onPress={() => setShowOptions(false)}>Cancel</Text>
-          </Button>
-        </View>
-      </Animated.View>
-}
+      {showOptions && (
+        <Animated.View
+          style={[
+            styles.slidingOptionsContainer,
+            { transform: [{ translateY }] },
+          ]}
+        >
+          <View style={styles.userInfoRow}>
+            <Text style={[styles.label, { color: theme.colors.primary }]}>
+              Amount:
+            </Text>
+            <TextInput style={styles.input} value={50} />
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              gap: 4,
+            }}
+          >
+            <Button
+              style={[styles.optionButton, { backgroundColor: "#14B37D" }]}
+            >
+              <Text style={{ color: "white" }}>Update</Text>
+            </Button>
+            <Button
+              style={[styles.optionButton, { backgroundColor: "#F87171" }]}
+              onPress={() => setDialogVisible(true)}
+            >
+              <Text style={{ color: "white" }}>Delete</Text>
+            </Button>
+            <Button
+              style={[
+                styles.optionButton,
+                { backgroundColor: theme.colors.primary },
+              ]}
+              onPress={() => setShowOptions(false)}
+            >
+              <Text style={{ color: "white" }}>Cancel</Text>
+            </Button>
+          </View>
+        </Animated.View>
+      )}
       <ConfirmationDialog
         visible={dialogVisible}
         setVisible={setDialogVisible}
@@ -139,13 +173,14 @@ export default PaymentListCard;
 
 const styles = StyleSheet.create({
   slidingOptionsContainer: {
-    backgroundColor: "gray",
-    margin : 10,
-    paddingHorizontal: 20,
-    borderBottomRightRadius: 8,
-    borderBottomLeftRadius: 8,
-    marginTop: -5,
-    zIndex : -10
+    backgroundColor: "white",
+    margin: 1,
+    paddingHorizontal: 10,
+    borderBottomRightRadius: 5,
+    borderBottomLeftRadius: 5,
+    marginTop: -10,
+    marginBottom: 10,
+    zIndex: -10,
   },
   optionButton: {
     borderRadius: 2,
@@ -158,14 +193,15 @@ const styles = StyleSheet.create({
   userInfoRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 8,
+    marginTop: 20,
   },
   label: {
     fontWeight: "bold",
     width: 130,
     color: "#666",
     fontSize: 15,
-    marginBottom: 2,
+    marginBottom: "auto",
+    marginTop: "auto",
   },
   input: {
     marginBottom: 10,
@@ -180,7 +216,7 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     flexDirection: "row",
     justifyContent: "space-between",
-    position: 'relative',
+    position: "relative",
     zIndex: 10,
     elevation: 5,
   },
