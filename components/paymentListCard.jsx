@@ -14,7 +14,7 @@ import { Button, useTheme } from "react-native-paper";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ConfirmationDialog from "./confirmationDialog.jsx";
 import { useDispatch } from "react-redux";
-import { deletePayment } from "../redux/actions/paymentActions";
+import { deletePayment, updatePayment } from "../redux/actions/paymentActions";
 
 const windowWidth = Dimensions.get("window").width;
 const baseUnit = windowWidth / 20;
@@ -25,7 +25,10 @@ const PaymentListCard = ({ payment, token }) => {
   const [isClicked, setIsClicked] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [dialogConfirmation, setDialogConfirmation] = useState(false);
+  const [updateAmount, setUpdateAmount] = useState(payment?.amount || "kj");
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [request, setRequest] = useState(null);
   const [slideAnimation] = useState(new Animated.Value(0));
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -46,10 +49,13 @@ const PaymentListCard = ({ payment, token }) => {
   };
 
   useEffect(() => {
-    if (deleteConfirmation) {
+    if (dialogConfirmation && request == "delete") {
       dispatch(deletePayment(payment._id, token));
+    } else if (dialogConfirmation && request == "update") {
+      dispatch(updatePayment({ amount: updateAmount }, payment._id, token));
     }
-  }, [deleteConfirmation]);
+    setRequest(null);
+  }, [dialogConfirmation]);
 
   useEffect(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -68,6 +74,12 @@ const PaymentListCard = ({ payment, token }) => {
     inputRange: [0, 1],
     outputRange: [-200, 0], // Adjust this value to control the animation
   });
+
+  const handleUpdate = () => {
+    setDialogVisible(true);
+    setDialogMessage("Select Yes For Update Confirmation");
+    setRequest("update");
+  };
 
   return (
     <View>
@@ -127,7 +139,12 @@ const PaymentListCard = ({ payment, token }) => {
             <Text style={[styles.label, { color: theme.colors.primary }]}>
               Amount:
             </Text>
-            <TextInput style={styles.input} value={50} />
+            <TextInput
+              style={styles.input}
+              keyboardType="numeric"
+              value={updateAmount}
+              onChangeText={(value) => setUpdateAmount(value)}
+            />
           </View>
           <View
             style={{
@@ -138,12 +155,19 @@ const PaymentListCard = ({ payment, token }) => {
           >
             <Button
               style={[styles.optionButton, { backgroundColor: "#14B37D" }]}
+              onPress={handleUpdate}
+              disabled={!updateAmount || updateAmount == payment?.amount}
+              // disabled
             >
               <Text style={{ color: "white" }}>Update</Text>
             </Button>
             <Button
               style={[styles.optionButton, { backgroundColor: "#F87171" }]}
-              onPress={() => setDialogVisible(true)}
+              onPress={() => [
+                setDialogVisible(true),
+                setDialogMessage("Select Yes For Confirmation"),
+                setRequest("delete"),
+              ]}
             >
               <Text style={{ color: "white" }}>Delete</Text>
             </Button>
@@ -152,7 +176,11 @@ const PaymentListCard = ({ payment, token }) => {
                 styles.optionButton,
                 { backgroundColor: theme.colors.primary },
               ]}
-              onPress={() => setShowOptions(false)}
+              onPress={() => [
+                setShowOptions(false),
+                setUpdateAmount(payment?.amount),
+                setRequest(null),
+              ]}
             >
               <Text style={{ color: "white" }}>Cancel</Text>
             </Button>
@@ -162,8 +190,8 @@ const PaymentListCard = ({ payment, token }) => {
       <ConfirmationDialog
         visible={dialogVisible}
         setVisible={setDialogVisible}
-        message={"Confirm Delete Payment"}
-        setConfirmation={setDeleteConfirmation}
+        message={dialogMessage}
+        setConfirmation={setDialogConfirmation}
       />
     </View>
   );

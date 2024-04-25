@@ -95,15 +95,15 @@ const paymentSlice = createSlice({
             state.paymentDetails.error = action.payload;
         },
         deletePaymentRequest: (state, action) => {
-            state.deletePayment.status = 'pending'
+            state.paymentDetails.status = 'pending'
         },
         deletePaymentSuccess: (state, action) => {
-            state.deletePayment.status = 'success'
-            state.deletePayment.data = action.payload;
+            state.paymentDetails.status = 'success'
+            state.paymentDetails.data = action.payload;
         },
         deletePaymentFailure: (state, action) => {
-            state.deletePayment.status = 'failed'
-            state.deletePayment.error = action.payload;
+            state.paymentDetails.status = 'failed'
+            state.paymentDetails.error = action.payload;
         },
         clearPaymentDetailsStatus: (state, action) => {
             state.paymentDetails.status = null;
@@ -116,12 +116,6 @@ const paymentSlice = createSlice({
         },
         clearPaymentDetailsError: (state) => {
             state.paymentDetails.error = null;
-        },
-        clearDeletePaymentStatus: (state) => {
-            state.deletePayment.status = null;
-        },
-        clearDeletePaymentError: (state) => {
-            state.deletePayment.error = null;
         }
     }
 })

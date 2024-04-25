@@ -24,38 +24,38 @@ const PaymentHistoryPage = ({ navigation, route }) => {
   const { status, data, error } = useSelector(
     (state) => state.payment.allPayments
   );
+
   const {
-    status: deleteStatus,
-    data: deleteData,
-    error: deleteError,
-  } = useSelector((state) => state.payment.deletePayment);
+    status: paymentDetailsStatus,
+    data: paymentDetailsData,
+    error: paymentDetailsError,
+  } = useSelector((state) => state.payment.paymentDetails);
 
   useEffect(() => {
-    if (deleteStatus === "pending") {
+    if (paymentDetailsStatus === "pending") {
       setLoading(true);
-    } else if (deleteStatus === "success") {
+    } else if (paymentDetailsStatus === "success") {
       dispatch(getAllPayment(token));
-      dispatch(paymentActions.clearDeletePaymentStatus());
-      setMessage("Payment Deleted Successfully");
-      setVisible(true);
-    } else if (deleteStatus === "failed") {
+      dispatch(paymentActions.clearPaymentDetailsStatus());
+      setMessage(paymentDetailsData.message);
+    } else if (paymentDetailsStatus === "failed") {
       setLoading(false);
-      setMessage(deleteError);
+      setMessage(paymentDetailsError);
       setVisible(true);
-      dispatch(paymentActions.clearDeletePaymentStatus());
-      dispatch(paymentActions.clearDeletePaymentError());
+      dispatch(paymentActions.clearPaymentDetailsStatus());
+      dispatch(paymentActions.clearPaymentDetailsError());
     }
-  }, [deleteStatus]);
+  }, [paymentDetailsStatus]);
 
   const [payments, setPayments] = useState(data?.data ? data.data : []);
   const { token, paymentCreated } = route.params;
 
-  useEffect(() => {
-    if (paymentCreated && !loading) {
-      setMessage("Payment Created Successfully");
-      setVisible(true);
-    }
-  }, [paymentCreated, loading]);
+  // useEffect(() => {
+  //   if (paymentCreated && !loading) {
+  //     setMessage("Payment Created Successfully");
+  //     setVisible(true);
+  //   }
+  // }, [paymentCreated, loading]);
 
   const fetAllPayments = useCallback(() => {
     if (token) {
@@ -69,12 +69,13 @@ const PaymentHistoryPage = ({ navigation, route }) => {
     }
   }, [fetAllPayments]);
 
-  useMemo(() => {
+  useEffect(() => {
     if (status === "pending") {
       setLoading(true);
     } else if (status === "success" && data.status === "success") {
-      setPayments(data.data);
+      setPayments(data?.data);
       setLoading(false);
+      setVisible(true);
       dispatch(paymentActions.clearAllPaymentsStatus());
     } else {
       setMessage(error);
@@ -160,7 +161,7 @@ const PaymentHistoryPage = ({ navigation, route }) => {
           <Text>No Payments Available</Text>
         )}
       </ScrollView>
-      {message && (
+      {message && visible && (
         <Snackbar
           visible={visible}
           onDismiss={onDismissSnackBar}
