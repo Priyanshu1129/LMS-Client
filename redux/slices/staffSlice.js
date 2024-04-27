@@ -16,6 +16,11 @@ const initialState = {
         status: null,
         error: null,
         data: null,
+    },
+    updateStaff: {
+        status: null,
+        error: null,
+        data: null,
     }
 }
 
@@ -59,15 +64,15 @@ const staffSlice = createSlice({
             state.staffDetails.error = action.payload;
         },
         updateStaffRequest: (state, action) => {
-            state.staffDetails.status = 'pending'
+            state.updateStaff.status = 'pending'
         },
         updateStaffSuccess: (state, action) => {
-            state.staffDetails.status = 'success'
-            state.staffDetails.data = action.payload;
+            state.updateStaff.status = 'success'
+            state.updateStaff.data = action.payload;
         },
         updateStaffFailure: (state, action) => {
-            state.staffDetails.status = 'failed'
-            state.staffDetails.error = action.payload;
+            state.updateStaff.status = 'failed'
+            state.updateStaff.error = action.payload;
         },
         deleteStaffRequest: (state, action) => {
             state.deleteStaff.status = 'pending'
@@ -97,6 +102,12 @@ const staffSlice = createSlice({
         },
         clearDeleteStaffError: (state) => {
             state.deleteStaff.error = null;
+        },
+        clearUpdateStaffError: (state) => {
+            state.updateStaff.error = null;
+        },
+        clearUpdateStaffStatus: (state) => {
+            state.updateStaff.status = null;
         }
     }
 })

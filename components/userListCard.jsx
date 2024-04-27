@@ -4,9 +4,7 @@ import {
   View,
   Image,
   Dimensions,
-  TouchableOpacity,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -92,6 +90,7 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 2,
     borderRadius: 7,
+    elevation: 4,
     flexDirection: "row",
     justifyContent: "space-between",
   },

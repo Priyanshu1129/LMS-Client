@@ -149,186 +149,180 @@ const MemberProfilePage = ({ route, navigation }) => {
   return loading && !memberDetails ? (
     <PageLoader />
   ) : (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <View
+        style={[
+          styles.header,
+          { backgroundColor: theme.colors.secondaryContainer },
+        ]}
+      >
+        <EditProfilePic profileUrl={profileUrl} setProfileUrl={setProfileUrl} />
+        <Text style={styles.name}>{user.name}</Text>
+        <Text style={styles.email}>{user.email}</Text>
         <View
           style={[
-            styles.header,
-            { backgroundColor: theme.colors.secondaryContainer },
+            styles.statusWrapper,
+            {
+              backgroundColor:
+                user.membershipStatus === "active" ? "#D1FAE5" : "#FFEDD5",
+            },
           ]}
         >
-          <EditProfilePic
-            profileUrl={profileUrl}
-            setProfileUrl={setProfileUrl}
-          />
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.email}>{user.email}</Text>
-          <View
+          <Text
             style={[
-              styles.statusWrapper,
+              styles.status,
               {
-                backgroundColor:
-                  user.membershipStatus === "active" ? "#D1FAE5" : "#FFEDD5",
+                color: user.membershipStatus === "active" ? "green" : "orange",
               },
             ]}
           >
+            {user.membershipStatus}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.tabBar}>
+        <ScrollView horizontal>
+          <TouchableOpacity
+            style={[
+              styles.tabButton,
+              activeTab == "basicInfo"
+                ? {
+                    ...styles.activeTab,
+                    backgroundColor: theme.colors.primary,
+                  }
+                : { backgroundColor: theme.colors.secondaryContainer },
+            ]}
+            onPress={() => setActiveTab("basicInfo")}
+          >
             <Text
               style={[
-                styles.status,
+                styles.tabButtonText,
                 {
                   color:
-                    user.membershipStatus === "active" ? "green" : "orange",
+                    activeTab === "basicInfo"
+                      ? theme.colors.background
+                      : theme.colors.primary,
                 },
               ]}
             >
-              {user.membershipStatus}
+              Basic Info
             </Text>
-          </View>
-        </View>
-
-        <View style={styles.tabBar}>
-          <ScrollView horizontal>
-            <TouchableOpacity
-              style={[
-                styles.tabButton,
-                activeTab == "basicInfo"
-                  ? {
-                      ...styles.activeTab,
-                      backgroundColor: theme.colors.primary,
-                    }
-                  : { backgroundColor: theme.colors.secondaryContainer },
-              ]}
-              onPress={() => setActiveTab("basicInfo")}
-            >
-              <Text
-                style={[
-                  styles.tabButtonText,
-                  {
-                    color:
-                      activeTab === "basicInfo"
-                        ? theme.colors.background
-                        : theme.colors.primary,
-                  },
-                ]}
-              >
-                Basic Info
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.tabButton,
-                activeTab == "accountDetails"
-                  ? {
-                      ...styles.activeTab,
-                      backgroundColor: theme.colors.primary,
-                    }
-                  : { backgroundColor: theme.colors.secondaryContainer },
-              ]}
-              onPress={() => setActiveTab("accountDetails")}
-            >
-              <Text
-                style={[
-                  styles.tabButtonText,
-                  {
-                    color:
-                      activeTab === "accountDetails"
-                        ? theme.colors.background
-                        : theme.colors.primary,
-                  },
-                ]}
-              >
-                Account Details
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.tabButton,
-                activeTab == "seatDetail"
-                  ? {
-                      ...styles.activeTab,
-                      backgroundColor: theme.colors.primary,
-                    }
-                  : { backgroundColor: theme.colors.secondaryContainer },
-              ]}
-              onPress={() => setActiveTab("seatDetail")}
-            >
-              <Text
-                style={[
-                  styles.tabButtonText,
-                  {
-                    color:
-                      activeTab === "seatDetail"
-                        ? theme.colors.background
-                        : theme.colors.primary,
-                  },
-                ]}
-              >
-                Seat Detail
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.tabButton,
-                activeTab == "lockerDetail"
-                  ? {
-                      ...styles.activeTab,
-                      backgroundColor: theme.colors.primary,
-                    }
-                  : { backgroundColor: theme.colors.secondaryContainer },
-              ]}
-              onPress={() => setActiveTab("lockerDetail")}
-            >
-              <Text
-                style={[
-                  styles.tabButtonText,
-                  {
-                    color:
-                      activeTab === "lockerDetail"
-                        ? theme.colors.background
-                        : theme.colors.primary,
-                  },
-                ]}
-              >
-                Loker Details
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-        {activeTab === "basicInfo" ? (
-          <ScrollView>
-            <MemberBasicInfo
-              editedDetails={editedDetails}
-              setEditedDetails={setEditedDetails}
-              user={user}
-              setDeleteDialogVisible={setDialogVisible}
-              handlUpdateMember={handlUpdateMember}
-            />
-          </ScrollView>
-        ) : (
-          <AccountDetails memberId={memberDetails._id} token={token} />
-        )}
-        <ConfirmationDialog
-          visible={dialogVisible}
-          setVisible={setDialogVisible}
-          message={"Confirm Delete Member"}
-          setConfirmation={setDeleteConfirmation}
-        />
-        {message && (
-          <Snackbar
-            visible={visibleSnackBar}
-            onDismiss={onDismissSnackBar}
-            action={{
-              label: "Hide",
-              onPress: () => {
-                onDismissSnackBar();
-              },
-            }}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.tabButton,
+              activeTab == "accountDetails"
+                ? {
+                    ...styles.activeTab,
+                    backgroundColor: theme.colors.primary,
+                  }
+                : { backgroundColor: theme.colors.secondaryContainer },
+            ]}
+            onPress={() => setActiveTab("accountDetails")}
           >
-            {message}
-          </Snackbar>
-        )}
+            <Text
+              style={[
+                styles.tabButtonText,
+                {
+                  color:
+                    activeTab === "accountDetails"
+                      ? theme.colors.background
+                      : theme.colors.primary,
+                },
+              ]}
+            >
+              Account Details
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.tabButton,
+              activeTab == "seatDetail"
+                ? {
+                    ...styles.activeTab,
+                    backgroundColor: theme.colors.primary,
+                  }
+                : { backgroundColor: theme.colors.secondaryContainer },
+            ]}
+            onPress={() => setActiveTab("seatDetail")}
+          >
+            <Text
+              style={[
+                styles.tabButtonText,
+                {
+                  color:
+                    activeTab === "seatDetail"
+                      ? theme.colors.background
+                      : theme.colors.primary,
+                },
+              ]}
+            >
+              Seat Detail
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.tabButton,
+              activeTab == "lockerDetail"
+                ? {
+                    ...styles.activeTab,
+                    backgroundColor: theme.colors.primary,
+                  }
+                : { backgroundColor: theme.colors.secondaryContainer },
+            ]}
+            onPress={() => setActiveTab("lockerDetail")}
+          >
+            <Text
+              style={[
+                styles.tabButtonText,
+                {
+                  color:
+                    activeTab === "lockerDetail"
+                      ? theme.colors.background
+                      : theme.colors.primary,
+                },
+              ]}
+            >
+              Loker Details
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
-    </ScrollView>
+
+      {activeTab === "basicInfo" ? (
+        <MemberBasicInfo
+          editedDetails={editedDetails}
+          setEditedDetails={setEditedDetails}
+          user={user}
+          setDeleteDialogVisible={setDialogVisible}
+          handlUpdateMember={handlUpdateMember}
+        />
+      ) : (
+        <AccountDetails memberId={memberDetails._id} token={token} />
+      )}
+
+      <ConfirmationDialog
+        visible={dialogVisible}
+        setVisible={setDialogVisible}
+        message={"Confirm Delete Member"}
+        setConfirmation={setDeleteConfirmation}
+      />
+      {message && (
+        <Snackbar
+          visible={visibleSnackBar}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: "Hide",
+            onPress: () => {
+              onDismissSnackBar();
+            },
+          }}
+        >
+          {message}
+        </Snackbar>
+      )}
+    </View>
   );
 };
 
@@ -340,9 +334,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     padding: 10,
-
-    // borderBottomWidth: 1,
-    // borderBottomColor: "#ccc",
+    paddingTop: 30,
   },
   name: {
     fontSize: 20,

@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Avatar, Snackbar } from "react-native-paper";
+import { Avatar, Snackbar, useTheme } from "react-native-paper";
 import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteStaff } from "../../redux/actions/staffActions.js";
+import { deleteStaff, updateStaff } from "../../redux/actions/staffActions.js";
 import { staffActions } from "../../redux/slices/staffSlice.js";
 import StaffBasicInfo from "./staffBasicInfo.jsx";
 import { getAllStaff, getStaff } from "../../redux/actions/staffActions.js";
 import PageLoader from "../../components/pageLoader.jsx";
+import { defaultAvatar } from "../../constant.js";
+import EditProfilePic from "../../components/EditProfilePic.jsx";
+import { ScrollView } from "react-native-gesture-handler";
 
 const StaffProfilePage = ({ route, navigation }) => {
   const { staff, token } = route.params;
@@ -17,8 +20,10 @@ const StaffProfilePage = ({ route, navigation }) => {
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
-
+  const [profileUrl, setProfileUrl] = useState(defaultAvatar);
+  const [editedDetails, setEditedDetails] = useState({});
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   useEffect(() => {
     if (staff && token) {
@@ -37,6 +42,7 @@ const StaffProfilePage = ({ route, navigation }) => {
       setLoading(true);
     } else if (getStaffStatus == "success") {
       setStaffDetails(getStaffData.data);
+      setProfileUrl(getStaffData.data.avatar);
       setLoading(false);
       dispatch(staffActions.clearStaffDetailsStatus());
     } else if (getStaffStatus == "failed") {
@@ -48,9 +54,38 @@ const StaffProfilePage = ({ route, navigation }) => {
     }
   }, [getStaffStatus]);
 
-  const { status: deleteStatus, error: deleteError } = useSelector(
-    (state) => state.staff.deleteStaff
-  );
+  const {
+    status: deleteStatus,
+    data: deleteData,
+    error: deleteError,
+  } = useSelector((state) => state.staff.deleteStaff);
+
+  const {
+    status: updateStatus,
+    data: updateData,
+    error: updateError,
+  } = useSelector((state) => state.staff.updateStaff);
+
+  useEffect(() => {
+    if (updateStatus === "pending") {
+      setLoading(true);
+    } else if (updateStatus === "success") {
+      setLoading(false);
+      dispatch(getAllStaff(token));
+      dispatch(staffActions.clearUpdateStaffStatus());
+      navigation.navigate({
+        name: "Staffs",
+        params: { operationPerformed: "staffUpdated" },
+        merge: true,
+      });
+    } else if (updateStatus === "failed") {
+      setLoading(false);
+      setMessage(updateError);
+      setVisibleSnackBar(true);
+      dispatch(staffActions.clearUpdateStaffStatus());
+      dispatch(staffActions.clearUpdateStaffError());
+    }
+  }, [updateStatus]);
 
   useEffect(() => {
     if (deleteStatus === "pending") {
@@ -60,7 +95,7 @@ const StaffProfilePage = ({ route, navigation }) => {
       dispatch(getAllStaff(token));
       dispatch(staffActions.clearDeleteStaffStatus());
       navigation.navigate({
-        name: "StaffsList",
+        name: "Staffs",
         params: { staffDeleted: true },
         merge: true,
       });
@@ -84,67 +119,90 @@ const StaffProfilePage = ({ route, navigation }) => {
     email: staffDetails?.email || "N/A",
     phone: staffDetails?.phone || "N/A",
     gender: staffDetails?.gender || "N/A",
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    address: staffDetails?.address || "",
     createdAt: staffDetails?.createdAt || "N/A",
+    avatar: staffDetails?.avatar || defaultAvatar,
   };
-
-  const [activeTab, setActiveTab] = useState("basicInfo");
 
   const onDismissSnackBar = () => {
     setVisibleSnackBar(false);
     setMessage(null);
   };
 
+  const handleUpdateStaff = () => {
+    if (profileUrl !== staffDetails.avatar) {
+      editedDetails.avatarUri = profileUrl;
+    }
+    dispatch(updateStaff(editedDetails, token, staffDetails._id));
+  };
+
   return loading && !staffDetails ? (
     <PageLoader />
   ) : (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Avatar.Image
-          size={100}
-          source={require("../../assets/avatar.jpg")} // Provide path to actual avatar image
-        />
-        <Text style={styles.name}>{user.name}</Text>
-        <Text style={styles.email}>{user.email}</Text>
-      </View>
-
-      <StaffBasicInfo user={user} setDeleteDialogVisible={setDialogVisible} />
-      <ConfirmationDialog
-        visible={dialogVisible}
-        setVisible={setDialogVisible}
-        message={"Confirm Delete Staff"}
-        setConfirmation={setDeleteConfirmation}
-      />
-      {message && (
-        <Snackbar
-          visible={visibleSnackBar}
-          onDismiss={onDismissSnackBar}
-          action={{
-            label: "Hide",
-            onPress: () => {
-              onDismissSnackBar();
-            },
-          }}
+    <ScrollView>
+      <View style={styles.container}>
+        <View
+          style={[
+            styles.header,
+            // { backgroundColor: theme.colors.secondaryContainer },
+          ]}
         >
-          {message}
-        </Snackbar>
-      )}
-    </View>
+          <EditProfilePic
+            profileUrl={profileUrl}
+            setProfileUrl={setProfileUrl}
+          />
+          <Text style={styles.name}>{user.name}</Text>
+          <Text style={styles.email}>{user.email}</Text>
+        </View>
+
+        <StaffBasicInfo
+          editedDetails={editedDetails}
+          setEditedDetails={setEditedDetails}
+          user={user}
+          setDeleteDialogVisible={setDialogVisible}
+          handleUpdateStaff={handleUpdateStaff}
+        />
+        {/* </ScrollView> */}
+
+        <ConfirmationDialog
+          visible={dialogVisible}
+          setVisible={setDialogVisible}
+          message={"Confirm Delete Staff"}
+          setConfirmation={setDeleteConfirmation}
+        />
+        {message && (
+          <Snackbar
+            visible={visibleSnackBar}
+            onDismiss={onDismissSnackBar}
+            action={{
+              label: "Hide",
+              onPress: () => {
+                onDismissSnackBar();
+              },
+            }}
+          >
+            {message}
+          </Snackbar>
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#fff",
   },
   header: {
     alignItems: "center",
-    padding: 20,
+    padding: 10,
+    paddingTop: 30,
   },
   name: {
     fontSize: 20,
     fontWeight: "bold",
-    marginTop: 10,
+    marginTop: 0,
   },
   email: {
     fontSize: 16,
@@ -156,7 +214,7 @@ const styles = StyleSheet.create({
   },
   statusWrapper: {
     marginTop: 8,
-    borderRadius: 16,
+    borderRadius: 5,
     paddingVertical: 4,
     paddingHorizontal: 12,
   },
@@ -170,17 +228,19 @@ const styles = StyleSheet.create({
   },
   tabButton: {
     flex: 1,
-    paddingVertical: 15,
+    paddingVertical: 8,
     alignItems: "center",
+    backgroundColor: "#fff",
+    width: 150,
   },
   activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#0070BB",
+    borderBottomWidth: 0,
+    borderBottomColor: "#fff",
+    borderRadius: 2,
   },
   tabButtonText: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
   },
   tabContent: {
     flex: 1,
@@ -191,6 +251,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 10,
   },
+  input: {
+    marginBottom: 10,
+    backgroundColor: "#f2f2f2",
+    padding: 10,
+    borderRadius: 5,
+  },
 });
 
 export default StaffProfilePage;
+

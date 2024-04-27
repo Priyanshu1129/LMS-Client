@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "red",
     display: "flex",
     justifyContent: "center",
+    
   },
   sectionTitle: {
     fontSize: 20,

@@ -4,14 +4,12 @@ import {
   View,
   Image,
   Dimensions,
-  TouchableOpacity,
+  Touchable,
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import React, { useState } from "react";
 import { useTheme } from "react-native-paper";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const windowWidth = Dimensions.get("window").width;
 const baseUnit = windowWidth / 20;
@@ -39,6 +37,14 @@ const StaffListCard = ({
         </View>
         <Text style={styles.title}>{name}</Text>
       </View>
+      <View style={styles.rightWrapper}>
+        <AntDesign
+          name="forward"
+          size={18}
+          color={"#6B7280"}
+          style={styles.forwardIcon}
+        />
+      </View>
     </View>
   );
 };
@@ -50,6 +56,7 @@ const styles = StyleSheet.create({
     padding: 8,
     margin: 2,
     borderRadius: 7,
+    elevation: 4,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -74,5 +81,9 @@ const styles = StyleSheet.create({
     color: "gray",
     fontWeight: "500",
     marginLeft: 8,
+  },
+  rightWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

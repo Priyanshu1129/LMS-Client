@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingVertical: 10,
     marginVertical: 4,
+    elevation: 2,
     flex: 1, // Set flex to 1 to allow flexible width
   },
   inputContainer: {

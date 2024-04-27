@@ -8,7 +8,6 @@ import Register from './screens/auth/register';
 import ForgotPassword from './screens/auth/forgotPassword';
 import Home from './screens/home/Home';
 import Profile from './screens/profile/profile';
-import UpdateProfile from './screens/profile/updateProfile';
 import MembersList from './screens/member/membersList';
 import MemberDetails from './screens/member/memberDetails';
 import AddMember from './screens/member/addMember';
@@ -30,7 +29,7 @@ import MyOrganization from './screens/myOrganization/myOrganization';
 import { fetchToken } from './config/fetchAsyncStorage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Provider,   MD3LightTheme as DefaultTheme, } from 'react-native-paper';
+import { Provider, MD3LightTheme as DefaultTheme, } from 'react-native-paper';
 
 
 import React, { useState, useEffect } from 'react';
@@ -133,22 +132,6 @@ const StackNav = ({ token }) => {
                 name='Profile'
                 component={Profile}
                 initialParams={token}
-                options={{
-                    headerRight: () => {
-                        return (
-                            <Icon
-                                size={30}
-                                name='menu'
-                                onPress={() => navigation.navigate('UpdateProfile')}
-                            />
-                        )
-                    }
-                }}
-            />
-            <Stack.Screen
-                name='UpdateProfile'
-                initialParams={{ token }}
-                component={UpdateProfile}
             />
             <Stack.Screen
                 name='StaffsList'

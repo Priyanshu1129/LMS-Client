@@ -161,7 +161,7 @@ const MembersList = ({ route, navigation }) => {
                       onPress={() =>
                         navigation.navigate("MemberDetails", { member })
                       }
-                      activeOpacity={0.2}
+                      activeOpacity={0.9}
                     >
                       {index >= (pageNumber - 1) * 10 &&
                         index < pageNumber * 10 && (

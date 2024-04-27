@@ -98,6 +98,7 @@ const StaffsList = ({ route, navigation }) => {
               style={styles.optionButton}
               onPress={() => [fetchStaffs()]}
               mode="contained"
+              elevation={5}
             >
               <MaterialIcon name="refresh" size={20} color="white" />
             </Button>
@@ -122,7 +123,7 @@ const StaffsList = ({ route, navigation }) => {
                       onPress={() =>
                         navigation.navigate("StaffDetails", { staff })
                       }
-                      activeOpacity={0.2}
+                      activeOpacity={0.9}
                     >
                       <StaffListCard key={staff._id} name={staff.name} />
                     </TouchableOpacity>

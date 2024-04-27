@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import React, { useState } from "react";
 
-const StaffBasicInfo = ({
+const BasicInfo = ({
   user,
   setDeleteDialogVisible,
   editedDetails,
@@ -13,6 +13,7 @@ const StaffBasicInfo = ({
 
   const handleChange = (key, value) => {
     setEditedDetails({ ...editedDetails, [key]: value });
+    console.log(editedDetails);
   };
 
   const theme = useTheme();
@@ -20,6 +21,7 @@ const StaffBasicInfo = ({
     labelColor: theme.colors.primary,
     buttonBackground: theme.colors.primary,
   };
+
   return (
     <View style={styles.tabContent}>
       <View style={styles.userInfo}>
@@ -58,6 +60,18 @@ const StaffBasicInfo = ({
               onChangeText={(value) => handleChange("gender", value)}
             />
           </View>
+        </View>
+
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
+            Address:
+          </Text>
+          <TextInput
+            style={styles.input}
+            editable={edit}
+            value={editedDetails?.address || user?.address}
+            onChangeText={(value) => handleChange("address", value)}
+          />
         </View>
         <View style={styles.userInfoRow}>
           <Text style={[styles.label, { color: colors.labelColor }]}>
@@ -193,4 +207,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StaffBasicInfo;
+export default BasicInfo;

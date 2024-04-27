@@ -157,7 +157,6 @@ const PaymentListCard = ({ payment, token }) => {
               style={[styles.optionButton, { backgroundColor: "#14B37D" }]}
               onPress={handleUpdate}
               disabled={!updateAmount || updateAmount == payment?.amount}
-              // disabled
             >
               <Text style={{ color: "white" }}>Update</Text>
             </Button>
@@ -216,6 +215,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginVertical: 8,
+    borderRadius: 5,
     flex: 1,
   },
   userInfoRow: {
@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#f2f2f2",
     padding: 8,
+    elevation: 2,
     borderRadius: 5,
     flex: 1,
   },
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     position: "relative",
     zIndex: 10,
-    elevation: 5,
+    elevation: 4,
   },
   imageWrapper: {
     width: baseUnit * 2.6,
