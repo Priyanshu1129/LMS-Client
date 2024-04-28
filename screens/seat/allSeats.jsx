@@ -15,11 +15,12 @@ import PageLoader from "../../components/pageLoader";
 import { seatActions } from "../../redux/slices/seatSlice";
 import NoDataPage from "../../components/NotAvailable";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import SearchBar from "../../components/searchBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import RadioFilter from "../../components/radioFilter";
 const AllSeats = ({ navigation, route }) => {
   const [filteredSeats, setFilteredSeats] = useState([]);
-
+  const [searchQuery, setSearchQuery] = useState("");
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -71,6 +72,8 @@ const AllSeats = ({ navigation, route }) => {
       dispatch(seatActions.clearAllSeatsStatus());
     }
   }, [status]);
+
+  const onChangeSearch = (query) => setSearchQuery(query);
 
   const getFilteredSeats = () => {
     console.log("filtered seat called-------------------");
@@ -184,7 +187,31 @@ const AllSeats = ({ navigation, route }) => {
   ];
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={{ padding: 20, flex: 1 }}>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", marginBottom: 15 }}
+      >
+        <View style={{ flex: 1 }}>
+          <SearchBar value={{ searchQuery }} onChangeText={onChangeSearch} />
+        </View>
+        <View style={{ flexDirection: "row", gap: 5, margin: 5 }}>
+          <Button
+            mode="contained"
+            onPress={() => navigation.navigate("AddSeat")}
+            style={styles.addButton}
+          >
+            Add Seat
+          </Button>
+          <Button
+            mode="contained"
+            onPress={() => fetchAllSeats()}
+            style={styles.addButton}
+          >
+            <MaterialIcons name="refresh" size={20} color="white" />
+          </Button>
+        </View>
+      </View>
+
       <View
         style={{
           flexDirection: "col",
@@ -247,27 +274,13 @@ const AllSeats = ({ navigation, route }) => {
             setChecked={setSchedule}
           />
         </View>
-        <View style={{ flexDirection: "row", gap: 4 }}>
-          <Button
-            mode="contained"
-            onPress={() => navigation.navigate("AddSeat")}
-            style={styles.addButton}
-          >
-            Add Seat
-          </Button>
-          <Button
-            mode="contained"
-            onPress={() => fetchAllSeats()}
-            style={styles.addButton}
-          >
-            <MaterialIcons name="refresh" size={20} color="white" />
-          </Button>
-        </View>
       </View>
       {loading ? (
         <PageLoader />
       ) : seats.length > 0 ? (
-        <View style={styles.bottomSection}>{renderSeats(theme)}</View>
+        <ScrollView>
+          <View style={styles.bottomSection}>{renderSeats(theme)}</View>
+        </ScrollView>
       ) : (
         <NoDataPage message={"No Seats Available"} />
       )}
@@ -286,14 +299,13 @@ const AllSeats = ({ navigation, route }) => {
           {message}
         </Snackbar>
       )}
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#fff",
     padding: 20,
   },
   topSection: {
@@ -303,7 +315,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   addButton: {
-    borderRadius: 2,
+    borderRadius: 5,
   },
   searchBar: {
     width: "50%",

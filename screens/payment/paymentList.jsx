@@ -121,7 +121,7 @@ const PaymentHistoryPage = ({ navigation, route }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          marginBottom: 20,
+          marginBottom: 15,
         }}
       >
         <View style={{ flex: 1 }}>

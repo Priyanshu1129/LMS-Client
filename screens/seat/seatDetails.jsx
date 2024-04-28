@@ -172,7 +172,7 @@ const SeatDetailsPage = ({ navigation, route }) => {
       <Button
         mode="contained"
         onPress={() => setDialogVisible(true)}
-        style={styles.allocateButton}
+        style={styles.button}
       >
         Delete Seat
       </Button>
@@ -244,7 +244,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   button: {
-    marginLeft: 10,
+
+    borderRadius: 5,
   },
 });
 

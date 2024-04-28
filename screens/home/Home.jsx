@@ -1,15 +1,11 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
-import PaymentListCard from "../../components/paymentListCard";
-import SearchBar from "../../components/searchBar";
 import { useTheme } from "react-native-paper";
 
 import { CartesianChart, Line } from "victory-native";
 import ArrivalVsLeavingMembers from "../../components/statistics/arrivalVsLeavingMembers";
 import OrganizationBanner from "../../components/organizationBanner";
 import { ScrollView } from "react-native-gesture-handler";
-import MyChart from "../../components/statistics/myChart";
 
 const Home = ({ route }) => {
   const token = route.params.token;
@@ -21,12 +17,10 @@ const Home = ({ route }) => {
 
   return (
     <ScrollView>
-    <View styles={[styles.container]}>
-     
-       <OrganizationBanner/>
-       <ArrivalVsLeavingMembers/>
-
-    </View>
+      <View styles={[styles.container]}>
+        <OrganizationBanner />
+        <ArrivalVsLeavingMembers />
+      </View>
     </ScrollView>
   );
 };
@@ -34,7 +28,10 @@ const Home = ({ route }) => {
 export default Home;
 
 const styles = StyleSheet.create({
-  container : {
-    padding : 10
-  }
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+  },
 });

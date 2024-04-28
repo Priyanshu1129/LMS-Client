@@ -103,7 +103,7 @@ const MembersList = ({ route, navigation }) => {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            marginBottom: 20,
+            marginBottom: 15,
             // gap: 5,
           }}
         >

@@ -126,7 +126,7 @@ const MakePaymentPage = ({ navigation, route }) => {
       />
       <TextInput
         label="Amount"
-        mode="outlined"
+        // mode="outlined"
         value={amount}
         onChangeText={handleAmountChange}
         keyboardType="numeric"
@@ -180,14 +180,16 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     marginVertical: 10,
+    backgroundColor: "transparent",
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
+    gap: 10,
   },
   button: {
-    marginHorizontal: 10,
+    borderRadius: 5,
   },
 });
 

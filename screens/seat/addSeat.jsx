@@ -95,12 +95,15 @@ const AddSeatPage = ({ navigation, route }) => {
           <TextInput
             label="Seat Number"
             value={seatNumber}
+            mode="outlined"
             keyboardType="numeric"
             onChangeText={setSeatNumber}
             style={styles.input}
           />
           <TextInput
             label="Description"
+            mode="outlined"
+            multiline
             value={description}
             onChangeText={setDescription}
             style={styles.input}
@@ -111,6 +114,7 @@ const AddSeatPage = ({ navigation, route }) => {
           <TextInput
             label="Start Number"
             value={startNumber}
+            mode="outlined"
             keyboardType="numeric"
             onChangeText={setStartNumber}
             style={styles.input}
@@ -119,6 +123,7 @@ const AddSeatPage = ({ navigation, route }) => {
             label="End Number"
             value={endNumber}
             keyboardType="numeric"
+            mode="outlined"
             onChangeText={setEndNumber}
             style={styles.input}
           />
@@ -177,6 +182,7 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: 5,
+    borderRadius: 5
   },
 });
 
