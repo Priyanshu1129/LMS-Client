@@ -16,6 +16,7 @@ import { defaultAvatar } from "../../constant.js";
 import EditProfilePic from "../../components/EditProfilePic.jsx";
 import { ScrollView } from "react-native-gesture-handler";
 import AccountDetails from "./accountDetails.jsx";
+import PlanDetails from "./memberPlanDetails.jsx";
 
 const MemberProfilePage = ({ route, navigation }) => {
   const { member, token } = route.params;
@@ -238,27 +239,27 @@ const MemberProfilePage = ({ route, navigation }) => {
           <TouchableOpacity
             style={[
               styles.tabButton,
-              activeTab == "seatDetail"
+              activeTab == "planDetail"
                 ? {
                     ...styles.activeTab,
                     backgroundColor: theme.colors.primary,
                   }
                 : { backgroundColor: theme.colors.secondaryContainer },
             ]}
-            onPress={() => setActiveTab("seatDetail")}
+            onPress={() => setActiveTab("planDetail")}
           >
             <Text
               style={[
                 styles.tabButtonText,
                 {
                   color:
-                    activeTab === "seatDetail"
+                    activeTab === "planDetail"
                       ? theme.colors.background
                       : theme.colors.primary,
                 },
               ]}
             >
-              Seat Detail
+              Plan Details
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -298,8 +299,10 @@ const MemberProfilePage = ({ route, navigation }) => {
           setDeleteDialogVisible={setDialogVisible}
           handlUpdateMember={handlUpdateMember}
         />
-      ) : (
+      ) : activeTab === "accountDetails" ? (
         <AccountDetails memberId={memberDetails._id} token={token} />
+      ) : (
+        <PlanDetails />
       )}
 
       <ConfirmationDialog
