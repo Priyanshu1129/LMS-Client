@@ -17,7 +17,7 @@ const ArrivalVsLeavingMembers = () => {
   const font = useFont(inter, 12);
   const theme  = useTheme();
   return (
-    <View  style={{backgroundColor : 'white', margin : 10, borderRadius : 8, padding : 5}}>
+    <View  style={{backgroundColor : 'white', margin : 5, borderRadius : 8, padding : 5}}>
     <View style={[styles.graphWrapper]}>
       <CartesianChart
         data={DATA}
@@ -38,7 +38,7 @@ const ArrivalVsLeavingMembers = () => {
             betweenGroupPadding={0.3}
             withinGroupPadding={0.1}
           >
-            <BarGroup.Bar points={points.y} color="red" />
+            <BarGroup.Bar points={points.y} color="#E2E8F0" />
             <BarGroup.Bar points={points.z} color={`${theme.colors.primary}`} />
           </BarGroup>
         )}

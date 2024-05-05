@@ -3,9 +3,9 @@ import React from "react";
 import { useTheme } from "react-native-paper";
 
 import { CartesianChart, Line } from "victory-native";
-import ArrivalVsLeavingMembers from "../../components/statistics/arrivalVsLeavingMembers";
 import OrganizationBanner from "../../components/organizationBanner";
 import { ScrollView } from "react-native-gesture-handler";
+import SeatsStats from "../../components/statistics/seatsStat";
 
 const Home = ({ route }) => {
   const token = route.params.token;
@@ -19,7 +19,7 @@ const Home = ({ route }) => {
     <ScrollView>
       <View styles={[styles.container]}>
         <OrganizationBanner />
-        <ArrivalVsLeavingMembers />
+      <SeatsStats/>
       </View>
     </ScrollView>
   );
