@@ -1,20 +1,20 @@
 import axios from "axios";
-import { seatActions } from "../slices/seatSlice";
+import { lockerActions } from "../slices/lockerSlice";
 import { serverURL } from "../../config/config";
 
-const route = `${serverURL}/seat`
+const route = `${serverURL}/locker`
 
-export const getAllSeats = (token) => async (dispatch) => {
+export const getAllLockers = (token) => async (dispatch) => {
     try {
-        dispatch(seatActions.getAllSeatsRequest());
-        console.log('get-all-seat-token', token);
+        dispatch(lockerActions.getAllLockersRequest());
+        console.log('get-all-locker-token', token);
         const data = await axios.get(`${route}/`, {
             headers: {
                 "authorization": token
             }
         });
-        console.log('get-all-seat-res-data', data.data);
-        dispatch(seatActions.getAllSeatsSuccess(data.data));
+        console.log('get-all-locker-res-data', data.data);
+        dispatch(lockerActions.getAllLockersSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -25,18 +25,18 @@ export const getAllSeats = (token) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(seatActions.getAllSeatsFailure(errorMessage));
+        dispatch(lockerActions.getAllLockersFailure(errorMessage));
     }
 };
 
-export const getSeat = (seatId) => async (dispatch) => {
+export const getLocker = (lockerId) => async (dispatch) => {
     try {
-        console.log("get-paymentData", seatId);
-        dispatch(seatActions.getSeatDetailsRequest());
+        console.log("get-paymentData", paymentId);
+        dispatch(lockerActions.getLockerDetailsRequest());
 
-        const data = await axios.get(`${route}/seat/${seatId}`);
-        console.log('get-seat-res-data', data);
-        dispatch(seatActions.getSeatDetailsSuccess(data.data));
+        const data = await axios.get(`${route}/locker/${paymentId}`);
+        console.log('get-locker-res-data', data);
+        dispatch(lockerActions.getLockerDetailsSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -47,22 +47,22 @@ export const getSeat = (seatId) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(seatActions.getSeatDetailsFailure(errorMessage));
+        dispatch(lockerActions.getLockerDetailsFailure(errorMessage));
     }
 };
 
-export const createSeat = (seatData, token) => async (dispatch) => {
+export const createLocker = (lockerData, token) => async (dispatch) => {
     try {
-        console.log("create-seat-data", seatData, token);
-        dispatch(seatActions.createSeatRequest());
+        console.log("create-locker-data", lockerData, token);
+        dispatch(lockerActions.createLockerRequest());
         let path = "";
-        if (!seatData.createSingleSeat) {
-            path = "create_multiple_seats"
+        if (!lockerData.createSingleLocker) {
+            path = "create_multiple_lockers"
         }
 
         const data = await axios.post(
             `${route}/${path}`,
-            seatData,
+            lockerData,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -70,10 +70,10 @@ export const createSeat = (seatData, token) => async (dispatch) => {
                 },
             }
         );
-        console.log('create-seat-res-data', data.data);
-        dispatch(seatActions.createSeatSuccess(data.data));
+        console.log('create-locker-res-data', data.data);
+        dispatch(lockerActions.createLockerSuccess(data.data));
     } catch (error) {
-        console.log("create-seat-error", error)
+        console.log("create-locker-error", error)
         let errorMessage = "An error occurred";
         if (error.response) {
             errorMessage = error.response.data.message || "Server error";
@@ -82,17 +82,17 @@ export const createSeat = (seatData, token) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(seatActions.createSeatFailure(errorMessage));
+        dispatch(lockerActions.createLockerFailure(errorMessage));
     }
 };
 
-export const updateSeat = (seatData) => async (dispatch) => {
+export const updateLocker = (lockerData) => async (dispatch) => {
     try {
         console.log("update-paymentData", paymentData);
-        dispatch(seatActions.updateSeatRequest());
+        dispatch(lockerActions.updateLockerRequest());
 
         const data = await axios.put(
-            `${route}/seat`,
+            `${route}/locker`,
             paymentData,
             {
                 headers: {
@@ -100,8 +100,8 @@ export const updateSeat = (seatData) => async (dispatch) => {
                 },
             }
         );
-        console.log('update-seat-res-data', data);
-        dispatch(seatActions.updateSeatSuccess(data.data));
+        console.log('update-locker-res-data', data);
+        dispatch(lockerActions.updateLockerSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -112,17 +112,17 @@ export const updateSeat = (seatData) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(seatActions.updateSeatFailure(errorMessage));
+        dispatch(lockerActions.updateLockerFailure(errorMessage));
     }
 };
 
-export const deleteSeat = (seatId, token) => async (dispatch) => {
+export const deleteLocker = (lockerId, token) => async (dispatch) => {
     try {
-        console.log("delete-seat-data", seatId);
-        dispatch(seatActions.deleteSeatRequest());
+        console.log("delete-locker-data", lockerId);
+        dispatch(lockerActions.deleteLockerRequest());
 
         const data = await axios.delete(
-            `${route}/${seatId}`,
+            `${route}/${lockerId}`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -130,8 +130,8 @@ export const deleteSeat = (seatId, token) => async (dispatch) => {
                 },
             }
         );
-        console.log('delete-seat-res-data', data.data);
-        dispatch(seatActions.deleteSeatSuccess(data.data));
+        console.log('delete-locker-res-data', data.data);
+        dispatch(lockerActions.deleteLockerSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -142,14 +142,14 @@ export const deleteSeat = (seatId, token) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(seatActions.deleteSeatFailure(errorMessage));
+        dispatch(lockerActions.deleteLockerFailure(errorMessage));
     }
 };
 
-export const allocateSeat = (allocateData, token) => async (dispatch) => {
+export const allocateLocker = (allocateData, token) => async (dispatch) => {
     try {
-        console.log("allocate-seat-Data", allocateData);
-        dispatch(seatActions.allocateSeatRequest());
+        console.log("allocate-locker-Data", allocateData);
+        dispatch(lockerActions.allocateLockerRequest());
 
         const data = await axios.post(
             `${route}/allocate`,
@@ -161,9 +161,9 @@ export const allocateSeat = (allocateData, token) => async (dispatch) => {
                 },
             }
         );
-        console.log('allocate-seat-res-data', data.data);
+        console.log('allocate-locker-res-data', data.data);
 
-        dispatch(seatActions.allocateSeatSuccess(data.data));
+        dispatch(lockerActions.allocateLockerSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -174,17 +174,17 @@ export const allocateSeat = (allocateData, token) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(seatActions.allocateSeatFailed(errorMessage));
+        dispatch(lockerActions.allocateLockerFailed(errorMessage));
     }
 };
 
-export const deAllocateSeat = (memberId, token) => async (dispatch) => {
+export const deAllocateLocker = (lockerId, token) => async (dispatch) => {
     try {
-        console.log("de-allocate-seat-Data", memberId, token);
-        dispatch(seatActions.deallocateSeatRequest());
+        console.log("de-allocate-locker-Data", lockerId, token);
+        dispatch(lockerActions.deallocateLockerRequest());
 
         const data = await axios.post(
-            `${route}/de_allocate/${memberId}`, {},
+            `${route}/de_allocate/${lockerId}`, {},
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -193,8 +193,8 @@ export const deAllocateSeat = (memberId, token) => async (dispatch) => {
             }
         );
 
-        console.log('de-allocate-seat-res-data', data.data);
-        dispatch(seatActions.deallocateSeatSuccess(data.data));
+        console.log('de-allocate-locker-res-data', data.data);
+        dispatch(lockerActions.deallocateLockerSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -205,6 +205,6 @@ export const deAllocateSeat = (memberId, token) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(seatActions.deallocateSeatFailed(errorMessage));
+        dispatch(lockerActions.deallocateLockerFailed(errorMessage));
     }
 };

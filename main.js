@@ -15,12 +15,15 @@ import PaymentList from './screens/payment/paymentList';
 import PaymentDetails from './screens/payment/paymentDetails';
 import MakePayment from './screens/payment/makePayment';
 import AllSeats from './screens/seat/allSeats';
+import AllLockers from './screens/locker/allLockers';
 import SeatDetails from './screens/seat/seatDetails';
+import LockerDetails from './screens/locker/lockerDetails';
 import Search from './screens/search/search';
 import Notifications from './screens/notification/notification';
 import Subscription from './screens/subscription/subscription';
 import ChangePassword from './screens/changePassword/changePassword';
 import AddSeat from './screens/seat/addSeat';
+import AddLocker from './screens/locker/addLocker';
 import StaffsList from './screens/staff/staffsList';
 import StaffDetails from './screens/staff/staffDetails';
 import AddStaff from './screens/staff/addStaff';
@@ -177,6 +180,21 @@ const StackNav = ({ token }) => {
                 name='SeatDetails'
                 initialParams={{ token }}
                 component={SeatDetails}
+            />
+            <Stack.Screen
+                name='AllLockers'
+                initialParams={{ token }}
+                component={AllLockers}
+            />
+            <Stack.Screen
+                name='AddLocker'
+                initialParams={{ token }}
+                component={AddLocker}
+            />
+            <Stack.Screen
+                name='LockerDetails'
+                initialParams={{ token }}
+                component={LockerDetails}
             />
             <Stack.Screen
                 name='Subscription'

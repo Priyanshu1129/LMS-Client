@@ -7,47 +7,41 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 import { Button, TextInput, Snackbar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllSeats } from "../../redux/actions/seatActions";
+import { getAllLockers } from "../../redux/actions/lockerActions";
 import PageLoader from "../../components/pageLoader";
-import { seatActions } from "../../redux/slices/seatSlice";
+import { lockerActions } from "../../redux/slices/lockerSlice";
 import NoDataPage from "../../components/NotAvailable";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import SearchBar from "../../components/searchBar";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import RadioFilter from "../../components/radioFilter";
-const AllSeats = ({ navigation, route }) => {
-  const [filteredSeats, setFilteredSeats] = useState([]);
+
+const AllLockers = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { status, data, error } = useSelector((state) => state.seat?.allSeats);
-  const [seats, setSeats] = useState(data?.data ? data.data : []);
-
-  const [schedule, setSchedule] = useState("fullDay");
+  const { status, data, error } = useSelector(
+    (state) => state.locker?.allLockers
+  );
+  const [lockers, setLockers] = useState(data?.data ? data.data : []);
 
   const dispatch = useDispatch();
 
   const { token, operationSuccess, operationMessage } = route.params;
 
-  const fetchAllSeats = useCallback(() => {
+  const fetchAllLockers = useCallback(() => {
     if (token) {
-      dispatch(getAllSeats(token));
+      dispatch(getAllLockers(token));
     }
   }, [token, dispatch]);
 
   useEffect(() => {
     if (!data?.data) {
-      fetchAllSeats();
+      fetchAllLockers();
     }
-  }, [fetchAllSeats]);
-
-  useEffect(() => {
-    getFilteredSeats();
-  }, [schedule, seats]);
+  }, [fetchAllLockers]);
 
   useEffect(() => {
     if (operationSuccess && !loading) {
@@ -60,85 +54,71 @@ const AllSeats = ({ navigation, route }) => {
     if (status === "pending") {
       setLoading(true);
     } else if (status === "success" && data.status === "success") {
-      setSeats(data.data);
-      setFilteredSeats(data.data);
+      setLockers(data.data);
       setLoading(false);
-      dispatch(seatActions.clearAllSeatsStatus());
+      dispatch(lockerActions.clearAllLockersStatus());
     } else {
       setMessage(error);
       setVisible(true);
       setLoading(false);
-      seatActions.clearAllSeatsError();
-      dispatch(seatActions.clearAllSeatsStatus());
+      lockerActions.clearAllLockersError();
+      dispatch(lockerActions.clearAllLockersStatus());
     }
   }, [status]);
 
   const onChangeSearch = (query) => setSearchQuery(query);
 
-  const getFilteredSeats = () => {
-    console.log("filtered seat called-------------------");
-    const fseats = seats.map((seat) => {
-      let isOccupied = true;
-      if (seat.schedule[schedule].occupant != null) {
-        isOccupied = true;
-      } else {
-        isOccupied = false;
-      }
-      return { ...seat, isOccupied: isOccupied };
-    });
-    setFilteredSeats(fseats);
-  };
-  const renderSeats = (theme) => {
+  const renderLockers = (theme) => {
     const styles = {
-      occupiedSeat: {
+      occupiedLocker: {
         backgroundColor: theme.colors.primary,
         borderColor: theme.colors.primary,
         shadow: 2,
       },
-      unoccupiedSeat: {
+      unoccupiedLocker: {
         backgroundColor: theme.colors.background,
         borderColor: theme.colors.primary,
         elevation: 4, // Apply elevation here
       },
-      occupiedSeatText: {
+      occupiedLockerText: {
         color: theme.colors.background,
         fontSize: 16,
         fontWeight: "bold",
       },
-      unoccupiedSeatText: {
+      unoccupiedLockerText: {
         color: theme.colors.primary,
         fontSize: 16,
         fontWeight: "bold",
       },
-      seat: {
+      locker: {
         width: `12%`,
         height: `12%`,
         aspectRatio: 1,
         justifyContent: "center",
         alignItems: "center",
         borderWidth: 2,
-        margin: `1%`, // Margin is evenly distributed on both sides of the seat
+        margin: `1%`, // Margin is evenly distributed on both sides of the locker
         borderRadius: 4,
       },
     };
-    return filteredSeats.map((seat, index) => {
+    return lockers.map((locker, index) => {
       return (
         <TouchableOpacity
           style={[
-            styles.seat,
-            seat.isOccupied ? styles.occupiedSeat : styles.unoccupiedSeat,
+            styles.locker,
+            locker.isOccupied ? styles.occupiedLocker : styles.unoccupiedLocker,
           ]}
           key={index}
-          onPress={() => navigation.navigate("SeatDetails", { seat })}
+          onPress={() => navigation.navigate("LockerDetails", { locker })}
         >
           <Text
             style={
-              seat.isOccupied
-                ? styles.occupiedSeatText
-                : styles.unoccupiedSeatText
+              locker.isOccupied
+                ? styles.occupiedLockerText
+                : styles.unoccupiedLockerText
             }
           >
-            {seat.seatNumber}
+            {locker.lockerNumber}
           </Text>
         </TouchableOpacity>
       );
@@ -152,24 +132,6 @@ const AllSeats = ({ navigation, route }) => {
 
   const theme = useTheme();
 
-  scheduleOptions = [
-    {
-      label: "Morning",
-      value: "morning",
-    },
-    {
-      label: "Noon",
-      value: "noon",
-    },
-    {
-      label: "Evening",
-      value: "evening",
-    },
-    {
-      label: "Full Day",
-      value: "fullDay",
-    },
-  ];
 
   statusOptions = [
     {
@@ -197,14 +159,14 @@ const AllSeats = ({ navigation, route }) => {
         <View style={{ flexDirection: "row", gap: 5, margin: 5 }}>
           <Button
             mode="contained"
-            onPress={() => navigation.navigate("AddSeat")}
+            onPress={() => navigation.navigate("AddLocker")}
             style={styles.addButton}
           >
-            Add Seat
+            Add Locker
           </Button>
           <Button
             mode="contained"
-            onPress={() => fetchAllSeats()}
+            onPress={() => fetchAllLockers()}
             style={styles.addButton}
           >
             <MaterialIcons name="refresh" size={20} color="white" />
@@ -212,77 +174,14 @@ const AllSeats = ({ navigation, route }) => {
         </View>
       </View>
 
-      <View
-        style={{
-          flexDirection: "col",
-          gap: 5,
-          backgroundColor: theme.colors.secondaryContainer,
-          padding: 10,
-          borderRadius: 5,
-          marginBottom: 20,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            gap: 4,
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            style={{
-              alignSelf: "center",
-              fontWeight: 500,
-              color: theme.colors.primary,
-            }}
-          >
-            Filter
-          </Text>
-          <AntDesign name="filter" size={20} color={theme.colors.primary} />
-        </View>
-        <View
-          style={{
-            borderTopColor: theme.colors.background,
-            borderTopWidth: 2,
-            padding: 2,
-            paddingBottom: 10,
-          }}
-        >
-          <View
-            style={{ flexDirection: "row", justifyContent: "start", gap: 2 }}
-          >
-            <Text
-              style={{
-                alignSelf: "center",
-                color: theme.colors.primary,
-                marginBottom: 10,
-                fontWeight: 500,
-              }}
-            >
-              Schedule
-            </Text>
-            <MaterialIcons
-              name="schedule"
-              size={20}
-              color={theme.colors.primary}
-            />
-          </View>
-          <RadioFilter
-            options={scheduleOptions}
-            checked={schedule}
-            setChecked={setSchedule}
-          />
-        </View>
-      </View>
       {loading ? (
         <PageLoader />
-      ) : seats.length > 0 ? (
+      ) : lockers.length > 0 ? (
         <ScrollView>
-          <View style={styles.bottomSection}>{renderSeats(theme)}</View>
+          <View style={styles.bottomSection}>{renderLockers(theme)}</View>
         </ScrollView>
       ) : (
-        <NoDataPage message={"No Seats Available"} />
+        <NoDataPage message={"No Lockers Available"} />
       )}
 
       {message && (
@@ -333,4 +232,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AllSeats;
+export default AllLockers;
