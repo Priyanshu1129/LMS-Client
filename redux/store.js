@@ -6,6 +6,7 @@ import paymentSlice from './slices/paymentSlice.js';
 import seatSlice from './slices/seatSlice.js';
 import lockerSlice from './slices/lockerSlice.js';
 import staffSlice from './slices/staffSlice.js'
+import organizationSlice from './slices/organizationSlice.js';
 
 
 
@@ -17,7 +18,8 @@ const store = configureStore({
         payment: paymentSlice,
         seat: seatSlice,
         locker: lockerSlice,
-        staff: staffSlice
+        staff: staffSlice,
+        organization: organizationSlice
     }
 });
 

@@ -2,12 +2,12 @@ import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import React, { useState } from "react";
 
-const MemberBasicInfo = ({
-  user,
+const BasicInfo = ({
+  organizationDetails,
   setDeleteDialogVisible,
   editedDetails,
   setEditedDetails,
-  handleUpdateMember,
+  handleUpdateOrganization,
 }) => {
   const [edit, setEdit] = useState(false);
 
@@ -21,77 +21,21 @@ const MemberBasicInfo = ({
     labelColor: theme.colors.primary,
     buttonBackground: theme.colors.primary,
   };
+
   return (
     <View style={styles.tabContent}>
       <View style={styles.userInfo}>
         <View style={styles.userInfoRow}>
           <Text style={[styles.label, { color: colors.labelColor }]}>
-            Email:
+            Owner:
           </Text>
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.email || user?.email}
+            value={editedDetails?.owner || organizationDetails?.owner}
             onChangeText={(value) => handleChange("email", value)}
           />
         </View>
-
-        <View style={{ flexDirection: "row", gap: 8, width: "100%" }}>
-          <View style={[styles.userInfoRow, { width: "60%" }]}>
-            <Text style={[styles.label, { color: colors.labelColor }]}>
-              Phone:
-            </Text>
-            <TextInput
-              style={styles.input}
-              editable={edit}
-              value={editedDetails?.phone || user?.phone}
-              onChangeText={(value) => handleChange("phone", value)}
-            />
-          </View>
-          <View style={[styles.userInfoRow, { width: "37%" }]}>
-            <Text style={[styles.label, { color: colors.labelColor }]}>
-              Gender:
-            </Text>
-            <TextInput
-              style={styles.input}
-              editable={edit}
-              value={editedDetails?.gender || user?.gender}
-              onChangeText={(value) => handleChange("gender", value)}
-            />
-          </View>
-        </View>
-
-        <View style={{ flexDirection: "row", gap: 8, width: "100%" }}>
-          <View style={[styles.userInfoRow, { width: "60%" }]}>
-            <Text style={[styles.label, { color: colors.labelColor }]}>
-              Monthly Fee:
-            </Text>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              editable={edit}
-              value={
-                editedDetails?.monthlySeatFee?.toString() ||
-                user?.monthlySeatFee?.toString()
-              }
-              onChangeText={(value) =>
-                handleChange("monthlySeatFee", parseFloat(value))
-              }
-            />
-          </View>
-          <View style={[styles.userInfoRow, { width: "37%" }]}>
-            <Text style={[styles.label, { color: colors.labelColor }]}>
-              Membership:
-            </Text>
-            <TextInput
-              style={styles.input}
-              value={editedDetails?.membershipStatus || user?.membershipStatus}
-              onChangeText={(value) => handleChange("monthlySeatFee", value)}
-              editable={false}
-            />
-          </View>
-        </View>
-
         <View style={styles.userInfoRow}>
           <Text style={[styles.label, { color: colors.labelColor }]}>
             Address:
@@ -99,7 +43,18 @@ const MemberBasicInfo = ({
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.address || user?.address}
+            value={editedDetails?.address || organizationDetails?.address}
+            onChangeText={(value) => handleChange("address", value)}
+          />
+        </View>
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
+            About:
+          </Text>
+          <TextInput
+            style={styles.input}
+            editable={edit}
+            value={editedDetails?.address || organizationDetails?.description}
             onChangeText={(value) => handleChange("address", value)}
           />
         </View>
@@ -109,7 +64,7 @@ const MemberBasicInfo = ({
           </Text>
           <TextInput
             style={styles.input}
-            value={editedDetails?.createdAt || user?.createdAt}
+            value={editedDetails?.createdAt || organizationDetails?.createdAt}
             onChangeText={(value) => handleChange("monthlySeatFee", value)}
             editable={false}
           />
@@ -138,7 +93,7 @@ const MemberBasicInfo = ({
                 { backgroundColor: colors.buttonBackground },
               ]}
               labelStyle={styles.buttonLabel}
-              onPress={() => [handleUpdateMember(), setEdit(false)]}
+              onPress={() => [handleUpdateOrganization(), setEdit(false)]}
             >
               Update
             </Button>
@@ -178,10 +133,8 @@ const MemberBasicInfo = ({
 const styles = StyleSheet.create({
   tabContent: {
     padding: 40,
-    // backgroundColor: "red",
     display: "flex",
     justifyContent: "center",
-    
   },
   sectionTitle: {
     fontSize: 20,
@@ -239,4 +192,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MemberBasicInfo;
+export default BasicInfo;

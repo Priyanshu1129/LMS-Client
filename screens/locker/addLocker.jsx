@@ -79,31 +79,12 @@ const AddLockerPage = ({ navigation, route }) => {
     <PageLoader />
   ) : (
     <View style={styles.container}>
-      <View>
-        <View style={styles.radioButtonContainer}>
-          <Text style={styles.radioText}>Single</Text>
-          <RadioButton
-            value="single"
-            status={createSingleLocker ? "checked" : "unchecked"}
-            onPress={() => setCreateSingleLocker(true)}
-          />
-        </View>
-        <View style={styles.radioButtonContainer}>
-          <Text style={styles.radioText}>Multiple</Text>
-          <RadioButton
-            value="multiple"
-            status={!createSingleLocker ? "checked" : "unchecked"}
-            onPress={() => setCreateSingleLocker(false)}
-          />
-        </View>
-      </View>
-
       {createSingleLocker ? (
         <View>
           <TextInput
             label="Locker Number"
             value={lockerNumber}
-            mode="outlined"
+            // mode="outlined"
             keyboardType="numeric"
             onChangeText={setLockerNumber}
             style={styles.input}
@@ -116,7 +97,6 @@ const AddLockerPage = ({ navigation, route }) => {
           />
           <TextInput
             label="Price"
-            mode="outlined"
             value={price}
             onChangeText={setPrice}
             style={styles.input}
@@ -187,6 +167,7 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 10,
+    backgroundColor: "transparent"
   },
   buttonContainer: {
     flexDirection: "row",

@@ -28,6 +28,7 @@ const MemberProfilePage = ({ route, navigation }) => {
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [profileUrl, setProfileUrl] = useState(defaultAvatar);
   const [editedDetails, setEditedDetails] = useState({});
+  const [activeTab, setActiveTab] = useState("basicInfo");
   const dispatch = useDispatch();
   const theme = useTheme();
 
@@ -132,14 +133,13 @@ const MemberProfilePage = ({ route, navigation }) => {
     avatar: memberDetails?.avatar || defaultAvatar,
   };
 
-  const [activeTab, setActiveTab] = useState("basicInfo");
 
   const onDismissSnackBar = () => {
     setVisibleSnackBar(false);
     setMessage(null);
   };
 
-  const handlUpdateMember = () => {
+  const handleUpdateMember = () => {
     //apending the avatarUri if the profile pic has been changed
     if (profileUrl !== memberDetails.avatar) {
       editedDetails.avatarUri = profileUrl;
@@ -297,7 +297,7 @@ const MemberProfilePage = ({ route, navigation }) => {
           setEditedDetails={setEditedDetails}
           user={user}
           setDeleteDialogVisible={setDialogVisible}
-          handlUpdateMember={handlUpdateMember}
+          handleUpdateMember={handleUpdateMember}
         />
       ) : activeTab === "accountDetails" ? (
         <AccountDetails memberId={memberDetails._id} token={token} />
