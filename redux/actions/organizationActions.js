@@ -36,7 +36,7 @@ export const updateOrganization = (id, updateData, token) => async (dispatch) =>
         console.log("updateData", updateData);
         dispatch(organizationActions.updateOrganizationDetailsRequest());
 
-        const data = await axios.post(
+        const data = await axios.put(
             `${route}/${id}`,
             updateData,
             {
@@ -46,10 +46,7 @@ export const updateOrganization = (id, updateData, token) => async (dispatch) =>
                 },
             }
         );
-        console.log('update-organization-res-data', data);
-        if (data.status == 200) {
-            AsyncStorage.setItem("data", JSON.stringify(data.data));
-        }
+        console.log('update-organization-res-data', data.data);
         dispatch(organizationActions.updateOrganizationDetailsSuccess(data.data));
     } catch (error) {
         console.log("error", error)

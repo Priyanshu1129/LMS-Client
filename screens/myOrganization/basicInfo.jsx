@@ -4,7 +4,6 @@ import React, { useState } from "react";
 
 const BasicInfo = ({
   organizationDetails,
-  setDeleteDialogVisible,
   editedDetails,
   setEditedDetails,
   handleUpdateOrganization,
@@ -13,7 +12,6 @@ const BasicInfo = ({
 
   const handleChange = (key, value) => {
     setEditedDetails({ ...editedDetails, [key]: value });
-    console.log(editedDetails);
   };
 
   const theme = useTheme();
@@ -27,13 +25,23 @@ const BasicInfo = ({
       <View style={styles.userInfo}>
         <View style={styles.userInfoRow}>
           <Text style={[styles.label, { color: colors.labelColor }]}>
-            Owner:
+            Name:
           </Text>
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.owner || organizationDetails?.owner}
-            onChangeText={(value) => handleChange("email", value)}
+            value={editedDetails?.name || organizationDetails?.name}
+            onChangeText={(value) => handleChange("name", value)}
+          />
+        </View>
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
+            Owner:
+          </Text>
+          <TextInput
+            style={styles.input}
+            editable={false}
+            value={organizationDetails?.owner[0]?.name}
           />
         </View>
         <View style={styles.userInfoRow}>
@@ -54,11 +62,13 @@ const BasicInfo = ({
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.address || organizationDetails?.description}
-            onChangeText={(value) => handleChange("address", value)}
+            value={
+              editedDetails?.description || organizationDetails?.description
+            }
+            onChangeText={(value) => handleChange("description", value)}
           />
         </View>
-        <View style={styles.userInfoRow}>
+        {/* <View style={styles.userInfoRow}>
           <Text style={[styles.label, { color: colors.labelColor }]}>
             Created At:
           </Text>
@@ -68,7 +78,7 @@ const BasicInfo = ({
             onChangeText={(value) => handleChange("monthlySeatFee", value)}
             editable={false}
           />
-        </View>
+        </View> */}
       </View>
       <View style={styles.buttonContainer}>
         {edit ? (
@@ -111,18 +121,6 @@ const BasicInfo = ({
               onPress={() => setEdit(true)}
             >
               Edit
-            </Button>
-            <Button
-              icon="delete"
-              mode="contained"
-              style={[
-                styles.button,
-                { backgroundColor: colors.buttonBackground },
-              ]}
-              labelStyle={styles.buttonLabel}
-              onPress={() => setDeleteDialogVisible(true)}
-            >
-              Delete
             </Button>
           </>
         )}

@@ -140,7 +140,7 @@ const MemberProfilePage = ({ route, navigation }) => {
   };
 
   const handleUpdateMember = () => {
-    //apending the avatarUri if the profile pic has been changed
+    //appending the avatarUri if the profile pic has been changed
     if (profileUrl !== memberDetails.avatar) {
       editedDetails.avatarUri = profileUrl;
     }

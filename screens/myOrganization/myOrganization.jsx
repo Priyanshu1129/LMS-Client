@@ -11,7 +11,6 @@ import BasicInfo from "./basicInfo.jsx";
 import PriceDetails from "./priceDetails.jsx";
 import { defaultAvatar } from "../../constant.js";
 import EditProfilePic from "../../components/EditProfilePic.jsx";
-import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { organizationActions } from "../../redux/slices/organizationSlice.js";
 import PageLoader from "../../components/pageLoader.jsx";
@@ -24,7 +23,7 @@ const MyOrganizationPage = ({ route }) => {
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [logoUrl, setLogoUrl] = useState(defaultAvatar);
-  const [organizationData, setOrganizationData] = useState();
+  const [organizationDetails, setOrganizationDetails] = useState();
   const [editedDetails, setEditedDetails] = useState({});
   const [activeTab, setActiveTab] = useState("basicInfo");
   const dispatch = useDispatch();
@@ -36,6 +35,7 @@ const MyOrganizationPage = ({ route }) => {
 
   const getOrgId = async () => {
     const storedData = await AsyncStorage.getItem("data");
+    console.log("st", storedData);
     setOrganizationId(JSON.parse(storedData).data.organization);
   };
 
@@ -44,7 +44,8 @@ const MyOrganizationPage = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    if (organizationId && token) {
+    console.log(organizationId);
+    if (organizationId && token && !data?.data) {
       dispatch(getOrganization(organizationId, token));
     }
   }, [organizationId, token]);
@@ -53,7 +54,6 @@ const MyOrganizationPage = ({ route }) => {
     if (status == "pending") {
       setLoading(true);
     } else if (status == "success") {
-      setOrganizationData(data?.data);
       setLogoUrl(data?.data?.logo);
       setLoading(false);
       dispatch(organizationActions.clearOrganizationDetailsStatus());
@@ -66,18 +66,24 @@ const MyOrganizationPage = ({ route }) => {
     }
   }, [status]);
 
-  const organizationDetails = {
-    name: organizationData?.name || "N/A",
-    address: organizationData?.address || "N/A",
-    description: organizationData?.description || "N/A",
-    logo: organizationData?.logo || defaultAvatar,
-    createdAt: organizationData?.createdAt || "N/A",
-    owner: organizationData?.owner || "N/A",
-    seatDefaultPrice: organizationData?.settings?.defaultPrice?.seat,
-    lockerDefaultPrice: organizationData?.settings?.defaultPrice?.locker,
-  };
+  console.log('logi', data.data)
 
-  console.log("organizationDetails --", organizationDetails);
+  useEffect(() => {
+    if (data?.data) {
+      setOrganizationDetails({
+        name: data?.data?.name || "N/A",
+        address: data?.data?.address || "N/A",
+        id: data?.data?._id || "N/A",
+        description: data?.data?.description || "N/A",
+        logo: data?.data?.logo || defaultAvatar,
+        createdAt: data?.data?.createdAt || "N/A",
+        owner: data?.data?.owner || "N/A",
+        settings: data?.data?.settings,
+        seatDefaultPrice: data?.data?.settings?.defaultPrice?.seat,
+        lockerDefaultPrice: data?.data?.settings?.defaultPrice?.locker,
+      });
+    }
+  }, [data?.data]);
 
   const onDismissSnackBar = () => {
     setVisibleSnackBar(false);
@@ -85,10 +91,11 @@ const MyOrganizationPage = ({ route }) => {
   };
 
   const handleUpdateOrganization = () => {
-    if (logoUrl !== organizationData?.logo) {
-      editedDetails.avatarUri = logoUrl;
+    if (logoUrl !== data?.data?.logo) {
+      editedDetails.logo = logoUrl;
     }
-    dispatch(updateOrganization(editedDetails, token, data?.data?._id));
+
+    dispatch(updateOrganization(organizationDetails.id, editedDetails, token));
   };
 
   return loading ? (

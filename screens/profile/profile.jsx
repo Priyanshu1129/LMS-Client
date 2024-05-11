@@ -55,7 +55,6 @@ const ProfilePage = ({ route, navigation }) => {
 
   return (
     <ScrollView>
-      {/* <Text>{JSON.stringify(data.data)}</Text> */}
       <View style={styles.container}>
         <View
           style={[

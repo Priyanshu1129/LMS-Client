@@ -5,7 +5,6 @@ import React, { useState } from "react";
 
 const PriceDetails = ({
   organizationDetails,
-  setDeleteDialogVisible,
   editedDetails,
   setEditedDetails,
   handleUpdateOrganization,
@@ -13,9 +12,23 @@ const PriceDetails = ({
   const [edit, setEdit] = useState(false);
   const { seatDefaultPrice, lockerDefaultPrice } = organizationDetails;
 
-  const handleChange = (key, value) => {
-    setEditedDetails({ ...editedDetails, [key]: value });
-    console.log(editedDetails);
+  const [detailsObject, setDetailsObject] = useState({
+    settings: organizationDetails.settings,
+  });
+
+  // console.log("settings", detailsObject);
+  // const handleChange = (key, value) => {
+  //   setEditedDetails({ ...editedDetails, [key]: value });
+  // };
+
+  const handleChange = (keyPath, value) => {
+    // const keys = keyPath.split(".");
+    // let updatedDetails = { ...detailsObject };
+    // updatedDetails.settings[keys[0]][keys[1]][keys[2]] = value;
+    // console.log("keys-",updatedDetails.settings[keys[0]][keys[1]][keys[2]]);
+    // console.log("updatedDetails", JSON.stringify(updatedDetails));
+    // setDetailsObject(updatedDetails);
+    // setEditedDetails(detailsObject);
   };
 
   const theme = useTheme();
@@ -24,8 +37,8 @@ const PriceDetails = ({
     buttonBackground: theme.colors.primary,
   };
 
-  console.log(seatDefaultPrice.morning);
-  console.log(lockerDefaultPrice.small);
+  console.log(seatDefaultPrice?.morning);
+  console.log(lockerDefaultPrice?.small);
 
   return (
     <ScrollView>
@@ -44,11 +57,13 @@ const PriceDetails = ({
                   style={styles.input}
                   editable={edit}
                   value={
-                    editedDetails?.defaultPrice?.seat?.morning ||
-                    organizationDetails?.seatDefaultPrice?.morning
+                    editedDetails?.settings?.defaultPrice?.seat?.morning ||
+                    String(seatDefaultPrice?.morning)
                   }
                   keyboardType="numeric"
-                  onChangeText={(value) => handleChange("email", value)}
+                  onChangeText={(value) =>
+                    handleChange("defaultPrice.seat.morning", value)
+                  }
                 />
               </View>
               <View style={styles.inputSection}>
@@ -59,11 +74,13 @@ const PriceDetails = ({
                   style={styles.input}
                   editable={edit}
                   value={
-                    editedDetails?.defaultPrice?.seat?.noon ||
-                    seatDefaultPrice.noon
+                    editedDetails?.settings?.defaultPrice?.seat?.noon ||
+                    String(seatDefaultPrice.noon)
                   }
                   keyboardType="numeric"
-                  onChangeText={(value) => handleChange("email", value)}
+                  onChangeText={(value) =>
+                    handleChange("defaultPrice.seat.noon", value)
+                  }
                 />
               </View>
               <View style={styles.inputSection}>
@@ -74,11 +91,13 @@ const PriceDetails = ({
                   style={styles.input}
                   editable={edit}
                   value={
-                    editedDetails?.defaultPrice?.seat?.evening ||
-                    seatDefaultPrice.evening
+                    editedDetails?.settings?.defaultPrice?.seat?.evening ||
+                    String(seatDefaultPrice.evening)
                   }
                   keyboardType="numeric"
-                  onChangeText={(value) => handleChange("email", value)}
+                  onChangeText={(value) =>
+                    handleChange("defaultPrice.seat.evening", value)
+                  }
                 />
               </View>
               <View style={styles.inputSection}>
@@ -89,11 +108,13 @@ const PriceDetails = ({
                   style={styles.input}
                   editable={edit}
                   value={
-                    editedDetails?.defaultPrice?.seat?.fullDay ||
-                    seatDefaultPrice.fullDay
+                    editedDetails?.settings?.defaultPrice?.seat?.fullDay ||
+                    String(seatDefaultPrice.fullDay)
                   }
                   keyboardType="numeric"
-                  onChangeText={(value) => handleChange("email", value)}
+                  onChangeText={(value) =>
+                    handleChange("defaultPrice.seat.fullDay", value)
+                  }
                 />
               </View>
             </View>
@@ -111,11 +132,13 @@ const PriceDetails = ({
                   style={styles.input}
                   editable={edit}
                   value={
-                    // editedDetails?.defaultPrice?.locker?.small ||
-                    lockerDefaultPrice?.small
+                    editedDetails?.settings?.defaultPrice?.locker?.small ||
+                    String(lockerDefaultPrice?.small)
                   }
                   keyboardType="numeric"
-                  onChangeText={(value) => handleChange("email", value)}
+                  onChangeText={(value) =>
+                    handleChange("defaultPrice.locker.small", value)
+                  }
                 />
               </View>
               <View style={styles.inputSection}>
@@ -126,11 +149,13 @@ const PriceDetails = ({
                   style={styles.input}
                   editable={edit}
                   value={
-                    // editedDetails?.defaultPrice?.locker?.medium ||
-                    lockerDefaultPrice?.medium
+                    editedDetails?.settings?.defaultPrice?.locker?.medium ||
+                    String(lockerDefaultPrice?.medium)
                   }
                   keyboardType="numeric"
-                  onChangeText={(value) => handleChange("email", value)}
+                  onChangeText={(value) =>
+                    handleChange("defaultPrice.locker.medium", value)
+                  }
                 />
               </View>
               <View style={styles.inputSection}>
@@ -141,11 +166,13 @@ const PriceDetails = ({
                   style={styles.input}
                   editable={edit}
                   value={
-                    editedDetails?.defaultPrice?.locker?.large ||
-                    lockerDefaultPrice?.large
+                    editedDetails?.settings?.defaultPrice?.locker?.large ||
+                    String(lockerDefaultPrice?.large)
                   }
                   keyboardType="numeric"
-                  onChangeText={(value) => handleChange("email", value)}
+                  onChangeText={(value) =>
+                    handleChange("defaultPrice.locker.large", value)
+                  }
                 />
               </View>
             </View>
@@ -174,7 +201,7 @@ const PriceDetails = ({
                   { backgroundColor: colors.buttonBackground },
                 ]}
                 labelStyle={styles.buttonLabel}
-                onPress={() => [handleUpdateOrganization(), setEdit(false)]}
+                onPress={() => [setEdit(false)]}
               >
                 Update
               </Button>
@@ -192,18 +219,6 @@ const PriceDetails = ({
                 onPress={() => setEdit(true)}
               >
                 Edit
-              </Button>
-              <Button
-                icon="delete"
-                mode="contained"
-                style={[
-                  styles.button,
-                  { backgroundColor: colors.buttonBackground },
-                ]}
-                labelStyle={styles.buttonLabel}
-                onPress={() => setDeleteDialogVisible(true)}
-              >
-                Delete
               </Button>
             </>
           )}
