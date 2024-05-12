@@ -8,8 +8,10 @@ const PriceDetails = ({
   editedDetails,
   setEditedDetails,
   handleUpdateOrganization,
+  edit, 
+  setEdit
 }) => {
-  const [edit, setEdit] = useState(false);
+  
   const { seatDefaultPrice, lockerDefaultPrice } = organizationDetails;
 
   const [detailsObject, setDetailsObject] = useState({

@@ -1,21 +1,22 @@
 import axios from "axios";
-import { updateProfileActions } from "../slices/updateProfileSlice";
+import { profileActions } from "../slices/profileSlice";
 import { serverURL } from "../../config/config";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const route = `${serverURL}/`
 
-export const updateProfile = (updateData) => async (dispatch) => {
+export const updateProfile = (updateData, token) => async (dispatch) => {
     try {
         console.log("updateData", updateData);
-        dispatch(updateProfileActions.updateProfileRequest());
+        dispatch(profileActions.updateProfileRequest());
 
-        const data = await axios.post(
+        const data = await axios.put(
             `${route}/update-profile`,
-            loginData,
+            updateData,
             {
                 headers: {
                     "Content-Type": "application/json",
+                    "authorization": token
                 },
             }
         );
@@ -23,7 +24,7 @@ export const updateProfile = (updateData) => async (dispatch) => {
         if (data.status == 200) {
             AsyncStorage.setItem("data", JSON.stringify(data.data));
         }
-        dispatch(updateProfileActions.updateProfileSuccess(data.data));
+        dispatch(profileActions.updateProfileSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -34,7 +35,7 @@ export const updateProfile = (updateData) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(updateProfileActions.updateProfileFailure(errorMessage));
+        dispatch(profileActions.updateProfileFailure(errorMessage));
     }
 };
 

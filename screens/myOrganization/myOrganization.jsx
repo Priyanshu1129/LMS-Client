@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Snackbar, useTheme } from "react-native-paper";
-import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { useSelector, useDispatch } from "react-redux";
 import {
   updateOrganization,
@@ -19,9 +18,9 @@ const MyOrganizationPage = ({ route }) => {
   const { token } = route.params;
   const [message, setMessage] = useState(null);
   const [organizationId, setOrganizationId] = useState(null);
+  const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
-  const [dialogVisible, setDialogVisible] = useState(false);
   const [logoUrl, setLogoUrl] = useState(defaultAvatar);
   const [organizationDetails, setOrganizationDetails] = useState();
   const [editedDetails, setEditedDetails] = useState({});
@@ -33,10 +32,11 @@ const MyOrganizationPage = ({ route }) => {
     (state) => state.organization.organizationDetails
   );
 
+  const [organizationData, setOrganizationData] = useState(data?.data);
+
   const getOrgId = async () => {
     const storedData = await AsyncStorage.getItem("data");
-    console.log("st", storedData);
-    setOrganizationId(JSON.parse(storedData).data.organization);
+    setOrganizationId(JSON.parse(storedData)?.data?.organization);
   };
 
   useEffect(() => {
@@ -44,8 +44,7 @@ const MyOrganizationPage = ({ route }) => {
   }, []);
 
   useEffect(() => {
-    console.log(organizationId);
-    if (organizationId && token && !data?.data) {
+    if (organizationId && token && !organizationData) {
       dispatch(getOrganization(organizationId, token));
     }
   }, [organizationId, token]);
@@ -55,6 +54,9 @@ const MyOrganizationPage = ({ route }) => {
       setLoading(true);
     } else if (status == "success") {
       setLogoUrl(data?.data?.logo);
+      setOrganizationData(data?.data);
+      // setMessage("Profile Updated Successfully");
+      // setVisibleSnackBar(true);
       setLoading(false);
       dispatch(organizationActions.clearOrganizationDetailsStatus());
     } else {
@@ -66,24 +68,22 @@ const MyOrganizationPage = ({ route }) => {
     }
   }, [status]);
 
-  console.log('logi', data.data)
-
   useEffect(() => {
-    if (data?.data) {
+    if (organizationData) {
       setOrganizationDetails({
-        name: data?.data?.name || "N/A",
-        address: data?.data?.address || "N/A",
-        id: data?.data?._id || "N/A",
-        description: data?.data?.description || "N/A",
-        logo: data?.data?.logo || defaultAvatar,
-        createdAt: data?.data?.createdAt || "N/A",
-        owner: data?.data?.owner || "N/A",
-        settings: data?.data?.settings,
-        seatDefaultPrice: data?.data?.settings?.defaultPrice?.seat,
-        lockerDefaultPrice: data?.data?.settings?.defaultPrice?.locker,
+        name: organizationData?.name || "N/A",
+        address: organizationData?.address || "N/A",
+        id: organizationData?._id || "N/A",
+        description: organizationData?.description || "N/A",
+        logo: organizationData?.logo || defaultAvatar,
+        createdAt: organizationData?.createdAt || "N/A",
+        owner: organizationData?.owner || "N/A",
+        settings: organizationData?.settings,
+        seatDefaultPrice: organizationData?.settings?.defaultPrice?.seat,
+        lockerDefaultPrice: organizationData?.settings?.defaultPrice?.locker,
       });
     }
-  }, [data?.data]);
+  }, [organizationData]);
 
   const onDismissSnackBar = () => {
     setVisibleSnackBar(false);
@@ -91,11 +91,18 @@ const MyOrganizationPage = ({ route }) => {
   };
 
   const handleUpdateOrganization = () => {
-    if (logoUrl !== data?.data?.logo) {
+    if (logoUrl !== organizationData?.logo) {
+      console.log(logoUrl);
+      console.log(organizationData?.logo);
       editedDetails.logo = logoUrl;
     }
-
-    dispatch(updateOrganization(organizationDetails.id, editedDetails, token));
+    console.log("editedDetails", editedDetails);
+    if (Object.keys(editedDetails).length > 0) {
+      dispatch(
+        updateOrganization(organizationDetails.id, editedDetails, token)
+      );
+    }
+    setEditedDetails({});
   };
 
   return loading ? (
@@ -108,7 +115,11 @@ const MyOrganizationPage = ({ route }) => {
           // { backgroundColor: theme.colors.secondaryContainer },
         ]}
       >
-        <EditProfilePic profileUrl={logoUrl} setProfileUrl={setLogoUrl} />
+        <EditProfilePic
+          edit={edit}
+          profileUrl={logoUrl}
+          setProfileUrl={setLogoUrl}
+        />
         <Text style={styles.name}>{organizationDetails?.name}</Text>
         <Text style={styles.email}>{organizationDetails?.email}</Text>
       </View>
@@ -172,26 +183,21 @@ const MyOrganizationPage = ({ route }) => {
         <BasicInfo
           editedDetails={editedDetails}
           setEditedDetails={setEditedDetails}
+          edit={edit}
+          setEdit={setEdit}
           organizationDetails={organizationDetails}
-          setDeleteDialogVisible={setDialogVisible}
           handleUpdateOrganization={handleUpdateOrganization}
         />
       ) : (
         <PriceDetails
           editedDetails={editedDetails}
           setEditedDetails={setEditedDetails}
+          edit={edit}
+          setEdit={setEdit}
           organizationDetails={organizationDetails}
-          setDeleteDialogVisible={setDialogVisible}
           handleUpdateOrganization={handleUpdateOrganization}
         />
       )}
-
-      {/* <ConfirmationDialog
-          visible={dialogVisible}
-          setVisible={setDialogVisible}
-          message={"Confirm Delete Organization"}
-          setConfirmation={setDeleteConfirmation}
-        /> */}
       {message && (
         <Snackbar
           visible={visibleSnackBar}

@@ -15,7 +15,7 @@ export const getAllMember = (token) => async (dispatch) => {
                 "authorization": token
             }
         });
-         
+
         console.log('get-all-member-res-data', data.data);
         dispatch(memberActions.getAllMemberSuccess(data.data));
     } catch (error) {
@@ -66,15 +66,15 @@ export const createMember = (memberData, token) => async (dispatch) => {
 
         // Append other form data to FormData
         Object.entries(memberData).forEach(([key, value]) => {
-            if(key != 'avatarUri'){
-            formData.append(key, value);
+            if (key != 'avatarUri') {
+                formData.append(key, value);
             }
         });
-        
+
         const fileName = memberData.avatarUri.split('/').pop();
         // Determine file type based on file extension
         const fileType = fileName.split('.').pop();
-        
+
         // Append avatar file to FormData
         formData.append("avatar", {
             uri: memberData.avatarUri,
@@ -83,7 +83,7 @@ export const createMember = (memberData, token) => async (dispatch) => {
         });
 
         console.log("formdata-----before")
-        console.log("formdata-----",formData)
+        console.log("formdata-----", formData)
 
         const data = await axios.post(
             `${route}/`,
@@ -113,25 +113,24 @@ export const createMember = (memberData, token) => async (dispatch) => {
 
 export const updateMember = (memberData, token, memberId) => async (dispatch) => {
 
-    // Append other form data to FormData
     const formData = new FormData();
     Object.entries(memberData).forEach(([key, value]) => {
-        if(key != 'avatarUri'){
-        formData.append(key, value);
+        if (key != 'avatarUri') {
+            formData.append(key, value);
         }
     });
-    
-    if(memberData?.avatarUri){
-    const fileName = memberData.avatarUri.split('/').pop();
-    // Determine file type based on file extension
-    const fileType = fileName.split('.').pop();
-    
-    // Append avatar file to FormData
-    formData.append("avatar", {
-        uri: memberData.avatarUri,
-        type: `image/${fileType}`,
-        name: fileName
-    });
+
+    if (memberData?.avatarUri) {
+        const fileName = memberData.avatarUri.split('/').pop();
+        // Determine file type based on file extension
+        const fileType = fileName.split('.').pop();
+
+        // Append avatar file to FormData
+        formData.append("avatar", {
+            uri: memberData.avatarUri,
+            type: `image/${fileType}`,
+            name: fileName
+        });
     }
 
     try {

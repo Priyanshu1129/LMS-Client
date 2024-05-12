@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Text, View , Image} from "react-native";
+import { Text, View, Image } from "react-native";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
@@ -11,20 +11,21 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import imageCompressor from "../utils/imageCompressor";
 
-
-export default EditProfilePic = ({ profileUrl, setProfileUrl }) => {
-  const [showImageOption, setShowImageOpetion] = useState(false);
+export default EditProfilePic = ({ profileUrl, setProfileUrl, edit }) => {
+  const [showImageOption, setShowImageOption] = useState(false);
 
   // No permissions request is necessary for launching the image library
 
+  
+
   const closeImageOptions = () => {
-    setShowImageOpetion(false);
+    setShowImageOption(false);
   };
   const OpenImageOptions = () => {
-    setShowImageOpetion(true);
+    setShowImageOption(true);
   };
 
-  const handleGallaryPress = async () => {
+  const handleGalleryPress = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -35,12 +36,12 @@ export default EditProfilePic = ({ profileUrl, setProfileUrl }) => {
     if (!result.canceled) {
       const comUrl = await imageCompressor(result.assets[0].uri);
       setProfileUrl(comUrl);
-      console.log("image uri from component gallary ", profileUrl)
+      console.log("image uri from component gallery ", profileUrl);
     }
     closeImageOptions();
   };
 
-  const handleCamaraPress = async () => {
+  const handleCameraPress = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -50,42 +51,54 @@ export default EditProfilePic = ({ profileUrl, setProfileUrl }) => {
     console.log(result);
     if (!result.canceled) {
       const comUrl = await imageCompressor(result.assets[0].uri);
-      console.log("image uri from component after compression comUrl ------", comUrl)
+      console.log(
+        "image uri from component after compression comUrl ------",
+        comUrl
+      );
       setProfileUrl(comUrl);
-      console.log("image uri from component after compression ------", profileUrl)
-    }  
+      console.log(
+        "image uri from component after compression ------",
+        profileUrl
+      );
+    }
     closeImageOptions();
   };
-
-
 
   const theme = useTheme();
 
   return (
     <View>
-         <View style={styles.profileContainer}>
-          <View style={[styles.avatarWrapper, {borderColor : theme.colors.primary}]}>
-          <Avatar.Image size={95} source={{ uri: profileUrl }}  />
-          <View
-            style={[
-              styles.statusIndicator,
-              {
-                backgroundColor: theme.colors.primary,
-              }
-            ]}
-          >
+      <View style={styles.profileContainer}>
+        <View
+          style={[styles.avatarWrapper, { borderColor: theme.colors.primary }]}
+        >
+          <Avatar.Image
+            style={{ opacity: edit ? 0.4 : 1 }}
+            size={95}
+            source={{ uri: profileUrl }}
+          />
+          {edit && (
+            <View
+              style={[
+                styles.statusIndicator,
+                {
+                  backgroundColor: theme.colors.primary,
+                },
+              ]}
+            >
               <TouchableOpacity onPress={OpenImageOptions}>
-            <Feather name="edit" color="white"  size={20}/>
-          </TouchableOpacity>
-          </View>
+                <Feather name="edit" color="white" size={20} />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
-        </View> 
-        
+      </View>
+
       <TakePhotoOptions
         visible={showImageOption}
         onClose={closeImageOptions}
-        onGalleryPress={handleGallaryPress}
-        onCameraPress={handleCamaraPress}
+        onGalleryPress={handleGalleryPress}
+        onCameraPress={handleCameraPress}
       />
     </View>
   );
@@ -96,7 +109,6 @@ const styles = StyleSheet.create({
   profileContainer: {
     alignItems: "center",
     marginBottom: 20,
-   
   },
   image: {
     width: "100%",
@@ -113,8 +125,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   statusIndicator: {
-    justifyContent: 'center',  // Center content vertically
-    alignItems: 'center',      // Center content horizontally
+    justifyContent: "center", // Center content vertically
+    alignItems: "center", // Center content horizontally
     position: "absolute",
     top: "60%",
     right: "-1%",
@@ -123,15 +135,12 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     borderWidth: 3,
     borderColor: "white",
-    flex : 1,
-    justifyContent :'center',
-    
+    flex: 1,
+    justifyContent: "center",
   },
   avatarWrapper: {
     borderWidth: 4,
     borderColor: "black",
     borderRadius: 100,
-    
   },
-  
 });

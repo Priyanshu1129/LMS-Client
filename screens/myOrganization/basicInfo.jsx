@@ -1,16 +1,23 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const BasicInfo = ({
   organizationDetails,
   editedDetails,
   setEditedDetails,
   handleUpdateOrganization,
+  edit,
+  setEdit,
 }) => {
-  const [edit, setEdit] = useState(false);
+  const [editModeDetails, setEditModeDetails] = useState(organizationDetails);
+
+  useEffect(() => {
+    setEditModeDetails(organizationDetails);
+  }, [organizationDetails]);
 
   const handleChange = (key, value) => {
+    setEditModeDetails({ ...editModeDetails, [key]: value });
     setEditedDetails({ ...editedDetails, [key]: value });
   };
 
@@ -30,7 +37,7 @@ const BasicInfo = ({
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.name || organizationDetails?.name}
+            value={edit ? editModeDetails?.name : organizationDetails?.name}
             onChangeText={(value) => handleChange("name", value)}
           />
         </View>
@@ -51,7 +58,9 @@ const BasicInfo = ({
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.address || organizationDetails?.address}
+            value={
+              edit ? editModeDetails?.address : organizationDetails?.address
+            }
             onChangeText={(value) => handleChange("address", value)}
           />
         </View>
@@ -63,7 +72,9 @@ const BasicInfo = ({
             style={styles.input}
             editable={edit}
             value={
-              editedDetails?.description || organizationDetails?.description
+              edit
+                ? editModeDetails?.description
+                : organizationDetails?.description
             }
             onChangeText={(value) => handleChange("description", value)}
           />
@@ -91,7 +102,11 @@ const BasicInfo = ({
                 { backgroundColor: colors.buttonBackground },
               ]}
               labelStyle={styles.buttonLabel}
-              onPress={() => setEdit(false)}
+              onPress={() => [
+                setEdit(false),
+                setEditedDetails({}),
+                setEditModeDetails(organizationDetails),
+              ]}
             >
               Cancel
             </Button>

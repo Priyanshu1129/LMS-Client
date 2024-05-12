@@ -135,6 +135,7 @@ const StackNav = ({ token }) => {
                 name='Profile'
                 component={Profile}
                 initialParams={token}
+
             />
             <Stack.Screen
                 name='StaffsList'

@@ -1,59 +1,91 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Avatar, Snackbar } from "react-native-paper";
-import ConfirmationDialog from "../../components/confirmationDialog.jsx";
+import { Snackbar } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
-import { updateStaff } from "../../redux/actions/staffActions.js";
+import { updateProfile } from "../../redux/actions/profileActions.js";
 import BasicInfo from "./basicInfo.jsx";
 import { defaultAvatar } from "../../constant.js";
 import EditProfilePic from "../../components/EditProfilePic.jsx";
 import { ScrollView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { profileActions } from "../../redux/slices/profileSlice.js";
+import PageLoader from "../../components/pageLoader.jsx";
 
 const ProfilePage = ({ route, navigation }) => {
   const { token } = route.params;
   const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
-  const [dialogVisible, setDialogVisible] = useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [profileUrl, setProfileUrl] = useState(defaultAvatar);
+  const [user, setUser] = useState();
   const [editedDetails, setEditedDetails] = useState({});
+  const [edit, setEdit] = useState(false);
   const dispatch = useDispatch();
-  const [data, setData] = useState();
+  const [userData, setUserData] = useState();
 
-  const getData = async () => {
+  const { status, data, error } = useSelector(
+    (state) => state.organization.organizationDetails
+  );
+
+  const getUserData = async () => {
     const storedData = await AsyncStorage.getItem("data");
-
-    setData(JSON.parse(storedData));
+    setUserData(JSON.parse(storedData)?.data);
   };
 
   useEffect(() => {
-    getData();
+    getUserData();
   }, []);
 
-  const user = {
-    name: data?.data?.name || "N/A",
-    email: data?.data?.email || "N/A",
-    phone: data?.data?.phone || "N/A",
-    gender: data?.data?.gender || "N/A",
-    address: data?.data?.address || "",
-    createdAt: data?.data?.createdAt || "N/A",
-    avatar: data?.data?.avatar || defaultAvatar,
-  };
+  useEffect(() => {
+    setUser({
+      name: userData?.name || "N/A",
+      email: userData?.email || "N/A",
+      phone: userData?.phone || "N/A",
+      gender: userData?.gender || "N/A",
+      address: userData?.address || "",
+      createdAt: userData?.createdAt || "N/A",
+      avatar: userData?.avatar || defaultAvatar,
+    });
+    setProfileUrl(userData?.avatar);
+  }, [userData]);
+
+  useEffect(() => {
+    if (status == "pending") {
+      setLoading(true);
+    } else if (status == "success") {
+      // setProfileUrl(data?.data?.avatar);
+      // setUserData(data?.data);
+      getUserData();
+      setLoading(false);
+      setMessage("Profile Updated Successfully");
+      setVisibleSnackBar(true);
+      dispatch(profileActions.clearProfileStatus());
+    } else {
+      setLoading(false);
+      setMessage(error);
+      setVisibleSnackBar(true);
+      dispatch(profileActions.clearProfileStatus());
+      dispatch(profileActions.clearProfileError());
+    }
+  }, [status]);
 
   const onDismissSnackBar = () => {
     setVisibleSnackBar(false);
     setMessage(null);
   };
 
-  const handleUpdateStaff = () => {
-    if (profileUrl !== data?.data?.avatar) {
+  const handleUpdate = () => {
+    if (profileUrl !== userData?.avatar) {
       editedDetails.avatarUri = profileUrl;
     }
-    dispatch(updateStaff(editedDetails, token, data?.data?._id));
+    console.log("editedDEtails--", editedDetails);
+    dispatch(updateProfile(editedDetails, token));
+    setEditedDetails({});
   };
 
-  return (
+  return loading ? (
+    <PageLoader />
+  ) : (
     <ScrollView>
       <View style={styles.container}>
         <View
@@ -64,26 +96,22 @@ const ProfilePage = ({ route, navigation }) => {
         >
           <EditProfilePic
             profileUrl={profileUrl}
+            edit={edit}
             setProfileUrl={setProfileUrl}
           />
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.email}>{user.email}</Text>
+          <Text style={styles.name}>{user?.name}</Text>
+          <Text style={styles.email}>{user?.email}</Text>
         </View>
 
         <BasicInfo
           editedDetails={editedDetails}
           setEditedDetails={setEditedDetails}
           user={user}
-          setDeleteDialogVisible={setDialogVisible}
-          handleUpdateStaff={handleUpdateStaff}
+          edit={edit}
+          setEdit={setEdit}
+          handleUpdate={handleUpdate}
         />
 
-        <ConfirmationDialog
-          visible={dialogVisible}
-          setVisible={setDialogVisible}
-          message={"Confirm Delete Staff"}
-          setConfirmation={setDeleteConfirmation}
-        />
         {message && (
           <Snackbar
             visible={visibleSnackBar}

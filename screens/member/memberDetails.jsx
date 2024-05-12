@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Avatar, Snackbar, useTheme } from "react-native-paper";
+import { Snackbar, useTheme } from "react-native-paper";
 import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -26,6 +26,8 @@ const MemberProfilePage = ({ route, navigation }) => {
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [user, setUser] = useState();
+  const [edit, setEdit] = useState(false);
   const [profileUrl, setProfileUrl] = useState(defaultAvatar);
   const [editedDetails, setEditedDetails] = useState({});
   const [activeTab, setActiveTab] = useState("basicInfo");
@@ -48,8 +50,7 @@ const MemberProfilePage = ({ route, navigation }) => {
     if (getMemberStatus == "pending") {
       setLoading(true);
     } else if (getMemberStatus == "success") {
-      setMemberDetails(getMemberData.data);
-      setProfileUrl(getMemberData.data.avatar);
+      setMemberDetails(getMemberData?.data);
       setLoading(false);
       dispatch(memberActions.clearMemberDetailsStatus());
     } else if (getMemberStatus == "failed") {
@@ -77,14 +78,17 @@ const MemberProfilePage = ({ route, navigation }) => {
     if (updateStatus === "pending") {
       setLoading(true);
     } else if (updateStatus === "success") {
-      setLoading(false);
       dispatch(getAllMember(token));
+      setMemberDetails(updateData?.data);
+      setMessage("Details Updated Successfully");
+      setVisibleSnackBar(true);
+      setLoading(false);
       dispatch(memberActions.clearUpdateMemberStatus());
-      navigation.navigate({
-        name: "Members",
-        params: { operationPerformed: "memberUpdated" },
-        merge: true,
-      });
+      // navigation.navigate({
+      //   name: "Members",
+      //   params: { operationPerformed: "memberUpdated" },
+      //   merge: true,
+      // });
     } else if (updateStatus === "failed") {
       setLoading(false);
       setMessage(updateError);
@@ -121,18 +125,20 @@ const MemberProfilePage = ({ route, navigation }) => {
     }
   }, [deleteConfirmation]);
 
-  const user = {
-    name: memberDetails?.name || "N/A",
-    email: memberDetails?.email || "N/A",
-    phone: memberDetails?.phone || "N/A",
-    gender: memberDetails?.gender || "N/A",
-    monthlySeatFee: memberDetails?.monthlySeatFee || "N/A",
-    address: memberDetails?.address || "",
-    membershipStatus: memberDetails?.membershipStatus || "N/A",
-    createdAt: memberDetails?.createdAt || "N/A",
-    avatar: memberDetails?.avatar || defaultAvatar,
-  };
-
+  useEffect(() => {
+    setUser({
+      name: memberDetails?.name || "N/A",
+      email: memberDetails?.email || "N/A",
+      phone: memberDetails?.phone || "N/A",
+      gender: memberDetails?.gender || "N/A",
+      monthlySeatFee: memberDetails?.monthlySeatFee || "N/A",
+      address: memberDetails?.address || "",
+      membershipStatus: memberDetails?.membershipStatus || "N/A",
+      createdAt: memberDetails?.createdAt || "N/A",
+      avatar: memberDetails?.avatar || defaultAvatar,
+    });
+    setProfileUrl(memberDetails?.avatar);
+  }, [memberDetails]);
 
   const onDismissSnackBar = () => {
     setVisibleSnackBar(false);
@@ -144,7 +150,10 @@ const MemberProfilePage = ({ route, navigation }) => {
     if (profileUrl !== memberDetails.avatar) {
       editedDetails.avatarUri = profileUrl;
     }
-    dispatch(updateMember(editedDetails, token, memberDetails._id));
+    if (Object.keys(editedDetails).length > 0) {
+      dispatch(updateMember(editedDetails, token, memberDetails._id));
+    }
+    setEditedDetails({});
   };
 
   return loading && !memberDetails ? (
@@ -157,15 +166,19 @@ const MemberProfilePage = ({ route, navigation }) => {
           { backgroundColor: theme.colors.secondaryContainer },
         ]}
       >
-        <EditProfilePic profileUrl={profileUrl} setProfileUrl={setProfileUrl} />
-        <Text style={styles.name}>{user.name}</Text>
-        <Text style={styles.email}>{user.email}</Text>
+        <EditProfilePic
+          edit={edit}
+          profileUrl={profileUrl}
+          setProfileUrl={setProfileUrl}
+        />
+        <Text style={styles.name}>{user?.name}</Text>
+        <Text style={styles.email}>{user?.email}</Text>
         <View
           style={[
             styles.statusWrapper,
             {
               backgroundColor:
-                user.membershipStatus === "active" ? "#D1FAE5" : "#FFEDD5",
+                user?.membershipStatus === "active" ? "#D1FAE5" : "#FFEDD5",
             },
           ]}
         >
@@ -173,11 +186,11 @@ const MemberProfilePage = ({ route, navigation }) => {
             style={[
               styles.status,
               {
-                color: user.membershipStatus === "active" ? "green" : "orange",
+                color: user?.membershipStatus === "active" ? "green" : "orange",
               },
             ]}
           >
-            {user.membershipStatus}
+            {user?.membershipStatus}
           </Text>
         </View>
       </View>
@@ -262,32 +275,6 @@ const MemberProfilePage = ({ route, navigation }) => {
               Plan Details
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              activeTab == "lockerDetail"
-                ? {
-                    ...styles.activeTab,
-                    backgroundColor: theme.colors.primary,
-                  }
-                : { backgroundColor: theme.colors.secondaryContainer },
-            ]}
-            onPress={() => setActiveTab("lockerDetail")}
-          >
-            <Text
-              style={[
-                styles.tabButtonText,
-                {
-                  color:
-                    activeTab === "lockerDetail"
-                      ? theme.colors.background
-                      : theme.colors.primary,
-                },
-              ]}
-            >
-              Loker Details
-            </Text>
-          </TouchableOpacity>
         </ScrollView>
       </View>
 
@@ -296,6 +283,8 @@ const MemberProfilePage = ({ route, navigation }) => {
           editedDetails={editedDetails}
           setEditedDetails={setEditedDetails}
           user={user}
+          edit={edit}
+          setEdit={setEdit}
           setDeleteDialogVisible={setDialogVisible}
           handleUpdateMember={handleUpdateMember}
         />

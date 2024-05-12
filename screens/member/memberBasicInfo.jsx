@@ -1,20 +1,26 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const MemberBasicInfo = ({
   user,
   setDeleteDialogVisible,
   editedDetails,
   setEditedDetails,
+  edit,
+  setEdit,
   handleUpdateMember,
 }) => {
-  const [edit, setEdit] = useState(false);
+  const [editModeDetails, setEditModeDetails] = useState(user);
 
   const handleChange = (key, value) => {
+    setEditModeDetails({ ...editModeDetails, [key]: value });
     setEditedDetails({ ...editedDetails, [key]: value });
-    console.log(editedDetails);
   };
+
+  useEffect(() => {
+    setEditModeDetails(user);
+  }, [user]);
 
   const theme = useTheme();
   const colors = {
@@ -31,7 +37,7 @@ const MemberBasicInfo = ({
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.email || user?.email}
+            value={edit ? editModeDetails?.email : user?.email}
             onChangeText={(value) => handleChange("email", value)}
           />
         </View>
@@ -44,7 +50,7 @@ const MemberBasicInfo = ({
             <TextInput
               style={styles.input}
               editable={edit}
-              value={editedDetails?.phone || user?.phone}
+              value={edit ? editModeDetails?.phone : user?.phone}
               onChangeText={(value) => handleChange("phone", value)}
             />
           </View>
@@ -55,7 +61,7 @@ const MemberBasicInfo = ({
             <TextInput
               style={styles.input}
               editable={edit}
-              value={editedDetails?.gender || user?.gender}
+              value={edit ? editModeDetails?.gender : user?.gender}
               onChangeText={(value) => handleChange("gender", value)}
             />
           </View>
@@ -71,8 +77,9 @@ const MemberBasicInfo = ({
               keyboardType="numeric"
               editable={edit}
               value={
-                editedDetails?.monthlySeatFee?.toString() ||
-                user?.monthlySeatFee?.toString()
+                edit
+                  ? editModeDetails?.monthlySeatFee?.toString()
+                  : user?.monthlySeatFee?.toString()
               }
               onChangeText={(value) =>
                 handleChange("monthlySeatFee", parseFloat(value))
@@ -85,7 +92,11 @@ const MemberBasicInfo = ({
             </Text>
             <TextInput
               style={styles.input}
-              value={editedDetails?.membershipStatus || user?.membershipStatus}
+              value={
+                edit
+                  ? editModeDetails?.membershipStatus
+                  : user?.membershipStatus
+              }
               onChangeText={(value) => handleChange("monthlySeatFee", value)}
               editable={false}
             />
@@ -99,7 +110,7 @@ const MemberBasicInfo = ({
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.address || user?.address}
+            value={edit ? editModeDetails?.address : user?.address}
             onChangeText={(value) => handleChange("address", value)}
           />
         </View>
@@ -109,7 +120,7 @@ const MemberBasicInfo = ({
           </Text>
           <TextInput
             style={styles.input}
-            value={editedDetails?.createdAt || user?.createdAt}
+            value={edit ? editModeDetails?.createdAt : user?.createdAt}
             onChangeText={(value) => handleChange("monthlySeatFee", value)}
             editable={false}
           />
@@ -126,7 +137,11 @@ const MemberBasicInfo = ({
                 { backgroundColor: colors.buttonBackground },
               ]}
               labelStyle={styles.buttonLabel}
-              onPress={() => setEdit(false)}
+              onPress={() => [
+                setEdit(false),
+                setEditModeDetails(user),
+                setEditedDetails({}),
+              ]}
             >
               Cancel
             </Button>
@@ -181,7 +196,6 @@ const styles = StyleSheet.create({
     // backgroundColor: "red",
     display: "flex",
     justifyContent: "center",
-    
   },
   sectionTitle: {
     fontSize: 20,

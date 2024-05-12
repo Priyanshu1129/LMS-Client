@@ -1,19 +1,24 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const BasicInfo = ({
   user,
-  setDeleteDialogVisible,
   editedDetails,
   setEditedDetails,
-  handleUpdateStaff,
+  handleUpdate,
+  edit,
+  setEdit,
 }) => {
-  const [edit, setEdit] = useState(false);
+  const [editModeDetails, setEditModeDetails] = useState(user);
+
+  useEffect(() => {
+    setEditModeDetails(user);
+  }, [user]);
 
   const handleChange = (key, value) => {
+    setEditModeDetails({ ...editModeDetails, [key]: value });
     setEditedDetails({ ...editedDetails, [key]: value });
-    console.log(editedDetails);
   };
 
   const theme = useTheme();
@@ -27,12 +32,23 @@ const BasicInfo = ({
       <View style={styles.userInfo}>
         <View style={styles.userInfoRow}>
           <Text style={[styles.label, { color: colors.labelColor }]}>
+            Name:
+          </Text>
+          <TextInput
+            style={styles.input}
+            editable={edit}
+            value={edit ? editModeDetails?.name : user?.name}
+            onChangeText={(value) => handleChange("name", value)}
+          />
+        </View>
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
             Email:
           </Text>
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.email || user?.email}
+            value={edit ? editModeDetails?.email : user?.email}
             onChangeText={(value) => handleChange("email", value)}
           />
         </View>
@@ -45,7 +61,7 @@ const BasicInfo = ({
             <TextInput
               style={styles.input}
               editable={edit}
-              value={editedDetails?.phone || user?.phone}
+              value={edit ? editModeDetails?.phone : user?.phone}
               onChangeText={(value) => handleChange("phone", value)}
             />
           </View>
@@ -56,7 +72,7 @@ const BasicInfo = ({
             <TextInput
               style={styles.input}
               editable={edit}
-              value={editedDetails?.gender || user?.gender}
+              value={edit ? editModeDetails?.gender : user?.gender}
               onChangeText={(value) => handleChange("gender", value)}
             />
           </View>
@@ -69,7 +85,7 @@ const BasicInfo = ({
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.address || user?.address}
+            value={edit ? editModeDetails?.address : user?.address}
             onChangeText={(value) => handleChange("address", value)}
           />
         </View>
@@ -79,7 +95,7 @@ const BasicInfo = ({
           </Text>
           <TextInput
             style={styles.input}
-            value={editedDetails?.createdAt || user?.createdAt}
+            value={edit ? editModeDetails?.createdAt : user?.createdAt}
             onChangeText={(value) => handleChange("monthlySeatFee", value)}
             editable={false}
           />
@@ -96,7 +112,11 @@ const BasicInfo = ({
                 { backgroundColor: colors.buttonBackground },
               ]}
               labelStyle={styles.buttonLabel}
-              onPress={() => setEdit(false)}
+              onPress={() => [
+                setEdit(false),
+                setEditedDetails({}),
+                setEditModeDetails(user),
+              ]}
             >
               Cancel
             </Button>
@@ -108,7 +128,7 @@ const BasicInfo = ({
                 { backgroundColor: colors.buttonBackground },
               ]}
               labelStyle={styles.buttonLabel}
-              onPress={() => [handleUpdateStaff(), setEdit(false)]}
+              onPress={() => [handleUpdate(), setEdit(false)]}
             >
               Update
             </Button>
@@ -126,18 +146,6 @@ const BasicInfo = ({
               onPress={() => setEdit(true)}
             >
               Edit
-            </Button>
-            <Button
-              icon="delete"
-              mode="contained"
-              style={[
-                styles.button,
-                { backgroundColor: colors.buttonBackground },
-              ]}
-              labelStyle={styles.buttonLabel}
-              onPress={() => setDeleteDialogVisible(true)}
-            >
-              Delete
             </Button>
           </>
         )}
