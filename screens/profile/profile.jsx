@@ -79,7 +79,9 @@ const ProfilePage = ({ route, navigation }) => {
       editedDetails.avatarUri = profileUrl;
     }
     console.log("editedDEtails--", editedDetails);
-    dispatch(updateProfile(editedDetails, token));
+    if (Object.keys(editedDetails).length > 0) {
+      dispatch(updateProfile(editedDetails, token));
+    }
     setEditedDetails({});
   };
 

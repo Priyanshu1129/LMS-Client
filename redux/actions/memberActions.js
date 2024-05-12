@@ -134,9 +134,10 @@ export const updateMember = (memberData, token, memberId) => async (dispatch) =>
     }
 
     try {
-        console.log("update-memberData", memberData,);
+        console.log("update-memberData%", memberData,);
+        console.log("update-memberData%", formData,);
         dispatch(memberActions.updateMemberRequest());
-        console.log("updation url----------", `${route}/${memberId}`);
+        console.log("update url----------", `${route}/${memberId}`);
         const data = await axios.put(
             `${route}/${memberId}`,
             formData,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { Avatar, Snackbar, useTheme } from "react-native-paper";
 import ConfirmationDialog from "../../components/confirmationDialog.jsx";
 import { useSelector, useDispatch } from "react-redux";
@@ -15,9 +15,11 @@ import { ScrollView } from "react-native-gesture-handler";
 const StaffProfilePage = ({ route, navigation }) => {
   const { staff, token } = route.params;
   const [staffDetails, setStaffDetails] = useState(null);
+  const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
+  const [edit, setEdit] = useState(false);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [profileUrl, setProfileUrl] = useState(defaultAvatar);
@@ -42,7 +44,6 @@ const StaffProfilePage = ({ route, navigation }) => {
       setLoading(true);
     } else if (getStaffStatus == "success") {
       setStaffDetails(getStaffData.data);
-      setProfileUrl(getStaffData.data.avatar);
       setLoading(false);
       dispatch(staffActions.clearStaffDetailsStatus());
     } else if (getStaffStatus == "failed") {
@@ -70,14 +71,12 @@ const StaffProfilePage = ({ route, navigation }) => {
     if (updateStatus === "pending") {
       setLoading(true);
     } else if (updateStatus === "success") {
-      setLoading(false);
       dispatch(getAllStaff(token));
+      setStaffDetails(updateData?.data);
+      setMessage("Details Updated Successfully");
+      setVisibleSnackBar(true);
+      setLoading(false);
       dispatch(staffActions.clearUpdateStaffStatus());
-      navigation.navigate({
-        name: "Staffs",
-        params: { operationPerformed: "staffUpdated" },
-        merge: true,
-      });
     } else if (updateStatus === "failed") {
       setLoading(false);
       setMessage(updateError);
@@ -91,8 +90,8 @@ const StaffProfilePage = ({ route, navigation }) => {
     if (deleteStatus === "pending") {
       setLoading(true);
     } else if (deleteStatus === "success") {
-      setLoading(false);
       dispatch(getAllStaff(token));
+      setLoading(false);
       dispatch(staffActions.clearDeleteStaffStatus());
       navigation.navigate({
         name: "Staffs",
@@ -114,15 +113,18 @@ const StaffProfilePage = ({ route, navigation }) => {
     }
   }, [deleteConfirmation]);
 
-  const user = {
-    name: staffDetails?.name || "N/A",
-    email: staffDetails?.email || "N/A",
-    phone: staffDetails?.phone || "N/A",
-    gender: staffDetails?.gender || "N/A",
-    address: staffDetails?.address || "",
-    createdAt: staffDetails?.createdAt || "N/A",
-    avatar: staffDetails?.avatar || defaultAvatar,
-  };
+  useEffect(() => {
+    setUser({
+      name: staffDetails?.name || "N/A",
+      email: staffDetails?.email || "N/A",
+      phone: staffDetails?.phone || "N/A",
+      gender: staffDetails?.gender || "N/A",
+      address: staffDetails?.address || "",
+      createdAt: staffDetails?.createdAt || "N/A",
+      avatar: staffDetails?.avatar || defaultAvatar,
+    });
+    setProfileUrl(staffDetails?.avatar);
+  }, [staffDetails]);
 
   const onDismissSnackBar = () => {
     setVisibleSnackBar(false);
@@ -133,7 +135,11 @@ const StaffProfilePage = ({ route, navigation }) => {
     if (profileUrl !== staffDetails.avatar) {
       editedDetails.avatarUri = profileUrl;
     }
-    dispatch(updateStaff(editedDetails, token, staffDetails._id));
+    if (Object.keys(editedDetails).length > 0) {
+      dispatch(updateStaff(editedDetails, token, staffDetails._id));
+    }
+    console.log(editedDetails);
+    setEditedDetails({});
   };
 
   return loading && !staffDetails ? (
@@ -150,19 +156,21 @@ const StaffProfilePage = ({ route, navigation }) => {
           <EditProfilePic
             profileUrl={profileUrl}
             setProfileUrl={setProfileUrl}
+            edit={edit}
           />
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.email}>{user.email}</Text>
+          <Text style={styles.name}>{user?.name}</Text>
+          <Text style={styles.email}>{user?.email}</Text>
         </View>
 
         <StaffBasicInfo
           editedDetails={editedDetails}
           setEditedDetails={setEditedDetails}
           user={user}
+          setEdit={setEdit}
+          edit={edit}
           setDeleteDialogVisible={setDialogVisible}
           handleUpdateStaff={handleUpdateStaff}
         />
-        {/* </ScrollView> */}
 
         <ConfirmationDialog
           visible={dialogVisible}
@@ -260,4 +268,3 @@ const styles = StyleSheet.create({
 });
 
 export default StaffProfilePage;
-

@@ -84,11 +84,6 @@ const MemberProfilePage = ({ route, navigation }) => {
       setVisibleSnackBar(true);
       setLoading(false);
       dispatch(memberActions.clearUpdateMemberStatus());
-      // navigation.navigate({
-      //   name: "Members",
-      //   params: { operationPerformed: "memberUpdated" },
-      //   merge: true,
-      // });
     } else if (updateStatus === "failed") {
       setLoading(false);
       setMessage(updateError);
@@ -102,8 +97,8 @@ const MemberProfilePage = ({ route, navigation }) => {
     if (deleteStatus === "pending") {
       setLoading(true);
     } else if (deleteStatus === "success") {
-      setLoading(false);
       dispatch(getAllMember(token));
+      setLoading(false);
       dispatch(memberActions.clearDeleteMemberStatus());
       navigation.navigate({
         name: "Members",

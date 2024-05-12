@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const StaffBasicInfo = ({
   user,
@@ -8,12 +8,19 @@ const StaffBasicInfo = ({
   editedDetails,
   setEditedDetails,
   handleUpdateStaff,
+  edit,
+  setEdit,
 }) => {
-  const [edit, setEdit] = useState(false);
+  const [editModeDetails, setEditModeDetails] = useState(user);
 
   const handleChange = (key, value) => {
+    setEditModeDetails({ ...editModeDetails, [key]: value });
     setEditedDetails({ ...editedDetails, [key]: value });
   };
+
+  useEffect(() => {
+    setEditModeDetails(user);
+  }, [user]);
 
   const theme = useTheme();
   const colors = {
@@ -25,12 +32,23 @@ const StaffBasicInfo = ({
       <View style={styles.userInfo}>
         <View style={styles.userInfoRow}>
           <Text style={[styles.label, { color: colors.labelColor }]}>
+            Name:
+          </Text>
+          <TextInput
+            style={styles.input}
+            editable={edit}
+            value={edit ? editModeDetails?.name : user?.name}
+            onChangeText={(value) => handleChange("name", value)}
+          />
+        </View>
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
             Email:
           </Text>
           <TextInput
             style={styles.input}
             editable={edit}
-            value={editedDetails?.email || user?.email}
+            value={edit ? editModeDetails?.email : user?.email}
             onChangeText={(value) => handleChange("email", value)}
           />
         </View>
@@ -43,7 +61,7 @@ const StaffBasicInfo = ({
             <TextInput
               style={styles.input}
               editable={edit}
-              value={editedDetails?.phone || user?.phone}
+              value={edit ? editModeDetails?.phone : user?.phone}
               onChangeText={(value) => handleChange("phone", value)}
             />
           </View>
@@ -54,7 +72,7 @@ const StaffBasicInfo = ({
             <TextInput
               style={styles.input}
               editable={edit}
-              value={editedDetails?.gender || user?.gender}
+              value={edit ? editModeDetails?.gender : user?.gender}
               onChangeText={(value) => handleChange("gender", value)}
             />
           </View>
@@ -65,8 +83,7 @@ const StaffBasicInfo = ({
           </Text>
           <TextInput
             style={styles.input}
-            value={editedDetails?.createdAt || user?.createdAt}
-            onChangeText={(value) => handleChange("monthlySeatFee", value)}
+            value={user?.createdAt}
             editable={false}
           />
         </View>
@@ -82,7 +99,11 @@ const StaffBasicInfo = ({
                 { backgroundColor: colors.buttonBackground },
               ]}
               labelStyle={styles.buttonLabel}
-              onPress={() => setEdit(false)}
+              onPress={() => [
+                setEdit(false),
+                setEditModeDetails(user),
+                setEditedDetails({}),
+              ]}
             >
               Cancel
             </Button>

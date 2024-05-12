@@ -32,6 +32,17 @@ const MemberBasicInfo = ({
       <View style={styles.userInfo}>
         <View style={styles.userInfoRow}>
           <Text style={[styles.label, { color: colors.labelColor }]}>
+            Name:
+          </Text>
+          <TextInput
+            style={styles.input}
+            editable={edit}
+            value={edit ? editModeDetails?.name : user?.name}
+            onChangeText={(value) => handleChange("name", value)}
+          />
+        </View>
+        <View style={styles.userInfoRow}>
+          <Text style={[styles.label, { color: colors.labelColor }]}>
             Email:
           </Text>
           <TextInput
@@ -120,8 +131,7 @@ const MemberBasicInfo = ({
           </Text>
           <TextInput
             style={styles.input}
-            value={edit ? editModeDetails?.createdAt : user?.createdAt}
-            onChangeText={(value) => handleChange("monthlySeatFee", value)}
+            value={user?.createdAt}
             editable={false}
           />
         </View>
