@@ -7,8 +7,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { Button, TextInput, Snackbar } from "react-native-paper";
+import { Button, Snackbar } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSeats } from "../../redux/actions/seatActions";
 import PageLoader from "../../components/pageLoader";
@@ -21,11 +20,11 @@ import RadioFilter from "../../components/radioFilter";
 const AllSeats = ({ navigation, route }) => {
   const [filteredSeats, setFilteredSeats] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [visible, setVisible] = useState(false);
+  const [visibleSnackbar, setVisibleSnackbar] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { status, data, error } = useSelector((state) => state.seat?.allSeats);
-  const [seats, setSeats] = useState(data?.data ? data.data : []);
+  const { status, data, error } = useSelector((state) => state.seat.allSeats);
+  const [seats, setSeats] = useState(data.data ?? []);
 
   const [schedule, setSchedule] = useState("fullDay");
 
@@ -52,7 +51,7 @@ const AllSeats = ({ navigation, route }) => {
   useEffect(() => {
     if (operationSuccess && !loading) {
       setMessage(operationMessage);
-      setVisible(true);
+      setVisibleSnackbar(true);
     }
   }, [operationSuccess, loading]);
 
@@ -66,7 +65,7 @@ const AllSeats = ({ navigation, route }) => {
       dispatch(seatActions.clearAllSeatsStatus());
     } else {
       setMessage(error);
-      setVisible(true);
+      setVisibleSnackbar(true);
       setLoading(false);
       seatActions.clearAllSeatsError();
       dispatch(seatActions.clearAllSeatsStatus());
@@ -76,8 +75,7 @@ const AllSeats = ({ navigation, route }) => {
   const onChangeSearch = (query) => setSearchQuery(query);
 
   const getFilteredSeats = () => {
-    console.log("filtered seat called-------------------");
-    const fseats = seats.map((seat) => {
+    const filteredResult = seats.map((seat) => {
       let isOccupied = true;
       if (seat.schedule[schedule].occupant != null) {
         isOccupied = true;
@@ -86,7 +84,7 @@ const AllSeats = ({ navigation, route }) => {
       }
       return { ...seat, isOccupied: isOccupied };
     });
-    setFilteredSeats(fseats);
+    setFilteredSeats(filteredResult);
   };
   const renderSeats = (theme) => {
     const styles = {
@@ -121,6 +119,7 @@ const AllSeats = ({ navigation, route }) => {
         borderRadius: 4,
       },
     };
+    
     return filteredSeats.map((seat, index) => {
       return (
         <TouchableOpacity
@@ -146,7 +145,7 @@ const AllSeats = ({ navigation, route }) => {
   };
 
   const onDismissSnackBar = () => {
-    setVisible(false);
+    setVisibleSnackbar(false);
     setMessage(null);
   };
 
@@ -192,7 +191,7 @@ const AllSeats = ({ navigation, route }) => {
         style={{ flexDirection: "row", alignItems: "center", marginBottom: 15 }}
       >
         <View style={{ flex: 1 }}>
-          <SearchBar value={{ searchQuery }} onChangeText={onChangeSearch} />
+          <SearchBar placeholder={"Enter Seat Number"} value={{ searchQuery }} onChangeText={onChangeSearch} />
         </View>
         <View style={{ flexDirection: "row", gap: 5, margin: 5 }}>
           <Button
@@ -287,7 +286,7 @@ const AllSeats = ({ navigation, route }) => {
 
       {message && (
         <Snackbar
-          visible={visible}
+          visible={visibleSnackbar}
           onDismiss={onDismissSnackBar}
           action={{
             label: "Hide",

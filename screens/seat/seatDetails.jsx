@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { Button, Snackbar } from "react-native-paper";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import { getAllMember } from "../../redux/actions/memberActions.js";
@@ -244,7 +244,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   button: {
-
     borderRadius: 5,
   },
 });

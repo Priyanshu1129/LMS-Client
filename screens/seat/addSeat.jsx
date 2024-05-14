@@ -45,9 +45,9 @@ const AddSeatPage = ({ navigation, route }) => {
     if (status === "pending") {
       setLoading(true);
     } else if (status === "success") {
-      setLoading(false);
       dispatch(getAllSeats(token));
       dispatch(seatActions.clearSeatDetailsStatus());
+      setLoading(false);
       navigation.navigate({
         name: "AllSeats",
         params: {
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   button: {
     flex: 1,
     marginHorizontal: 5,
-    borderRadius: 5
+    borderRadius: 5,
   },
 });
 

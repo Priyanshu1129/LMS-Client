@@ -23,7 +23,7 @@ const SlotCard = ({ members, lockerDetails, member, setMember, token }) => {
     dispatch(deAllocateLocker(lockerDetails.id, token));
   };
 
-  console.log("lockerDetails-", lockerDetails);
+
 
   return (
     <View style={styles.card}>

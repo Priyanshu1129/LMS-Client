@@ -2,14 +2,14 @@ import React from "react";
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
-const SearchBar = ({ value, onChangeText, onPress }) => {
+const SearchBar = ({ placeholder, value, onChangeText, onPress }) => {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
         <AntDesign name="search1" size={20} color="gray" style={styles.icon} />
         <TextInput
           style={styles.input}
-          placeholder="Search"
+          placeholder={placeholder || "Search"}
           placeholderTextColor="gray"
           value={value}
           onChangeText={onChangeText}
