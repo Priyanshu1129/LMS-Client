@@ -21,7 +21,6 @@ const MyOrganizationPage = ({ route }) => {
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [visibleSnackBar, setVisibleSnackBar] = useState(false);
-  const [logoUrl, setLogoUrl] = useState(defaultAvatar);
   const [organizationDetails, setOrganizationDetails] = useState();
   const [editedDetails, setEditedDetails] = useState({});
   const [activeTab, setActiveTab] = useState("basicInfo");
@@ -33,6 +32,7 @@ const MyOrganizationPage = ({ route }) => {
   );
 
   const [organizationData, setOrganizationData] = useState(data?.data);
+  const [logoUrl, setLogoUrl] = useState(data?.data?.logo || defaultAvatar);
 
   const getOrgId = async () => {
     const storedData = await AsyncStorage.getItem("data");
