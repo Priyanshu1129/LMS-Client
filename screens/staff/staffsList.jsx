@@ -3,7 +3,7 @@ import { View, ScrollView, TouchableOpacity } from "react-native";
 import SearchBar from "../../components/searchBar";
 import { StyleSheet } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import { Button, Snackbar } from "react-native-paper";
+import { Button, Snackbar, useTheme } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllStaff } from "../../redux/actions/staffActions";
 import PageLoader from "../../components/pageLoader";
@@ -18,6 +18,7 @@ const StaffsList = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
 
   const { token, staffCreated, staffDeleted } = route.params;
+  const theme = useTheme();
 
   const dispatch = useDispatch();
   const { status, data, error } = useSelector((state) => state.staff.allStaffs);
@@ -92,7 +93,11 @@ const StaffsList = ({ route, navigation }) => {
               onPress={() => navigation.navigate("AddStaff")}
               mode="contained"
             >
-              <MaterialIcon name="person-add-alt" size={20} color="white" />
+              <MaterialIcon
+                name="person-add-alt"
+                size={theme.iconSizes.sm}
+                color="white"
+              />
             </Button>
             <Button
               style={styles.optionButton}
@@ -100,7 +105,11 @@ const StaffsList = ({ route, navigation }) => {
               mode="contained"
               elevation={5}
             >
-              <MaterialIcon name="refresh" size={20} color="white" />
+              <MaterialIcon
+                name="refresh"
+                size={theme.iconSizes.sm}
+                color="white"
+              />
             </Button>
           </View>
         </View>

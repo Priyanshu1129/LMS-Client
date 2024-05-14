@@ -158,7 +158,7 @@ const MemberProfilePage = ({ route, navigation }) => {
       <View
         style={[
           styles.header,
-          { backgroundColor: theme.colors.secondaryContainer },
+          // { backgroundColor: theme.colors.secondaryContainer },
         ]}
       >
         <EditProfilePic
@@ -166,8 +166,12 @@ const MemberProfilePage = ({ route, navigation }) => {
           profileUrl={profileUrl}
           setProfileUrl={setProfileUrl}
         />
-        <Text style={styles.name}>{user?.name}</Text>
-        <Text style={styles.email}>{user?.email}</Text>
+        <Text style={[styles.name, { fontSize: theme.fontSizes.lg }]}>
+          {user?.name}
+        </Text>
+        <Text style={[styles.email, { fontSize: theme.fontSizes.sm }]}>
+          {user?.email}
+        </Text>
         <View
           style={[
             styles.statusWrapper,
@@ -179,7 +183,7 @@ const MemberProfilePage = ({ route, navigation }) => {
         >
           <Text
             style={[
-              styles.status,
+              [{ fontSize: theme.fontSizes.md }],
               {
                 color: user?.membershipStatus === "active" ? "green" : "orange",
               },
@@ -191,86 +195,84 @@ const MemberProfilePage = ({ route, navigation }) => {
       </View>
 
       <View style={styles.tabBar}>
-        <ScrollView horizontal>
-          <TouchableOpacity
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            activeTab == "basicInfo"
+              ? {
+                  ...styles.activeTab,
+                  backgroundColor: theme.colors.primary,
+                }
+              : { backgroundColor: theme.colors.secondaryContainer },
+          ]}
+          onPress={() => setActiveTab("basicInfo")}
+        >
+          <Text
             style={[
-              styles.tabButton,
-              activeTab == "basicInfo"
-                ? {
-                    ...styles.activeTab,
-                    backgroundColor: theme.colors.primary,
-                  }
-                : { backgroundColor: theme.colors.secondaryContainer },
+              [styles.tabButtonText, { fontSize: theme.fontSizes.sm }],
+              {
+                color:
+                  activeTab === "basicInfo"
+                    ? theme.colors.background
+                    : theme.colors.primary,
+              },
             ]}
-            onPress={() => setActiveTab("basicInfo")}
           >
-            <Text
-              style={[
-                styles.tabButtonText,
-                {
-                  color:
-                    activeTab === "basicInfo"
-                      ? theme.colors.background
-                      : theme.colors.primary,
-                },
-              ]}
-            >
-              Basic Info
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+            Basic Info
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            activeTab == "accountDetails"
+              ? {
+                  ...styles.activeTab,
+                  backgroundColor: theme.colors.primary,
+                }
+              : { backgroundColor: theme.colors.secondaryContainer },
+          ]}
+          onPress={() => setActiveTab("accountDetails")}
+        >
+          <Text
             style={[
-              styles.tabButton,
-              activeTab == "accountDetails"
-                ? {
-                    ...styles.activeTab,
-                    backgroundColor: theme.colors.primary,
-                  }
-                : { backgroundColor: theme.colors.secondaryContainer },
+              [styles.tabButtonText, { fontSize: theme.fontSizes.sm }],
+              {
+                color:
+                  activeTab === "accountDetails"
+                    ? theme.colors.background
+                    : theme.colors.primary,
+              },
             ]}
-            onPress={() => setActiveTab("accountDetails")}
           >
-            <Text
-              style={[
-                styles.tabButtonText,
-                {
-                  color:
-                    activeTab === "accountDetails"
-                      ? theme.colors.background
-                      : theme.colors.primary,
-                },
-              ]}
-            >
-              Account Details
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+            Account Details
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.tabButton,
+            activeTab == "planDetail"
+              ? {
+                  ...styles.activeTab,
+                  backgroundColor: theme.colors.primary,
+                }
+              : { backgroundColor: theme.colors.secondaryContainer },
+          ]}
+          onPress={() => setActiveTab("planDetail")}
+        >
+          <Text
             style={[
-              styles.tabButton,
-              activeTab == "planDetail"
-                ? {
-                    ...styles.activeTab,
-                    backgroundColor: theme.colors.primary,
-                  }
-                : { backgroundColor: theme.colors.secondaryContainer },
+              [styles.tabButtonText, { fontSize: theme.fontSizes.sm }],
+              {
+                color:
+                  activeTab === "planDetail"
+                    ? theme.colors.background
+                    : theme.colors.primary,
+              },
             ]}
-            onPress={() => setActiveTab("planDetail")}
           >
-            <Text
-              style={[
-                styles.tabButtonText,
-                {
-                  color:
-                    activeTab === "planDetail"
-                      ? theme.colors.background
-                      : theme.colors.primary,
-                },
-              ]}
-            >
-              Plan Details
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
+            Plan Details
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {activeTab === "basicInfo" ? (
@@ -324,17 +326,14 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   name: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     marginTop: 0,
   },
   email: {
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 5,
     color: "#666",
-  },
-  status: {
-    fontSize: 16,
   },
   statusWrapper: {
     marginTop: 8,
@@ -347,8 +346,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    marginHorizontal: 30,
+    marginVertical: 5,
+    borderRadius: 6,
+    gap: 4,
   },
   tabButton: {
     flex: 1,
@@ -356,14 +357,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     width: 150,
+    borderRadius: 6,
   },
   activeTab: {
     borderBottomWidth: 0,
     borderBottomColor: "#fff",
-    borderRadius: 2,
+    borderRadius: 6,
   },
   tabButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "bold",
   },
   tabContent: {

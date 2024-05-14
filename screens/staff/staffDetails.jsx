@@ -158,8 +158,12 @@ const StaffProfilePage = ({ route, navigation }) => {
             setProfileUrl={setProfileUrl}
             edit={edit}
           />
-          <Text style={styles.name}>{user?.name}</Text>
-          <Text style={styles.email}>{user?.email}</Text>
+          <Text style={[styles.name, { fontSize: theme.fontSizes.lg }]}>
+            {user?.name}
+          </Text>
+          <Text style={[styles.email, { fontSize: theme.fontSizes.sm }]}>
+            {user?.email}
+          </Text>
         </View>
 
         <StaffBasicInfo

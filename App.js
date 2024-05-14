@@ -3,13 +3,13 @@ import store from './redux/store';
 import { Provider } from 'react-redux';
 import { useColorScheme } from 'react-native';
 import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
-import { CustomDarkTheme, CustomDefaultTheme } from './themes/themeProvider';
+import { CustomDarkTheme, CustomDefaultTheme, LightTheme } from './themes/themeProvider';
 export default function App() {
 
   const theme = {
-    ...DefaultTheme,
+    // ...DefaultTheme,
     colors: {
-      ...DefaultTheme.colors,
+      // ...DefaultTheme.colors,
       "primary": "rgb(120, 69, 172)",
       "onPrimary": "rgb(255, 255, 255)",
       "primaryContainer": "rgb(240, 219, 255)",
@@ -26,9 +26,9 @@ export default function App() {
       "onError": "rgb(255, 255, 255)",
       "errorContainer": "rgb(255, 218, 214)",
       "onErrorContainer": "rgb(65, 0, 2)",
-      "background": "rgb(255, 251, 255)",
+      "background": "rgb(255, 255 255)",
       "onBackground": "rgb(29, 27, 30)",
-      "surface": "rgb(255, 251, 255)",
+      "surface": "rgb(255, 255, 255)",
       "onSurface": "rgb(29, 27, 30)",
       "surfaceVariant": "rgb(233, 223, 235)",
       "onSurfaceVariant": "rgb(74, 69, 78)",
@@ -52,8 +52,34 @@ export default function App() {
       "backdrop": "rgba(51, 47, 55, 0.4)"
 
     },
+    // "fonts": {
+    //   "regular": {
+    //     "fontFamily": 'Roboto-Regular',
+    //     "fontWeight": '400',
+    //   },
+    //   'medium': {
+    //     "fontFamily": 'Roboto-Medium',
+    //     "fontWeight": '500',
+    //   },
+    // },
+    fontSizes: {
+      "xs": 11,
+      "sm": 13,
+      "md": 15,
+      "lg": 17,
+      "xl": 18,
+      "h3": 22,
+      "h2": 28,
+      "h1": 34
+    },
+    iconSizes: {
+      "xs": 15,
+      "sm": 20,
+      "md": 25,
+    }
   };
 
+  // const theme = LightTheme || CustomDarkTheme;
   return (
     <Provider store={store}>
       <PaperProvider theme={theme}>

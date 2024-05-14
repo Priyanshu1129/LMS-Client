@@ -31,8 +31,13 @@ const BasicInfo = ({
     <View style={styles.tabContent}>
       <View style={styles.userInfo}>
         <View style={styles.userInfoRow}>
-          <Text style={[styles.label, { color: colors.labelColor }]}>
-            Name:
+          <Text
+            style={[
+              styles.label,
+              { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+            ]}
+          >
+            Name
           </Text>
           <TextInput
             style={styles.input}
@@ -42,8 +47,13 @@ const BasicInfo = ({
           />
         </View>
         <View style={styles.userInfoRow}>
-          <Text style={[styles.label, { color: colors.labelColor }]}>
-            Owner:
+          <Text
+            style={[
+              styles.label,
+              { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+            ]}
+          >
+            Owner
           </Text>
           <TextInput
             style={styles.input}
@@ -52,8 +62,13 @@ const BasicInfo = ({
           />
         </View>
         <View style={styles.userInfoRow}>
-          <Text style={[styles.label, { color: colors.labelColor }]}>
-            Address:
+          <Text
+            style={[
+              styles.label,
+              { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+            ]}
+          >
+            Address
           </Text>
           <TextInput
             style={styles.input}
@@ -65,8 +80,13 @@ const BasicInfo = ({
           />
         </View>
         <View style={styles.userInfoRow}>
-          <Text style={[styles.label, { color: colors.labelColor }]}>
-            About:
+          <Text
+            style={[
+              styles.label,
+              { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+            ]}
+          >
+            About
           </Text>
           <TextInput
             style={styles.input}
@@ -101,7 +121,7 @@ const BasicInfo = ({
                 styles.button,
                 { backgroundColor: colors.buttonBackground },
               ]}
-              labelStyle={styles.buttonLabel}
+              labelStyle={{ fontSize: theme.fontSizes.md }}
               onPress={() => [
                 setEdit(false),
                 setEditedDetails({}),
@@ -117,7 +137,7 @@ const BasicInfo = ({
                 styles.button,
                 { backgroundColor: colors.buttonBackground },
               ]}
-              labelStyle={styles.buttonLabel}
+              labelStyle={{ fontSize: theme.fontSizes.md }}
               onPress={() => [handleUpdateOrganization(), setEdit(false)]}
             >
               Update
@@ -132,7 +152,7 @@ const BasicInfo = ({
                 styles.button,
                 { backgroundColor: colors.buttonBackground },
               ]}
-              labelStyle={styles.buttonLabel}
+              labelStyle={{ fontSize: theme.fontSizes.md }}
               onPress={() => setEdit(true)}
             >
               Edit
@@ -145,7 +165,8 @@ const BasicInfo = ({
 };
 const styles = StyleSheet.create({
   tabContent: {
-    padding: 40,
+    paddingHorizontal: 40,
+    paddingVertical: 20,
     display: "flex",
     justifyContent: "center",
   },
@@ -172,10 +193,10 @@ const styles = StyleSheet.create({
     // backgroundColor: "green",
   },
   label: {
-    fontWeight: "bold",
+    fontWeight: "500",
     width: 130,
     color: "#666",
-    fontSize: 15,
+    fontSize: 13,
     marginBottom: 2,
   },
   value: {
@@ -185,14 +206,15 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
     marginTop: 20,
+    gap: 8,
   },
   button: {
     fontSize: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    borderRadius: 5,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+    borderRadius: 6,
+    flex: 1,
   },
   buttonLabel: {
     fontSize: 18,
@@ -201,7 +223,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#f2f2f2",
     padding: 8,
-    borderRadius: 5,
+    borderRadius: 6,
   },
 });
 

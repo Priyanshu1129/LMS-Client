@@ -31,8 +31,13 @@ const StaffBasicInfo = ({
     <View style={styles.tabContent}>
       <View style={styles.userInfo}>
         <View style={styles.userInfoRow}>
-          <Text style={[styles.label, { color: colors.labelColor }]}>
-            Name:
+          <Text
+            style={[
+              styles.label,
+              { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+            ]}
+          >
+            Name
           </Text>
           <TextInput
             style={styles.input}
@@ -42,8 +47,13 @@ const StaffBasicInfo = ({
           />
         </View>
         <View style={styles.userInfoRow}>
-          <Text style={[styles.label, { color: colors.labelColor }]}>
-            Email:
+          <Text
+            style={[
+              styles.label,
+              { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+            ]}
+          >
+            Email
           </Text>
           <TextInput
             style={styles.input}
@@ -55,8 +65,13 @@ const StaffBasicInfo = ({
 
         <View style={{ flexDirection: "row", gap: 8, width: "100%" }}>
           <View style={[styles.userInfoRow, { width: "60%" }]}>
-            <Text style={[styles.label, { color: colors.labelColor }]}>
-              Phone:
+            <Text
+              style={[
+                styles.label,
+                { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+              ]}
+            >
+              Phone
             </Text>
             <TextInput
               style={styles.input}
@@ -66,8 +81,13 @@ const StaffBasicInfo = ({
             />
           </View>
           <View style={[styles.userInfoRow, { width: "37%" }]}>
-            <Text style={[styles.label, { color: colors.labelColor }]}>
-              Gender:
+            <Text
+              style={[
+                styles.label,
+                { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+              ]}
+            >
+              Gender
             </Text>
             <TextInput
               style={styles.input}
@@ -78,8 +98,13 @@ const StaffBasicInfo = ({
           </View>
         </View>
         <View style={styles.userInfoRow}>
-          <Text style={[styles.label, { color: colors.labelColor }]}>
-            Created At:
+          <Text
+            style={[
+              styles.label,
+              { color: colors.labelColor, fontSize: theme.fontSizes.sm },
+            ]}
+          >
+            Created At
           </Text>
           <TextInput
             style={styles.input}
@@ -98,7 +123,7 @@ const StaffBasicInfo = ({
                 styles.button,
                 { backgroundColor: colors.buttonBackground },
               ]}
-              labelStyle={styles.buttonLabel}
+              labelStyle={{ fontSize: theme.fontSizes.md }}
               onPress={() => [
                 setEdit(false),
                 setEditModeDetails(user),
@@ -114,7 +139,7 @@ const StaffBasicInfo = ({
                 styles.button,
                 { backgroundColor: colors.buttonBackground },
               ]}
-              labelStyle={styles.buttonLabel}
+              labelStyle={{ fontSize: theme.fontSizes.md }}
               onPress={() => [handleUpdateStaff(), setEdit(false)]}
             >
               Update
@@ -129,7 +154,7 @@ const StaffBasicInfo = ({
                 styles.button,
                 { backgroundColor: colors.buttonBackground },
               ]}
-              labelStyle={styles.buttonLabel}
+              labelStyle={{ fontSize: theme.fontSizes.md }}
               onPress={() => setEdit(true)}
             >
               Edit
@@ -141,7 +166,7 @@ const StaffBasicInfo = ({
                 styles.button,
                 { backgroundColor: colors.buttonBackground },
               ]}
-              labelStyle={styles.buttonLabel}
+              labelStyle={{ fontSize: theme.fontSizes.md }}
               onPress={() => setDeleteDialogVisible(true)}
             >
               Delete
@@ -154,7 +179,8 @@ const StaffBasicInfo = ({
 };
 const styles = StyleSheet.create({
   tabContent: {
-    padding: 40,
+    paddingHorizontal: 40,
+    paddingVertical: 20,
     display: "flex",
     justifyContent: "center",
   },
@@ -181,10 +207,9 @@ const styles = StyleSheet.create({
     // backgroundColor: "green",
   },
   label: {
-    fontWeight: "bold",
+    fontWeight: "500",
     width: 130,
     color: "#666",
-    fontSize: 15,
     marginBottom: 2,
   },
   value: {
@@ -194,23 +219,20 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
     marginTop: 20,
+    gap: 8,
   },
   button: {
-    fontSize: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    borderRadius: 5,
-  },
-  buttonLabel: {
-    fontSize: 18,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+    borderRadius: 6,
+    flex: 1,
   },
   input: {
     marginBottom: 10,
     backgroundColor: "#f2f2f2",
     padding: 8,
-    borderRadius: 5,
+    borderRadius: 6,
   },
 });
 

@@ -3,7 +3,7 @@ import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import SearchBar from "../../components/searchBar";
 import { StyleSheet } from "react-native";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
-import { Button, Snackbar } from "react-native-paper";
+import { Button, Snackbar, useTheme } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllMember } from "../../redux/actions/memberActions";
 import PageLoader from "../../components/pageLoader";
@@ -23,6 +23,8 @@ const MembersList = ({ route, navigation }) => {
   const [pageNumber, setPageNumber] = useState(1);
 
   const { token, operationPerformed } = route.params;
+
+  const theme = useTheme();
 
   const dispatch = useDispatch();
   const { status, data, error } = useSelector(
@@ -123,14 +125,14 @@ const MembersList = ({ route, navigation }) => {
               onPress={() => navigation.navigate("AddMember")}
               mode="contained"
             >
-              <MaterialIcon name="person-add-alt" size={20} color="white" />
+              <MaterialIcon name="person-add-alt" size={theme.iconSizes.sm} color="white" />
             </Button>
             <Button
               style={styles.optionButton}
               onPress={() => [fetchMembers(), setPageNumber(1)]}
               mode="contained"
             >
-              <MaterialIcon name="refresh" size={20} color="white" />
+              <MaterialIcon name="refresh" size={theme.iconSizes.sm} color="white" />
             </Button>
           </View>
         </View>

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Menu, Button } from "react-native-paper";
+import { Menu, Button, useTheme } from "react-native-paper";
 import { StyleSheet } from "react-native";
-import AntDesign from 'react-native-vector-icons/AntDesign'
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const FilterMenu = ({ visible, setVisible, onChange, options }) => {
   const [selectedOption, setSelectedOption] = useState(options[0].value);
+  const theme = useTheme();
 
   const closeFilter = () => setVisible(false);
 
@@ -27,10 +28,13 @@ const FilterMenu = ({ visible, setVisible, onChange, options }) => {
           labelStyle={styles.buttonLabel}
           mode="contained"
         >
-          <AntDesign name="filter" size={18}/>
+          <AntDesign name="filter" size={theme.iconSizes.sm} />
         </Button>
       }
-      contentStyle={styles.menuContent}
+      contentStyle={{
+        ...styles.menuContent,
+        backgroundColor: theme.colors.background,
+      }}
     >
       {options.map((option) => (
         <Menu.Item
@@ -51,16 +55,9 @@ const styles = StyleSheet.create({
     alignItems: "center", // Center content horizontally
     padding: 0,
   },
-  buttonLabel: {
-    color: "white",
-  },
   menuContent: {
-    backgroundColor: "#fff",
     borderRadius: 5,
     marginTop: 8,
-  },
-  menuItemTitle: {
-    color: "#333",
   },
 });
 

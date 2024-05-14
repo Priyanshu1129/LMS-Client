@@ -35,14 +35,21 @@ const StaffListCard = ({
         <View style={styles.imageWrapper}>
           <Image source={{ uri: `${profileImage}` }} style={styles.image} />
         </View>
-        <Text style={styles.title}>{name}</Text>
+        <Text
+          style={[
+            styles.title,
+            { color: theme.colors.secondary, fontSize: theme.fontSizes.md },
+          ]}
+        >
+          {name}
+        </Text>
       </View>
       <View style={styles.rightWrapper}>
         <AntDesign
           name="forward"
           size={18}
           color={"#6B7280"}
-          style={styles.forwardIcon}
+          style={[styles.forwardIcon, { color: theme.colors.secondary }]}
         />
       </View>
     </View>

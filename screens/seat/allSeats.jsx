@@ -24,7 +24,7 @@ const AllSeats = ({ navigation, route }) => {
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const { status, data, error } = useSelector((state) => state.seat.allSeats);
-  const [seats, setSeats] = useState(data.data ?? []);
+  const [seats, setSeats] = useState(data?.data ?? []);
 
   const [schedule, setSchedule] = useState("fullDay");
 
@@ -119,7 +119,7 @@ const AllSeats = ({ navigation, route }) => {
         borderRadius: 4,
       },
     };
-    
+
     return filteredSeats.map((seat, index) => {
       return (
         <TouchableOpacity
@@ -191,7 +191,11 @@ const AllSeats = ({ navigation, route }) => {
         style={{ flexDirection: "row", alignItems: "center", marginBottom: 15 }}
       >
         <View style={{ flex: 1 }}>
-          <SearchBar placeholder={"Enter Seat Number"} value={{ searchQuery }} onChangeText={onChangeSearch} />
+          <SearchBar
+            placeholder={"Enter Seat Number"}
+            value={{ searchQuery }}
+            onChangeText={onChangeSearch}
+          />
         </View>
         <View style={{ flexDirection: "row", gap: 5, margin: 5 }}>
           <Button

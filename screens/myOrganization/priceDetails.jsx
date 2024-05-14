@@ -8,10 +8,9 @@ const PriceDetails = ({
   editedDetails,
   setEditedDetails,
   handleUpdateOrganization,
-  edit, 
-  setEdit
+  edit,
+  setEdit,
 }) => {
-  
   const { seatDefaultPrice, lockerDefaultPrice } = organizationDetails;
 
   const [detailsObject, setDetailsObject] = useState({
@@ -47,12 +46,22 @@ const PriceDetails = ({
       <View style={styles.tabContent}>
         <View style={styles.userInfo}>
           <View style={styles.userInfoRow}>
-            <Text style={[styles.label, { color: colors.labelColor }]}>
+            <Text
+              style={[
+                styles.label,
+                { color: colors.labelColor, fontSize: theme.fontSizes.lg },
+              ]}
+            >
               Seat Price
             </Text>
             <View style={styles.inputParentContainer}>
               <View style={styles.inputSection}>
-                <Text style={[styles.inputLabel, { color: colors.labelColor }]}>
+                <Text
+                  style={[
+                    styles.inputLabel,
+                    { color: colors.labelColor, fontSize: theme.fontSizes.md },
+                  ]}
+                >
                   Morning
                 </Text>
                 <TextInput
@@ -69,7 +78,12 @@ const PriceDetails = ({
                 />
               </View>
               <View style={styles.inputSection}>
-                <Text style={[styles.inputLabel, { color: colors.labelColor }]}>
+                <Text
+                  style={[
+                    styles.inputLabel,
+                    { color: colors.labelColor, fontSize: theme.fontSizes.md },
+                  ]}
+                >
                   Noon
                 </Text>
                 <TextInput
@@ -86,7 +100,12 @@ const PriceDetails = ({
                 />
               </View>
               <View style={styles.inputSection}>
-                <Text style={[styles.inputLabel, { color: colors.labelColor }]}>
+                <Text
+                  style={[
+                    styles.inputLabel,
+                    { color: colors.labelColor, fontSize: theme.fontSizes.md },
+                  ]}
+                >
                   Evening
                 </Text>
                 <TextInput
@@ -103,7 +122,12 @@ const PriceDetails = ({
                 />
               </View>
               <View style={styles.inputSection}>
-                <Text style={[styles.inputLabel, { color: colors.labelColor }]}>
+                <Text
+                  style={[
+                    styles.inputLabel,
+                    { color: colors.labelColor, fontSize: theme.fontSizes.md },
+                  ]}
+                >
                   Full Day
                 </Text>
                 <TextInput
@@ -122,12 +146,22 @@ const PriceDetails = ({
             </View>
           </View>
           <View style={styles.userInfoRow}>
-            <Text style={[styles.label, { color: colors.labelColor }]}>
+            <Text
+              style={[
+                styles.label,
+                { color: colors.labelColor, fontSize: theme.fontSizes.lg },
+              ]}
+            >
               Locker Price
             </Text>
             <View style={styles.inputParentContainer}>
               <View style={styles.inputSection}>
-                <Text style={[styles.inputLabel, { color: colors.labelColor }]}>
+                <Text
+                  style={[
+                    styles.inputLabel,
+                    { color: colors.labelColor, fontSize: theme.fontSizes.md },
+                  ]}
+                >
                   Small
                 </Text>
                 <TextInput
@@ -144,7 +178,12 @@ const PriceDetails = ({
                 />
               </View>
               <View style={styles.inputSection}>
-                <Text style={[styles.inputLabel, { color: colors.labelColor }]}>
+                <Text
+                  style={[
+                    styles.inputLabel,
+                    { color: colors.labelColor, fontSize: theme.fontSizes.md },
+                  ]}
+                >
                   Medium
                 </Text>
                 <TextInput
@@ -161,7 +200,12 @@ const PriceDetails = ({
                 />
               </View>
               <View style={styles.inputSection}>
-                <Text style={[styles.inputLabel, { color: colors.labelColor }]}>
+                <Text
+                  style={[
+                    styles.inputLabel,
+                    { color: colors.labelColor, fontSize: theme.fontSizes.md },
+                  ]}
+                >
                   Large
                 </Text>
                 <TextInput
@@ -190,7 +234,7 @@ const PriceDetails = ({
                   styles.button,
                   { backgroundColor: colors.buttonBackground },
                 ]}
-                labelStyle={styles.buttonLabel}
+                labelStyle={{ fontSize: theme.fontSizes.md }}
                 onPress={() => setEdit(false)}
               >
                 Cancel
@@ -202,7 +246,7 @@ const PriceDetails = ({
                   styles.button,
                   { backgroundColor: colors.buttonBackground },
                 ]}
-                labelStyle={styles.buttonLabel}
+                labelStyle={{ fontSize: theme.fontSizes.md }}
                 onPress={() => [setEdit(false)]}
               >
                 Update
@@ -217,7 +261,7 @@ const PriceDetails = ({
                   styles.button,
                   { backgroundColor: colors.buttonBackground },
                 ]}
-                labelStyle={styles.buttonLabel}
+                labelStyle={{ fontSize: theme.fontSizes.md }}
                 onPress={() => setEdit(true)}
               >
                 Edit
@@ -257,7 +301,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     width: 130,
     color: "#666",
-    fontSize: 20,
+    fontSize: 17,
     marginBottom: 2,
   },
   inputParentContainer: {
@@ -272,7 +316,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   inputLabel: {
-    fontWeight: "bold",
+    fontWeight: "500",
     width: 130,
     color: "#666",
     fontSize: 15,
@@ -284,14 +328,15 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    gap: 8,
     marginTop: 20,
   },
   button: {
     fontSize: 20,
-    paddingVertical: 6,
-    paddingHorizontal: 8,
-    borderRadius: 5,
+    paddingVertical: 4,
+    paddingHorizontal: 4,
+    borderRadius: 6,
+    flex: 1,
   },
   buttonLabel: {
     fontSize: 18,
@@ -299,7 +344,7 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: "#f2f2f2",
     padding: 8,
-    borderRadius: 5,
+    borderRadius: 6,
     minWidth: 150,
     flex: 1,
   },

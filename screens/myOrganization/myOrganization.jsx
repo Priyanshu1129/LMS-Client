@@ -120,8 +120,12 @@ const MyOrganizationPage = ({ route }) => {
           profileUrl={logoUrl}
           setProfileUrl={setLogoUrl}
         />
-        <Text style={styles.name}>{organizationDetails?.name}</Text>
-        <Text style={styles.email}>{organizationDetails?.email}</Text>
+        <Text style={[styles.name, { fontSize: theme.fontSizes.lg }]}>
+          {organizationDetails?.name}
+        </Text>
+        {/* <Text style={[styles.email, { fontSize: theme.fontSizes.sm }]}>
+          {organizationDetails?.email}
+        </Text> */}
       </View>
 
       <View style={styles.tabBar}>
@@ -140,6 +144,7 @@ const MyOrganizationPage = ({ route }) => {
           <Text
             style={[
               styles.tabButtonText,
+              { fontSize: theme.fontSizes.sm },
               {
                 color:
                   activeTab === "basicInfo"
@@ -166,6 +171,7 @@ const MyOrganizationPage = ({ route }) => {
           <Text
             style={[
               styles.tabButtonText,
+              { fontSize: theme.fontSizes.sm },
               {
                 color:
                   activeTab === "accountDetails"
@@ -248,22 +254,26 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: "row",
     backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    marginHorizontal: 40,
+    marginVertical: 5,
+    borderRadius: 6,
+    gap: 4,
   },
   tabButton: {
     flex: 1,
     paddingVertical: 8,
     alignItems: "center",
     backgroundColor: "#fff",
+    borderRadius: 6,
   },
   activeTab: {
     borderBottomWidth: 0,
     borderBottomColor: "#fff",
     borderRadius: 2,
+    borderRadius: 6,
   },
   tabButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "bold",
   },
   tabContent: {

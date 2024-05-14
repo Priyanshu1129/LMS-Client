@@ -1,10 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -33,7 +27,7 @@ const UserListCard = ({
       style={[
         styles.container,
         {
-          backgroundColor: isClicked ? "#f0f0f0" : "white",
+          backgroundColor: isClicked ? "black" : theme.colors.background,
           backdrop: theme.colors.backdrop,
         },
       ]}
@@ -51,13 +45,23 @@ const UserListCard = ({
             ]}
           />
         </View>
-        <Text style={styles.title}>{`${name.slice(0,12)}${name.length > 12 ? "..." : ''}`}</Text>
+        <Text
+          style={[
+            styles.title,
+            { color: theme.colors.secondary, fontSize: theme.fontSizes.md },
+          ]}
+        >{`${name.slice(0, 12)}${name.length > 12 ? "..." : ""}`}</Text>
       </View>
 
       <View style={styles.infoWrapper}>
         <View style={[styles.balanceWrapper, { backgroundColor: balanceBg }]}>
           <FontAwesome name="rupee" size={16} color={balanceColor} />
-          <Text style={[styles.balanceText, { color: balanceColor }]}>
+          <Text
+            style={[
+              styles.balanceText,
+              { color: balanceColor, fontSize: theme.fontSizes.sm },
+            ]}
+          >
             {" "}
             {balance < 0 ? "- " : "+ "}
             {Math.abs(balance)}
@@ -69,14 +73,21 @@ const UserListCard = ({
             styles.seatWraper,
           ]}
         >
-          <MaterialIcons name="event-seat" size={16} />
-          <Text style={styles.balanceText}> {seatNumber}</Text>
+          <MaterialIcons
+            name="event-seat"
+            // color={theme.colors.secondary}
+            size={16}
+          />
+          <Text style={[styles.balanceText, { fontSize: theme.fontSizes.sm }]}>
+            {" "}
+            {seatNumber}
+          </Text>
         </View>
         <AntDesign
           name="forward"
           size={18}
           color={"#6B7280"}
-          style={styles.forwardIcon}
+          style={[styles.forwardIcon, { color: theme.colors.secondary }]}
         />
       </View>
     </View>
@@ -140,7 +151,6 @@ const styles = StyleSheet.create({
   },
   balanceText: {
     fontWeight: "500",
-    fontSize: 14,
     marginLeft: 2,
   },
   forwardIcon: {

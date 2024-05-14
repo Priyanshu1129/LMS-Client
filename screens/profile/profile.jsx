@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Snackbar } from "react-native-paper";
+import { Snackbar, useTheme } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { updateProfile } from "../../redux/actions/profileActions.js";
 import BasicInfo from "./basicInfo.jsx";
@@ -22,6 +22,8 @@ const ProfilePage = ({ route, navigation }) => {
   const [edit, setEdit] = useState(false);
   const dispatch = useDispatch();
   const [userData, setUserData] = useState();
+
+  const theme = useTheme();
 
   const { status, data, error } = useSelector(
     (state) => state.organization.organizationDetails
@@ -78,7 +80,6 @@ const ProfilePage = ({ route, navigation }) => {
     if (profileUrl !== userData?.avatar) {
       editedDetails.avatarUri = profileUrl;
     }
-    console.log("editedDEtails--", editedDetails);
     if (Object.keys(editedDetails).length > 0) {
       dispatch(updateProfile(editedDetails, token));
     }
@@ -101,8 +102,12 @@ const ProfilePage = ({ route, navigation }) => {
             edit={edit}
             setProfileUrl={setProfileUrl}
           />
-          <Text style={styles.name}>{user?.name}</Text>
-          <Text style={styles.email}>{user?.email}</Text>
+          <Text style={[styles.name, { fontSize: theme.fontSizes.lg }]}>
+            {user?.name}
+          </Text>
+          <Text style={[styles.email, { fontSize: theme.fontSizes.sm }]}>
+            {user?.email}
+          </Text>
         </View>
 
         <BasicInfo
