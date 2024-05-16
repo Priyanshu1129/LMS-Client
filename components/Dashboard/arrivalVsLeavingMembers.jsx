@@ -17,7 +17,14 @@ const ArrivalVsLeavingMembers = () => {
   const font = useFont(inter, 12);
   const theme = useTheme();
   return (
-    <View style={{ backgroundColor: "white", borderRadius: 8, padding: 10 }}>
+    <View
+      style={{
+        backgroundColor: "white",
+        margin: 5,
+        borderRadius: 8,
+        padding: 5,
+      }}
+    >
       <View style={[styles.graphWrapper]}>
         <CartesianChart
           data={DATA}

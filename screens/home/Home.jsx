@@ -6,6 +6,9 @@ import { CartesianChart, Line } from "victory-native";
 import OrganizationBanner from "../../components/organizationBanner";
 import { ScrollView } from "react-native-gesture-handler";
 import SeatsStats from "../../components/statistics/seatsStat";
+import LockerStats from "../../components/Dashboard/lockerStats";
+import MemberStats from "../../components/Dashboard/memberStats";
+import ArrivalVsLeavingMembers from "../../components/statistics/arrivalVsLeavingMembers";
 
 const Home = ({ route }) => {
   const token = route.params.token;
@@ -17,9 +20,12 @@ const Home = ({ route }) => {
 
   return (
     <ScrollView>
-      <View styles={[styles.container]}>
-        <OrganizationBanner />
-      <SeatsStats/>
+      <View style={[styles.container]}>
+        <MemberStats />
+        {/* <OrganizationBanner /> */}
+        <SeatsStats />
+        <LockerStats />
+        <ArrivalVsLeavingMembers />
       </View>
     </ScrollView>
   );
@@ -29,9 +35,10 @@ export default Home;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0",
+    // flex: 1,
+    gap: 10,
+    padding: 15,
+    // justifyContent: "center",
+    // alignItems: "center",
   },
 });

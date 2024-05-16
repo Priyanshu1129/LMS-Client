@@ -32,8 +32,6 @@ import MyOrganization from './screens/myOrganization/myOrganization';
 import { fetchToken } from './config/fetchAsyncStorage';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Provider, MD3LightTheme as DefaultTheme, } from 'react-native-paper';
-
 
 import React, { useState, useEffect } from 'react';
 import DrawerContent from './components/drawerContent';
@@ -49,7 +47,8 @@ const UnAuthNav = () => {
             screenOptions={{
                 headerShown: false
             }}
-            initialRouteName={'Login'}>
+            initialRouteName={'Login'}
+        >
             <Stack.Screen
                 name='Login'
                 component={Login}
@@ -61,6 +60,10 @@ const UnAuthNav = () => {
             <Stack.Screen
                 name='ForgotPassword'
                 component={ForgotPassword}
+            />
+            <Stack.Screen
+                name="DrawNav"
+                component={DrawNav}
             />
         </Stack.Navigator>
     )
@@ -222,7 +225,7 @@ const StackNav = ({ token }) => {
             />
             <Stack.Screen
                 name='Login'
-                component={UnAuthNav}
+                component={Login}
             />
         </Stack.Navigator>
     )
@@ -238,7 +241,7 @@ const DrawNav = ({ token }) => {
             initialRouteName={'Home'}
             drawerContent={props => <DrawerContent {...props} />}
         >
-            <Drawer.Screen name='Home' >
+            <Drawer.Screen name="Home">
                 {() => <StackNav token={token} />}
             </Drawer.Screen>
         </Drawer.Navigator>
@@ -256,7 +259,6 @@ export const Main = () => {
         setIsAuthenticated(data);
         setToken(storedToken);
         console.log("isAuthenticated:", data);
-
     }
 
     // useFocusEffect(

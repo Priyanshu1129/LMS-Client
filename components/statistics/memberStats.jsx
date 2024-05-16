@@ -22,7 +22,6 @@ const MemberStats = ()=>{
                     <View style={{  }}>
                         <Legend label={"Active"} color={theme.colors.primary}  size={12} />
                         <Legend label={"Inactive"} color={theme.colors.primary}  size={12} />
-                        <Legend label={"Active"} color={theme.colors.primary}   size={12} />
                         <Legend label={"Expired"} color={theme.colors.primary}   size={12} />
                     </View>
                     </View>

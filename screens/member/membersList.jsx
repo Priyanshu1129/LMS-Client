@@ -114,7 +114,6 @@ const MembersList = ({ route, navigation }) => {
           </View>
           <View style={{ flexDirection: "row", gap: 5, margin: 5 }}>
             <StatusFilterMenu
-              style={styles.optionButton}
               visible={statusFilterVisible}
               setVisible={setStatusFilterVisible}
               onChange={(option) => setFilterOption(option)}

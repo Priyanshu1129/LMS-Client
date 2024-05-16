@@ -53,10 +53,18 @@ function DrawerContent(props) {
     getData();
   }, []);
 
-  const SignOut = () => {
-    AsyncStorage.setItem("isAuthenticated", "");
-    AsyncStorage.setItem("data", "");
-    navigation.navigate("Login");
+  const SignOut = async () => {
+    try {
+      console.log(await AsyncStorage.getItem("data"));
+      console.log(await AsyncStorage.getItem("isAuthenticated"));
+      await AsyncStorage.removeItem("isAuthenticated");
+      await AsyncStorage.removeItem("data");
+      console.log(await AsyncStorage.getItem("data"));
+      console.log(await AsyncStorage.getItem("isAuthenticated"));
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   const styles = StyleSheet.create({

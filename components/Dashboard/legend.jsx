@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 
-const Legend = ({ size, color, label, count = "" }) => {
+const Legend = ({ size, color, label, count }) => {
   return (
     <View
       style={{
@@ -23,7 +23,7 @@ const Legend = ({ size, color, label, count = "" }) => {
           borderRadius: 2,
         }}
       ></View>
-      <Text>{label}</Text>
+      <Text>{label}:</Text>
       <Text>{count}</Text>
     </View>
   );

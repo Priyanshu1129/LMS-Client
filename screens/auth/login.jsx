@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
   TextInput,
   View,
   Alert,
-  Button,
   TouchableOpacity,
 } from "react-native";
+import { Button } from "react-native-paper";
 import { object, string, number, date } from "yup";
 import { Formik } from "formik";
 import { login } from "../../redux/actions/authActions";
@@ -20,6 +20,7 @@ let loginSchema = object({
 
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const { status, isAuthenticated, error } = useSelector(
     (state) => state.auth.authDetails
   );
@@ -30,11 +31,16 @@ const Login = ({ navigation }) => {
 
   useEffect(() => {
     if (status === "pending") {
-      //  loading
+      setLoading(true);
     } else if (status === "success" && isAuthenticated) {
-      navigation.navigate("Home");
+      // navigation.navigate("Home");
+      navigation.navigate("DrawNav", {
+        screen: "Home",
+      });
+      setLoading(false);
     } else if (status === "failed") {
       Alert.alert(error);
+      setLoading(false);
     }
   }, [status]);
 
@@ -81,7 +87,14 @@ const Login = ({ navigation }) => {
             {errors.password && touched.password ? (
               <Text>{errors.password}</Text>
             ) : null}
-            <Button onPress={handleSubmit} disabled={!isValid} title="Login" />
+            <Button
+              loading={loading}
+              mode="contained"
+              onPress={handleSubmit}
+              disabled={!isValid}
+            >
+              Login
+            </Button>
           </View>
         )}
       </Formik>
@@ -128,6 +141,7 @@ const Styles = StyleSheet.create({
   btn: {
     backgroundColor: "#900",
     padding: 5,
+    borderRadius: 6,
     width: "70%",
   },
 });
