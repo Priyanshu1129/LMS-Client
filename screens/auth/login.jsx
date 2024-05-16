@@ -12,6 +12,7 @@ import { object, string, number, date } from "yup";
 import { Formik } from "formik";
 import { login } from "../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../redux/slices/authSlice";
 
 let loginSchema = object({
   email: string().email().required(),
@@ -38,9 +39,12 @@ const Login = ({ navigation }) => {
         screen: "Home",
       });
       setLoading(false);
+      dispatch(authActions.clearStatus());
     } else if (status === "failed") {
       Alert.alert(error);
       setLoading(false);
+      dispatch(authActions.clearStatus());
+      dispatch(authActions.clearError());
     }
   }, [status]);
 
@@ -51,9 +55,10 @@ const Login = ({ navigation }) => {
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
+        gap: 10,
       }}
     >
-      <Text style={{ fontSize: 20, margin: 20 }}>WELCOME</Text>
+      <Text style={{ fontSize: 20, margin: 10 }}>Login</Text>
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={handleLogin}
@@ -73,6 +78,7 @@ const Login = ({ navigation }) => {
             <TextInput
               style={Styles.input}
               placeholder="Email"
+              textContentType="emailAddress"
               value={values.email}
               onChangeText={handleChange("email")}
             />
@@ -98,29 +104,13 @@ const Login = ({ navigation }) => {
           </View>
         )}
       </Formik>
-      <Text
-        style={{
-          marginTop: 20,
-        }}
-      >
-        Or
-      </Text>
+      <Text>Or</Text>
 
-      <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text
-          style={{
-            color: "#900",
-            height: 30,
-            margin: 20,
-          }}
-        >
-          Sign Up
-        </Text>
-      </TouchableOpacity>
+      <Button onPress={() => navigation.navigate("Register")}>Sign Up</Button>
 
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text> Forget Password </Text>
-      </TouchableOpacity>
+      <Button onPress={() => navigation.navigate("ForgotPassword")}>
+        Forget Password
+      </Button>
     </View>
   );
 };

@@ -56,15 +56,23 @@ const authSlice = createSlice({
         },
         forgotPasswordRequest: (state, action) => {
             state.authDetails.status = 'pending'
+            state.authDetails.isAuthenticated = false
         },
         forgotPasswordSuccess: (state, action) => {
             state.authDetails.status = 'success'
+            state.authDetails.data = action.payload
+            state.authDetails.isAuthenticated = false
         },
         forgotPasswordFailure: (state, action) => {
             state.authDetails.status = 'failed'
+            state.authDetails.error = action.payload
+            state.authDetails.isAuthenticated = false
         },
         clearError: (state) => {
             state.authDetails.error = null;
+        },
+        clearStatus: (state) => {
+            state.authDetails.status = null;
         }
     }
 })

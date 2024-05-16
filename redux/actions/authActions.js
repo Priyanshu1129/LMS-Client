@@ -53,7 +53,7 @@ export const register = (registrationData) => async (dispatch) => {
                 },
             }
         );
-        console.log('registration-res:', data);
+        console.log('registration-res:', data.data);
         dispatch(authActions.registerSuccess(data));
     } catch (error) {
         console.log('registration-error', error);
@@ -69,21 +69,32 @@ export const register = (registrationData) => async (dispatch) => {
     }
 };
 
-export const forgotPassword = ({ email }) => async (dispatch) => {
+export const forgotPassword = (forgotPasswordData) => async (dispatch) => {
     try {
+        console.log('forgotPasswordData', forgotPasswordData)
         dispatch(authActions.forgotPasswordRequest());
 
         const { data } = await axios.post(
-            `${serverUrl}/login`,
-            { email },
+            `${route}/send_reset_passwor_link`,
+            forgotPasswordData,
             {
                 headers: {
                     "Content-Type": "application/json",
                 },
             }
         );
+        console.log('forgot-password-res', data);
         dispatch(authActions.forgotPasswordSuccess(data));
     } catch (error) {
-        dispatch(authActions.forgotPasswordFailure(error));
+        console.log("error>>", error.response.data.message)
+        let errorMessage = "An error occurred";
+        if (error.response) {
+            errorMessage = error.response.data.message || "Server error";
+        } else if (error.request) {
+            errorMessage = "Network error";
+        } else {
+            errorMessage = error.message || "Unknown error";
+        }
+        dispatch(authActions.forgotPasswordFailure(errorMessage));
     }
 };

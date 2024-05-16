@@ -3,15 +3,16 @@ import {
   Text,
   TextInput,
   View,
-  Button,
   TouchableOpacity,
   Alert,
 } from "react-native";
+import { Button } from "react-native-paper";
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { object, string, number, date } from "yup";
 import { Formik } from "formik";
 import { register } from "../../redux/actions/authActions";
+import { authActions } from "../../redux/slices/authSlice";
 
 let signUpSchema = object({
   name: string().required(),
@@ -23,6 +24,7 @@ let signUpSchema = object({
 
 const Register = ({ navigation }) => {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const { status, isAuthenticated, error, data } = useSelector(
     (state) => state.auth.authDetails
   );
@@ -33,11 +35,16 @@ const Register = ({ navigation }) => {
 
   useEffect(() => {
     if (status === "pending") {
-      //  loading
+      setLoading(true);
     } else if (status === "success" && isAuthenticated) {
       navigation.navigate("Home");
+      setLoading(false);
+      dispatch(authActions.clearStatus());
     } else if (status === "failed") {
       Alert.alert(error);
+      setLoading(false);
+      dispatch(authActions.clearStatus());
+      dispatch(authActions.clearError());
     }
   }, [status]);
 
@@ -48,6 +55,7 @@ const Register = ({ navigation }) => {
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
+        gap: 20,
       }}
     >
       <Formik
@@ -105,25 +113,18 @@ const Register = ({ navigation }) => {
             ) : null}
             <Button
               disabled={!isValid}
-              title="Register"
-              style={Styles.btn}
+              mode="contained"
               onPress={handleSubmit}
-              loading={true}
-            />
+              loading={loading}
+            >
+              Register
+            </Button>
           </View>
         )}
       </Formik>
-      <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-        <Text
-          style={{
-            color: "#900",
-            height: 30,
-            margin: 20,
-          }}
-        >
-          Have an Account, Login
-        </Text>
-      </TouchableOpacity>
+      <Button onPress={() => navigation.navigate("Login")}>
+        Already Have An Account ? Login
+      </Button>
     </View>
   );
 };
