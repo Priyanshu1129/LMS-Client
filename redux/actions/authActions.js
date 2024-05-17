@@ -86,7 +86,7 @@ export const forgotPassword = (forgotPasswordData) => async (dispatch) => {
         console.log('forgot-password-res', data);
         dispatch(authActions.forgotPasswordSuccess(data));
     } catch (error) {
-        console.log("error>>", error.response.data.message)
+        console.log("error", error.response.data.message)
         let errorMessage = "An error occurred";
         if (error.response) {
             errorMessage = error.response.data.message || "Server error";

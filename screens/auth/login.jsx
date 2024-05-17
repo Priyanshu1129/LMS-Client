@@ -35,11 +35,11 @@ const Login = ({ navigation }) => {
       setLoading(true);
     } else if (status === "success" && isAuthenticated) {
       // navigation.navigate("Home");
+      dispatch(authActions.clearStatus());
+      setLoading(false);
       navigation.navigate("DrawNav", {
         screen: "Home",
       });
-      setLoading(false);
-      dispatch(authActions.clearStatus());
     } else if (status === "failed") {
       Alert.alert(error);
       setLoading(false);
