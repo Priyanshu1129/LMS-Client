@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
+import { StyleSheet, Text, TextInput, View, Alert } from "react-native";
 import { Button } from "react-native-paper";
 import React, { useState, useEffect } from "react";
 import { object, string, number, date } from "yup";
@@ -14,11 +7,11 @@ import { forgotPassword } from "../../redux/actions/authActions";
 import { Formik } from "formik";
 import { authActions } from "../../redux/slices/authSlice";
 
-let forgotPasswordSchema = object({
-  email: string().email().required(),
+let otpSchema = object({
+  otp: string().length(4),
 });
 
-const ForgotPassword = ({ navigation }) => {
+const InputOTP = ({ navigation }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState();
 
@@ -42,7 +35,7 @@ const ForgotPassword = ({ navigation }) => {
   }, [status]);
 
   const handleSubmit = (data) => {
-    dispatch(forgotPassword(data));
+    dispatch();
   };
 
   return (
@@ -55,40 +48,46 @@ const ForgotPassword = ({ navigation }) => {
         gap: 20,
       }}
     >
-      <Text style={{ fontSize: 20, margin: 10 }}>Forgot Password</Text>
+      <Text style={{ fontSize: 20, margin: 10 }}>Enter OTP</Text>
       <Formik
-        initialValues={{ email: "" }}
+        initialValues={{ otp: "" }}
         onSubmit={handleSubmit}
-        validationSchema={forgotPasswordSchema}
+        validationSchema={otpSchema}
       >
         {({ values, handleChange, handleSubmit, isValid, touched, errors }) => (
           <View style={{ width: "70%" }}>
             <TextInput
               style={Styles.input}
-              placeholder="Email"
-              textContentType="emailAddress"
-              value={values.email}
-              onChangeText={handleChange("email")}
+              placeholder="OTP"
+              keyboardType="numeric"
+              value={values.otp}
+              onChangeText={handleChange("otp")}
+              textContentType="oneTimeCode"
             />
-            {errors.email && touched.email ? <Text>{errors.email}</Text> : null}
+            {errors.otp && touched.otp ? <Text>{errors.otp}</Text> : null}
             <Button
               loading={loading}
               mode="contained"
               onPress={handleSubmit}
               disabled={!isValid}
             >
-              Forgot Password
+              Submit
             </Button>
           </View>
         )}
       </Formik>
+      <View style={Styles.resendButton}>
+        <Text>01:59</Text>
+        <Button disabled onPress={() => navigation.goBack()}>
+          Resend OTP
+        </Button>
+      </View>
       <Button onPress={() => navigation.goBack()}>Back To Login </Button>
-      <Button onPress={() => navigation.navigate("InputOtp")}>Enter Otp</Button>
     </View>
   );
 };
 
-export default ForgotPassword;
+export default InputOTP;
 
 const Styles = StyleSheet.create({
   input: {
@@ -101,7 +100,11 @@ const Styles = StyleSheet.create({
     marginVertical: 15,
     fontSize: 15,
   },
-
+  resendButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   btn: {
     backgroundColor: "#900",
     padding: 5,

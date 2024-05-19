@@ -6,6 +6,7 @@ import { BackHandler, SafeAreaView } from 'react-native';
 import Login from './screens/auth/login';
 import Register from './screens/auth/register';
 import ForgotPassword from './screens/auth/forgotPassword';
+import InputOtp from './screens/auth/inputOTP';
 import Home from './screens/home/Home';
 import Profile from './screens/profile/profile';
 import MembersList from './screens/member/membersList';
@@ -60,6 +61,10 @@ const UnAuthNav = () => {
             <Stack.Screen
                 name='ForgotPassword'
                 component={ForgotPassword}
+            />
+            <Stack.Screen
+                name='InputOtp'
+                component={InputOtp}
             />
             <Stack.Screen
                 name="DrawNav"
