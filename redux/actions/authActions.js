@@ -98,3 +98,33 @@ export const forgotPassword = (forgotPasswordData) => async (dispatch) => {
         dispatch(authActions.forgotPasswordFailure(errorMessage));
     }
 };
+
+export const verifyOTP = (otpData) => async (dispatch) => {
+    try {
+        console.log('verifyOTPData', otpData);
+        dispatch(authActions.verifyOTPRequest());
+
+        const { data } = await axios.post(
+            `${route}/verify-otp`,
+            otpData,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        console.log('forgot-password-res', data);
+        dispatch(authActions.verifyOTPSuccess(data));
+    } catch (error) {
+        console.log("error", error.response.data.message)
+        let errorMessage = "An error occurred";
+        if (error.response) {
+            errorMessage = error.response.data.message || "Server error";
+        } else if (error.request) {
+            errorMessage = "Network error";
+        } else {
+            errorMessage = error.message || "Unknown error";
+        }
+        dispatch(authActions.verifyOTPFailure(errorMessage));
+    }
+};

@@ -7,6 +7,11 @@ const initialUserState = {
         error: null,
         data: null,
         isAuthenticated: false
+    },
+    verifyOTPDetails: {
+        status: null,
+        error: null,
+        data: null,
     }
 }
 
@@ -68,11 +73,28 @@ const authSlice = createSlice({
             state.authDetails.error = action.payload
             state.authDetails.isAuthenticated = false
         },
+        verifyOTPRequest: (state) => {
+            state.verifyOTPDetails.status = 'pending'
+        },
+        verifyOTPSuccess: (state, action) => {
+            state.verifyOTPDetails.status = 'success'
+            state.verifyOTPDetails.data = action.payload
+        },
+        verifyOTPFailure: (state, action) => {
+            state.verifyOTPDetails.status = 'failed'
+            state.verifyOTPDetails.error = action.payload
+        },
         clearError: (state) => {
             state.authDetails.error = null;
         },
         clearStatus: (state) => {
             state.authDetails.status = null;
+        },
+        clearVerifyOTPDetailsStatus: (state) => {
+            state.verifyOTPDetails.status = null;
+        },
+        clearVerifyOTPDetailsError: (state) => {
+            state.verifyOTPDetails.error = null;
         }
     }
 })

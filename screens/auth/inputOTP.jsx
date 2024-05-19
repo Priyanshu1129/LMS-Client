@@ -3,7 +3,8 @@ import { Button } from "react-native-paper";
 import React, { useState, useEffect } from "react";
 import { object, string, number, date } from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { forgotPassword } from "../../redux/actions/authActions";
+import { verifyOTP } from "../../redux/actions/authActions";
+import { authActions } from "../../redux/slices/authSlice";
 import { Formik } from "formik";
 import { authActions } from "../../redux/slices/authSlice";
 
@@ -16,7 +17,7 @@ const InputOTP = ({ navigation }) => {
   const [loading, setLoading] = useState();
 
   const { status, data, error } = useSelector(
-    (state) => state.auth.authDetails
+    (state) => state.auth.verifyOTPDetails
   );
 
   useEffect(() => {
@@ -25,17 +26,17 @@ const InputOTP = ({ navigation }) => {
     } else if (status === "success") {
       setLoading(false);
       Alert.alert(data.message);
-      dispatch(authActions.clearStatus());
+      dispatch(authActions.clearVerifyOTPDetailsStatus());
     } else if (status === "failed") {
       setLoading(false);
       Alert.alert(error);
-      dispatch(authActions.clearStatus());
-      dispatch(authActions.clearError());
+      dispatch(authActions.clearVerifyOTPDetailsStatus());
+      dispatch(authActions.clearVerifyOTPDetailsError());
     }
   }, [status]);
 
   const handleSubmit = (data) => {
-    dispatch();
+    // dispatch(verifyOTP(data));
   };
 
   return (
