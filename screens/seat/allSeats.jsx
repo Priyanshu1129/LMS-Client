@@ -96,7 +96,7 @@ const AllSeats = ({ navigation, route }) => {
       unoccupiedSeat: {
         backgroundColor: theme.colors.background,
         borderColor: theme.colors.primary,
-        elevation: 4, // Apply elevation here
+        elevation: 4, 
       },
       occupiedSeatText: {
         color: theme.colors.background,
@@ -214,76 +214,84 @@ const AllSeats = ({ navigation, route }) => {
           </Button>
         </View>
       </View>
-
-      <View
-        style={{
-          flexDirection: "col",
-          gap: 5,
-          backgroundColor: theme.colors.secondaryContainer,
-          padding: 10,
-          borderRadius: 5,
-          marginBottom: 20,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignContent: "center",
-            gap: 4,
-            justifyContent: "center",
-          }}
-        >
-          <Text
-            style={{
-              alignSelf: "center",
-              fontWeight: 500,
-              color: theme.colors.primary,
-            }}
-          >
-            Filter
-          </Text>
-          <AntDesign name="filter" size={20} color={theme.colors.primary} />
-        </View>
-        <View
-          style={{
-            borderTopColor: theme.colors.background,
-            borderTopWidth: 2,
-            padding: 2,
-            paddingBottom: 10,
-          }}
-        >
-          <View
-            style={{ flexDirection: "row", justifyContent: "start", gap: 2 }}
-          >
-            <Text
-              style={{
-                alignSelf: "center",
-                color: theme.colors.primary,
-                marginBottom: 10,
-                fontWeight: 500,
-              }}
-            >
-              Schedule
-            </Text>
-            <MaterialIcons
-              name="schedule"
-              size={20}
-              color={theme.colors.primary}
-            />
-          </View>
-          <RadioFilter
-            options={scheduleOptions}
-            checked={schedule}
-            setChecked={setSchedule}
-          />
-        </View>
-      </View>
       {loading ? (
         <PageLoader />
       ) : seats.length > 0 ? (
-        <ScrollView>
-          <View style={styles.bottomSection}>{renderSeats(theme)}</View>
-        </ScrollView>
+        <>
+          <ScrollView>
+            <View style={styles.bottomSection}>{renderSeats(theme)}</View>
+          </ScrollView>
+
+          <View
+            style={{
+              flexDirection: "col",
+              gap: 5,
+              backgroundColor: theme.colors.secondaryContainer,
+              padding: 10,
+              elevation: 2, 
+              borderRadius: 5,
+              // marginTop: 10,
+              width: "100%",
+            }}
+          >
+            {/* <View
+              style={{
+                flexDirection: "row",
+                alignContent: "center",
+                gap: 4,
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  alignSelf: "center",
+                  fontWeight: 500,
+                  color: theme.colors.primary,
+                }}
+              >
+                Filter
+              </Text>
+              <AntDesign name="filter" size={20} color={theme.colors.primary} />
+            </View> */}
+            <View
+              style={{
+                // borderTopColor: theme.colors.background,
+                // borderTopWidth: 2,
+                padding: 2,
+                paddingBottom: 10,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "start",
+                  gap: 2,
+                }}
+              >
+                <Text
+                  style={{
+                    alignSelf: "center",
+                    color: theme.colors.primary,
+                    marginBottom: 10,
+                    fontWeight: 500,
+                  }}
+                >
+                  Schedule
+                </Text>
+                <MaterialIcons
+                  name="schedule"
+                  size={20}
+                  color={theme.colors.primary}
+                />
+              </View>
+              <RadioFilter
+                options={scheduleOptions}
+                checked={schedule}
+                setChecked={setSchedule}
+              />
+            </View>
+          </View>
+        </>
       ) : (
         <NoDataPage message={"No Seats Available"} />
       )}

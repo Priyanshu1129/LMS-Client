@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { verifyOTP } from "../../redux/actions/authActions";
 import { authActions } from "../../redux/slices/authSlice";
 import { Formik } from "formik";
-import { authActions } from "../../redux/slices/authSlice";
 
 let otpSchema = object({
   otp: string().length(4),
