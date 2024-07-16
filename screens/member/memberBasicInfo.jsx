@@ -27,6 +27,7 @@ const MemberBasicInfo = ({
     labelColor: theme.colors.primary,
     buttonBackground: theme.colors.primary,
   };
+  
   return (
     <View style={styles.tabContent}>
       <View style={styles.userInfo}>

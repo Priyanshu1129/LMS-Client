@@ -28,17 +28,19 @@ export const getAllPayment = (token) => async (dispatch) => {
         dispatch(paymentActions.getAllPaymentFailure(errorMessage));
     }
 };
-export const getAllPaymentsOfMember = (memberId, token) => async (dispatch) => {
-    try {
-        dispatch(paymentActions.getAllPaymentsOfMemberRequest());
 
-        const data = await axios.get(`${route}/member/${memberId}`, {
+export const getServicePayments = (serviceId, token) => async (dispatch) => {
+    try {
+        console.log('get-service-payments-req', serviceId);
+        dispatch(paymentActions.getServicePaymentsRequest());
+
+        const data = await axios.get(`${route}/service/${serviceId}`, {
             headers: {
                 "authorization": token
             }
         });
-        console.log('get-all-payment-of-member-res-data', data.data);
-        dispatch(paymentActions.getAllPaymentsOfMemberSuccess(data.data));
+        console.log('get-service-payments-res-data', data.data);
+        dispatch(paymentActions.getServicePaymentsSuccess(data.data));
     } catch (error) {
         console.log("error", error)
         let errorMessage = "An error occurred";
@@ -49,10 +51,9 @@ export const getAllPaymentsOfMember = (memberId, token) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        dispatch(paymentActions.getAllPaymentsOfMemberFailure(errorMessage));
+        dispatch(paymentActions.getServicePaymentsFailure(errorMessage));
     }
 };
-
 
 export const getPayment = (paymentId) => async (dispatch) => {
     try {

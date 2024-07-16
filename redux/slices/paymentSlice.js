@@ -12,14 +12,15 @@ const initialState = {
         error: null,
         data: null,
     },
-    //by ash
-    allPaymentsOfMember: {
+    servicePayments: {
         status: null,
         error: null,
         data: null,
     },
-    deletePayment: {
-
+    allPaymentsOfMember: {
+        status: null,
+        error: null,
+        data: null,
     }
 }
 
@@ -28,28 +29,26 @@ const paymentSlice = createSlice({
     name: "payment",
     initialState: initialState,
     reducers: {
-        //by ash
-        getAllPaymentsOfMemberRequest: (state, action) => {
-            state.allPaymentsOfMember.status = 'pending'
+        getServicePaymentsRequest: (state, action) => {
+            state.servicePayments.status = 'pending'
         },
-        getAllPaymentsOfMemberSuccess: (state, action) => {
-            state.allPaymentsOfMember.status = 'success'
-            state.allPaymentsOfMember.data = action.payload;
+        getServicePaymentsSuccess: (state, action) => {
+            state.servicePayments.status = 'success'
+            state.servicePayments.data = action.payload;
         },
-        getAllPaymentsOfMemberFailure: (state, action) => {
-            state.allPaymentsOfMember.status = 'failed'
-            state.allPaymentsOfMember.error = action.payload;
+        getServicePaymentsFailure: (state, action) => {
+            state.servicePayments.status = 'failed'
+            state.servicePayments.error = action.payload;
         },
-        clearAllPaymentsofMemberStatus: (state, action) => {
-            state.allPaymentsOfMember.status = null
+        clearServicePaymentsStatus: (state) => {
+            state.servicePayments.status = null
         },
-        clearAllPaymentsofMemberError: (state, action) => {
-            state.allPaymentsOfMember.error = null
+        clearServicePaymentsError: (state) => {
+            state.servicePayments.data = null
         },
-        clearAllPaymentsofMemberData: (state, action) => {
-            state.allPaymentsOfMember.data = null
+        clearServicePaymentsError: (state) => {
+            state.servicePayments.error = null
         },
-
         getAllPaymentRequest: (state, action) => {
             state.allPayments.status = 'pending'
         },

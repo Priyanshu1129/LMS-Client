@@ -9,13 +9,12 @@ import {
 } from "../../redux/actions/memberActions.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import MemberBasicInfo from "./memberBasicInfo.jsx";
-import MemberAccountDetails from "./memberAccountDetails.jsx";
+import MemberServiceDetails from "./memberServiceDetails.jsx";
 import { getAllMember, getMember } from "../../redux/actions/memberActions.js";
 import PageLoader from "../../components/pageLoader.jsx";
 import { defaultAvatar } from "../../constant.js";
 import EditProfilePic from "../../components/EditProfilePic.jsx";
 import { ScrollView } from "react-native-gesture-handler";
-import AccountDetails from "./accountDetails.jsx";
 import PlanDetails from "./memberPlanDetails.jsx";
 
 const MemberProfilePage = ({ route, navigation }) => {
@@ -224,27 +223,27 @@ const MemberProfilePage = ({ route, navigation }) => {
         <TouchableOpacity
           style={[
             styles.tabButton,
-            activeTab == "accountDetails"
+            activeTab == "serviceInfo"
               ? {
                   ...styles.activeTab,
                   backgroundColor: theme.colors.primary,
                 }
               : { backgroundColor: theme.colors.secondaryContainer },
           ]}
-          onPress={() => setActiveTab("accountDetails")}
+          onPress={() => setActiveTab("serviceInfo")}
         >
           <Text
             style={[
               [styles.tabButtonText, { fontSize: theme.fontSizes.sm }],
               {
                 color:
-                  activeTab === "accountDetails"
+                  activeTab === "serviceInfo"
                     ? theme.colors.background
                     : theme.colors.primary,
               },
             ]}
           >
-            Account Details
+            Service Info
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -285,8 +284,8 @@ const MemberProfilePage = ({ route, navigation }) => {
           setDeleteDialogVisible={setDialogVisible}
           handleUpdateMember={handleUpdateMember}
         />
-      ) : activeTab === "accountDetails" ? (
-        <AccountDetails memberId={memberDetails._id} token={token} />
+      ) : activeTab === "serviceInfo" ? (
+        <MemberServiceDetails memberId={memberDetails?._id} token={token} />
       ) : (
         <PlanDetails />
       )}
