@@ -8,12 +8,14 @@ import seatSlice from './slices/seatSlice.js';
 import lockerSlice from './slices/lockerSlice.js';
 import staffSlice from './slices/staffSlice.js'
 import organizationSlice from './slices/organizationSlice.js';
+import dashboardSlice from './slices/dashboardSlice.js';
 
 
 
 const store = configureStore({
     reducer: {
         auth: authSlice,
+        dashboard:dashboardSlice,
         profile: profileSlice,
         member: memberSlice,
         payment: paymentSlice,
