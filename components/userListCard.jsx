@@ -9,7 +9,7 @@ const windowWidth = Dimensions.get("window").width;
 const baseUnit = windowWidth / 20;
 
 const UserListCard = ({
-  key,
+  memberId,
   membershipStatus = "expired",
   balance = 30,
   name = "example",
@@ -23,7 +23,7 @@ const UserListCard = ({
 
   return (
     <View
-      key={key}
+      key={memberId}
       style={[
         styles.container,
         {

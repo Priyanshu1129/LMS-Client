@@ -141,7 +141,15 @@ const SeatDetailsPage = ({ navigation, route }) => {
   ) : (
     <ScrollView contentContainerStyle={styles.container}>
       <Title style={styles.title}>Seat {seatDetails.seatNumber}</Title>
-
+      <SlotCard
+        members={members}
+        slot="Full Day"
+        seatId={seatDetails.id}
+        occupiedBy={seatDetails?.occupiedBy?.fullDay}
+        member={member}
+        token={token}
+        setMember={setMember}
+      />
       <SlotCard
         members={members}
         slot="Morning"
@@ -245,6 +253,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 5,
+    backgroundColor: "tomato",
   },
 });
 

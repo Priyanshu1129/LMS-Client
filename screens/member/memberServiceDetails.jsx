@@ -6,7 +6,7 @@ import { getMemberServices } from "../../redux/actions/serviceActions";
 import { serviceActions } from "../../redux/slices/serviceSlice";
 import { ScrollView } from "react-native-gesture-handler";
 
-const MemberAccountDetails = ({ memberId, token }) => {
+const MemberServiceDetails = ({ memberId, token }) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
@@ -17,7 +17,7 @@ const MemberAccountDetails = ({ memberId, token }) => {
 
   const [services, setServices] = useState(data?.data ?? []);
 
-  const fetAllServices = useCallback(() => {
+  const fetchAllServices = useCallback(() => {
     if (token) {
       dispatch(getMemberServices(memberId, token));
     }
@@ -25,12 +25,13 @@ const MemberAccountDetails = ({ memberId, token }) => {
 
   useEffect(() => {
     if (!data?.data) {
-      fetAllServices();
+      fetchAllServices();
     }
-  }, [fetAllServices]);
+  }, [fetchAllServices]);
 
   useEffect(() => {
-    if (status === "pending") {
+    if (status == "pending") {
+      console.log("loading->pending", status);
       setLoading(true);
     } else if (status === "success" && data.status === "success") {
       setServices(data?.data);
@@ -49,7 +50,7 @@ const MemberAccountDetails = ({ memberId, token }) => {
     <ScrollView>
       {loading ? (
         <PageLoader />
-      ) : services.length > 0 ? (
+      ) : services?.length > 0 ? (
         <Text>{JSON.stringify(services)}</Text>
       ) : (
         <Text>No Services Available</Text>
@@ -58,6 +59,6 @@ const MemberAccountDetails = ({ memberId, token }) => {
   );
 };
 
-export default MemberAccountDetails;
+export default MemberServiceDetails;
 
 const styles = StyleSheet.create({});

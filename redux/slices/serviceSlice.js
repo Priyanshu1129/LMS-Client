@@ -6,6 +6,11 @@ const initialState = {
         status: null,
         error: null,
         data: null,
+    },
+    createService: {
+        status: null,
+        error: null,
+        data: null,
     }
 }
 
@@ -14,8 +19,8 @@ const serviceSlice = createSlice({
     name: "service",
     initialState: initialState,
     reducers: {
-        getMemberServicesRequest: (state, action) => {
-            state.memberServices.status = 'pending'
+        getMemberServicesRequest: (state) => {
+            state.memberServices.status = 'pending';
         },
         getMemberServicesSuccess: (state, action) => {
             state.memberServices.status = 'success'

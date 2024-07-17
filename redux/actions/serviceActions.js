@@ -7,9 +7,9 @@ const route = `${serverURL}/service`
 
 export const getMemberServices = (memberId, token) => async (dispatch) => {
     try {
-        dispatch(serviceActions.getMemberServicesRequest());
         console.log('getMemberServiceRequest:', memberId)
-        const data = await axios.get(`${route}/${memberId}`, {
+        dispatch(serviceActions.getMemberServicesRequest());
+        const data = await axios.get(`${route}/member/${memberId}`, {
             headers: {
                 "authorization": token
             }
@@ -31,3 +31,34 @@ export const getMemberServices = (memberId, token) => async (dispatch) => {
     }
 };
 
+// export const createService = (serviceDetails, token) => async (dispatch) => {
+//     try {
+//         console.log("create-service-data", serviceDetails);
+//         dispatch(serviceActions.createServiceRequest());
+
+//         const data = await axios.post(
+//             `${route}/`,
+//             serviceDetails,
+//             {
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     "authorization": token
+//                 },
+//             }
+//         );
+//         console.log('create-service-res-data', data.data);
+
+//         dispatch(serviceActions.createServiceSuccess(data.data));
+//     } catch (error) {
+//         console.log("error", error)
+//         let errorMessage = "An error occurred";
+//         if (error.response) {
+//             errorMessage = error.response.data.message || "Server error";
+//         } else if (error.request) {
+//             errorMessage = "Network error";
+//         } else {
+//             errorMessage = error.message || "Unknown error";
+//         }
+//         dispatch(serviceActions.createServiceFailure(errorMessage));
+//     }
+// };

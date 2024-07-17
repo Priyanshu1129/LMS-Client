@@ -2,7 +2,6 @@ import axios from "axios";
 import { memberActions } from "../slices/memberSlice";
 import { serverURL } from "../../config/config";
 
-
 const route = `${serverURL}/member`
 
 export const getAllMember = (token) => async (dispatch) => {
@@ -34,7 +33,7 @@ export const getAllMember = (token) => async (dispatch) => {
 
 export const getMember = (memberId, token) => async (dispatch) => {
     try {
-        console.log("get-member-data", memberId);
+        console.log("get-member-data", memberId, token);
         dispatch(memberActions.getMemberRequest());
 
         const data = await axios.get(`${route}/details/${memberId}`, {

@@ -246,32 +246,6 @@ const MemberProfilePage = ({ route, navigation }) => {
             Service Info
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.tabButton,
-            activeTab == "planDetail"
-              ? {
-                  ...styles.activeTab,
-                  backgroundColor: theme.colors.primary,
-                }
-              : { backgroundColor: theme.colors.secondaryContainer },
-          ]}
-          onPress={() => setActiveTab("planDetail")}
-        >
-          <Text
-            style={[
-              [styles.tabButtonText, { fontSize: theme.fontSizes.sm }],
-              {
-                color:
-                  activeTab === "planDetail"
-                    ? theme.colors.background
-                    : theme.colors.primary,
-              },
-            ]}
-          >
-            Plan Details
-          </Text>
-        </TouchableOpacity>
       </View>
 
       {activeTab === "basicInfo" ? (

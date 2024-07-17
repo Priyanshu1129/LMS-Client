@@ -167,7 +167,7 @@ const MembersList = ({ route, navigation }) => {
                       {index >= (pageNumber - 1) * 10 &&
                         index < pageNumber * 10 && (
                           <UserListCard
-                            key={member._id}
+                            memberId={member._id}
                             name={member.name}
                             balance={member.account.balance}
                             membershipStatus={member.membershipStatus}
