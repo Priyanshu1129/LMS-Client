@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View,  } from "react-native";
 import PageLoader from "../../components/pageLoader";
 import { useDispatch, useSelector } from "react-redux";
 import { getMemberServices } from "../../redux/actions/serviceActions";
 import { serviceActions } from "../../redux/slices/serviceSlice";
+import { useTheme } from "react-native-paper";
 import { ScrollView } from "react-native-gesture-handler";
+import ServiceCard from "./memberServiceCard";
+
 
 const MemberServiceDetails = ({ memberId, token }) => {
   const [loading, setLoading] = useState(true);
@@ -46,12 +49,22 @@ const MemberServiceDetails = ({ memberId, token }) => {
     }
   }, [status]);
 
+  const theme = useTheme();
+  const colors = {
+    labelColor: theme.colors.primary,
+    buttonBackground: theme.colors.primary,
+  };
+
   return (
     <ScrollView>
       {loading ? (
         <PageLoader />
       ) : services?.length > 0 ? (
+        <>
+        {services.map((service)=> <ServiceCard service={service} token={token}/>)}
         <Text>{JSON.stringify(services)}</Text>
+        </>
+      
       ) : (
         <Text>No Services Available</Text>
       )}
@@ -61,4 +74,6 @@ const MemberServiceDetails = ({ memberId, token }) => {
 
 export default MemberServiceDetails;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  
+});

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import React, { useEffect, useState } from "react";
+import { ScrollView } from "react-native-gesture-handler";
 
 const MemberBasicInfo = ({
   user,
@@ -29,6 +30,7 @@ const MemberBasicInfo = ({
   };
   
   return (
+    <ScrollView>
     <View style={styles.tabContent}>
       <View style={styles.userInfo}>
         <View style={styles.userInfoRow}>
@@ -236,6 +238,7 @@ const MemberBasicInfo = ({
         )}
       </View>
     </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
