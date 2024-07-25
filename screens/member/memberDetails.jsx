@@ -9,13 +9,13 @@ import {
 } from "../../redux/actions/memberActions.js";
 import { memberActions } from "../../redux/slices/memberSlice.js";
 import MemberBasicInfo from "./memberBasicInfo.jsx";
-import MemberServiceDetails from "./memberServiceDetails.jsx";
+import MemberServiceInfo from "./memberServiceInfo.jsx";
 import { getAllMember, getMember } from "../../redux/actions/memberActions.js";
 import PageLoader from "../../components/pageLoader.jsx";
 import { defaultAvatar } from "../../constant.js";
 import EditProfilePic from "../../components/EditProfilePic.jsx";
 import { ScrollView } from "react-native-gesture-handler";
-import PlanDetails from "./memberPlanDetails.jsx";
+
 
 const MemberProfilePage = ({ route, navigation }) => {
   const { member, token } = route.params;
@@ -258,11 +258,9 @@ const MemberProfilePage = ({ route, navigation }) => {
           setDeleteDialogVisible={setDialogVisible}
           handleUpdateMember={handleUpdateMember}
         />
-      ) : activeTab === "serviceInfo" ? (
-        <MemberServiceDetails memberId={memberDetails?._id} token={token} />
-      ) : (
-        <PlanDetails />
-      )}
+      ) : activeTab === "serviceInfo" && (
+        <MemberServiceInfo memberId={memberDetails?._id} token={token} />
+      ) }
 
       <ConfirmationDialog
         visible={dialogVisible}

@@ -165,7 +165,7 @@ export const allocateSeat = (allocateData, token) => async (dispatch) => {
 
         dispatch(seatActions.allocateSeatSuccess(data.data));
     } catch (error) {
-        console.log("error", error)
+        console.log("error", error.response.data.message)
         let errorMessage = "An error occurred";
         if (error.response) {
             errorMessage = error.response.data.message || "Server error";

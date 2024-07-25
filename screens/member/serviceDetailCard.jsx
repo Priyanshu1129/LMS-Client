@@ -2,15 +2,44 @@ import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
-import { updateService } from "../../redux/actions/serviceActions";
+import { deAllocateServices, updateService } from "../../redux/actions/serviceActions";
 import { updateMember } from "../../redux/actions/memberActions";
-import { useDispatch } from "react-redux";
+import { useDispatch , useSelector} from "react-redux";
+import { serviceActions } from "../../redux/slices/serviceSlice";
 
-const ServiceDetailsDropdownCard = ({ service, token }) => {
+const ServiceDetailsCard = ({ service, token }) => {
   const [editModeDetails, setEditModeDetails] = useState(service);
   const [editedDetails, setEditedDetails] = useState(service);
   const [edit, setEdit] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
+  const {status : updateServiceStatus, data : updateServiceData, error : updateServiceError} = useSelector((state)=>state.service.updateService);
+  
+  useEffect(()=>{
+    if (updateServiceStatus == "pending") {
+      console.log("update service loading->pending", status);
+      setLoading(true);
+    } else if (
+      updateServiceStatus === "success" &&
+      updateServiceData.status === "success"
+    ) {
+      console.log("updated-service-before-dispatch ", updateServiceData.data)
+      dispatch(serviceActions.updateMemberServicesState(updateServiceData.data));
+      setLoading(false);
+      dispatch(serviceActions.clearUpdateServiceStatus());
+    } else if(updateServiceStatus == 'failed') {
+      setMessage(updateServiceError);
+      console.log("++++========================++++++",updateServiceError)
+      setVisible(true);
+      setLoading(false);
+      dispatch(serviceActions.clearUpdateServiceError());
+      dispatch(serviceActions.clearUpdateServiceError());
+    }
+  },[updateServiceStatus])
+  
+
 
   const handleChange = (key, value) => {
     setEditModeDetails({ ...editModeDetails, [key]: value });
@@ -18,10 +47,16 @@ const ServiceDetailsDropdownCard = ({ service, token }) => {
   };
 
   const handleUpdateService = () => {
-    console.log("edited service-------------", editedDetails);
-    dispatch(updateService(editedDetails, token, service._id));
+      console.log("update-service-edited-details-------------",editedDetails);
+      dispatch(updateService(editedDetails, token, service._id));
+      // setEditedDetails({});
+  };
+
+  const handleDeallocateService = () => {
+    dispatch(deAllocateServices(service._id, token));
     setEditedDetails({});
   };
+
 
   useEffect(() => {
     setEditModeDetails(service);
@@ -32,6 +67,8 @@ const ServiceDetailsDropdownCard = ({ service, token }) => {
     labelColor: theme.colors.primary,
     buttonBackground: theme.colors.primary,
   };
+
+
 
   return (
     <View
@@ -228,7 +265,7 @@ const ServiceDetailsDropdownCard = ({ service, token }) => {
                 mode="contained"
                 style={[styles.button, { backgroundColor: "#FF4242" }]}
                 labelStyle={{ fontSize: theme.fontSizes.md }}
-                // onPress={() => setDeleteDialogVisible(true)}
+                onPress={handleDeallocateService}
               >
                 De Allocate
               </Button>
@@ -308,4 +345,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ServiceDetailsDropdownCard;
+export default ServiceDetailsCard;

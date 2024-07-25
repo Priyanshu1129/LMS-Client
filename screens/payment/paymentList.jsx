@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { View, ScrollView, Text, StyleSheet } from "react-native";
 import { Button, List, TextInput, Avatar, Snackbar } from "react-native-paper";
-import Dropdown from "../../components/dropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { getAllPayment } from "../../redux/actions/paymentActions";
 import { paymentActions } from "../../redux/slices/paymentSlice";
