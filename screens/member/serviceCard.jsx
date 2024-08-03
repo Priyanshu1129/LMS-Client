@@ -9,7 +9,7 @@ const ServiceCard = ({service, token}) => {
     <View>
       <ServiceDropdownCard service={service} token={token} />
       <View>
-        {service.renewalPayments.map((payment)=><PaymentListCard payment={payment}/>)}
+        {service?.renewalPayments?.map((payment)=><PaymentListCard payment={payment}/>)}
       </View>
     </View>
   )

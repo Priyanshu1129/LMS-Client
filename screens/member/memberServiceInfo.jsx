@@ -13,7 +13,7 @@ const MemberServiceInfo = ({ memberId, token }) => {
   const [visible, setVisible] = useState(false);
   const [message, setMessage] = useState(null);
   const { status, data, error } = useSelector(
-    (state) => state.service.memberServices
+    (state) => state?.service?.memberServices
   );
   const {
     status: deAllocateServiceStatus,
@@ -62,7 +62,7 @@ const MemberServiceInfo = ({ memberId, token }) => {
       deAllocateServiceData.status === "success"
     ) {
       setServices(
-        services.map((service) => {
+        services?.map((service) => {
           if (service._id == deAllocateServiceData.data._id) {
             service.status = "inactive";
           }
@@ -98,7 +98,7 @@ const MemberServiceInfo = ({ memberId, token }) => {
           <PageLoader />
         ) : services?.length > 0 ? (
           <>
-            {services.map((service) => (
+            {services?.map((service) => (
               <ServiceCard service={service} token={token}/>
             ))}
             <Text>{JSON.stringify(services)}</Text>

@@ -31,12 +31,16 @@ export const getMemberServices = (memberId, token) => async (dispatch) => {
     }
 };
 
-export const updateService = async (serviceData, token, serviceId) => async (dispatch) =>{
+export const updateService =  (serviceData, token, serviceId) => async (dispatch) =>{
     console.log("updating-service-detail-in-action", serviceData)
-    const formData = new FormData();
-    Object.entries(serviceData).forEach(([key, value]) => {
+    const formData =  new FormData();
+     Object.entries(serviceData).forEach(([key, value]) => {
             formData.append(key, value);
     });
+     // Log the form data for debugging
+    //  for (let [key, value] of formData) {
+    //     console.log(`${key}: ${value}`);
+    // }
     console.log("update-service-form-data " , formData)
     try {
         console.log('updateServiceRequest:', serviceId)
@@ -45,14 +49,15 @@ export const updateService = async (serviceData, token, serviceId) => async (dis
             formData,
              {
             headers: {
-                "authorization": token
+                "Authorization": token,
+                "Content-Type": "multipart/form-data"
             },
         });
         
         console.log('update-member-services-res-data----', data.data);
         dispatch(serviceActions.updateServiceSuccess(data.data));
     } catch (error) {
-        console.log("error", error)
+        console.log("error---c", error)
         let errorMessage = "An error occurred";
         if (error.response) {
             errorMessage = error.response.data.message || "Server error";

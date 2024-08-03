@@ -28,6 +28,7 @@ const ProfilePage = ({ route, navigation }) => {
   const { status, data, error } = useSelector(
     (state) => state.organization.organizationDetails
   );
+  const { status: profileStatus, data: profileData, error: profileError } = useSelector((state)=>state.profile.profileDetails)
 
   const getUserData = async () => {
     const storedData = await AsyncStorage.getItem("data");
@@ -76,12 +77,12 @@ const ProfilePage = ({ route, navigation }) => {
     setMessage(null);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (profileUrl !== userData?.avatar) {
       editedDetails.avatarUri = profileUrl;
     }
     if (Object.keys(editedDetails).length > 0) {
-      dispatch(updateProfile(editedDetails, token));
+      dispatch(updateProfile(editedDetails, token, userData?._id));
     }
     setEditedDetails({});
   };

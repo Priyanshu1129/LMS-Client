@@ -3,31 +3,34 @@ import { Button, useTheme } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import { deAllocateServices, updateService } from "../../redux/actions/serviceActions";
+import { serviceActions } from "../../redux/slices/serviceSlice";
 import { updateMember } from "../../redux/actions/memberActions";
 import { useDispatch , useSelector} from "react-redux";
-import { serviceActions } from "../../redux/slices/serviceSlice";
+import {  Snackbar } from "react-native-paper";
 
+import SelectDropdown from "react-native-select-dropdown";
 const ServiceDetailsCard = ({ service, token }) => {
   const [editModeDetails, setEditModeDetails] = useState(service);
-  const [editedDetails, setEditedDetails] = useState(service);
+  const [editedDetails, setEditedDetails] = useState(null);
   const [edit, setEdit] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
   const {status : updateServiceStatus, data : updateServiceData, error : updateServiceError} = useSelector((state)=>state.service.updateService);
-  
+  const [selectedValue, setSelectedValue] = useState(edit ? editModeDetails?.renewalPeriodUnit : service?.renewalPeriodUnit);
   useEffect(()=>{
     if (updateServiceStatus == "pending") {
-      console.log("update service loading->pending", status);
+      console.log("update service loading->pending", updateServiceStatus);
       setLoading(true);
     } else if (
       updateServiceStatus === "success" &&
-      updateServiceData.status === "success"
+      updateServiceData?.status === "success"
     ) {
       console.log("updated-service-before-dispatch ", updateServiceData.data)
       dispatch(serviceActions.updateMemberServicesState(updateServiceData.data));
       setLoading(false);
+      setMessage()
       dispatch(serviceActions.clearUpdateServiceStatus());
     } else if(updateServiceStatus == 'failed') {
       setMessage(updateServiceError);
@@ -47,7 +50,7 @@ const ServiceDetailsCard = ({ service, token }) => {
   };
 
   const handleUpdateService = () => {
-      console.log("update-service-edited-details-------------",editedDetails);
+      console.log("update-service-edited-details-----------------",editedDetails);
       dispatch(updateService(editedDetails, token, service._id));
       // setEditedDetails({});
   };
@@ -68,13 +71,18 @@ const ServiceDetailsCard = ({ service, token }) => {
     buttonBackground: theme.colors.primary,
   };
 
-
+ const onDismissSnackBar = () => {
+    setVisible(false);
+    setMessage(null);
+  };
 
   return (
     <View
       style={[styles.tabContent, { borderBlockColor: "black", padding: 5 }]}
     >
       <View style={styles.serviceInfo}>
+      
+
         <View style={{ flexDirection: "row", gap: 8, width: "100%" }}>
           <View style={[styles.serviceInfoRow, { width: "60%" }]}>
             <Text
@@ -154,7 +162,7 @@ const ServiceDetailsCard = ({ service, token }) => {
             </Text>
             <TextInput
               style={styles.input}
-              keyboardType="numeric"
+              
               editable={edit}
               value={
                 edit
@@ -162,10 +170,11 @@ const ServiceDetailsCard = ({ service, token }) => {
                   : service?.renewalPeriodUnit
               }
               onChangeText={(value) =>
-                handleChange("renewalPeriodUnit", parseFloat(value))
+                handleChange("renewalPeriodUnit",value)
               }
             />
           </View>
+          
           <View style={[styles.serviceInfoRow, { width: "37%" }]}>
             <Text
               style={[
@@ -272,12 +281,47 @@ const ServiceDetailsCard = ({ service, token }) => {
             </>
           )}
         </View>
+        {message && (
+        <Snackbar
+        
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: "Hide",
+          onPress: () => {
+            onDismissSnackBar();
+          },
+        }}
+        >
+          
+          {message}
+        </Snackbar>
+      )}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  
+  
+  dropdown: {
+    width: 150,
+    backgroundColor: '#fafafa',
+    borderColor: '#ccc',
+  },
+  dropdownText: {
+    color: '#000',
+    textAlign: 'left',
+  },
+  dropdownRow: {
+    backgroundColor: '#fafafa',
+    borderBottomColor: '#ccc',
+  },
+  dropdownRowText: {
+    color: '#000',
+    textAlign: 'left',
+  },
   wrapper: {
     width: "100%",
     padding: 5,
