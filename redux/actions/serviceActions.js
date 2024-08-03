@@ -31,24 +31,24 @@ export const getMemberServices = (memberId, token) => async (dispatch) => {
     }
 };
 
-export const updateService = async (serviceData, token, serviceId) => async (dispatch) =>{
+export const updateService = (serviceData, token, serviceId) => async (dispatch) => {
     console.log("updating-service-detail-in-action", serviceData)
     const formData = new FormData();
     Object.entries(serviceData).forEach(([key, value]) => {
-            formData.append(key, value);
+        formData.append(key, value);
     });
-    console.log("update-service-form-data " , formData)
+    console.log("update-service-form-data ", formData)
     try {
         console.log('updateServiceRequest:', serviceId)
         dispatch(serviceActions.updateServiceRequest());
         const data = await axios.put(`${route}/${serviceId}`,
             formData,
-             {
-            headers: {
-                "authorization": token
-            },
-        });
-        
+            {
+                headers: {
+                    "authorization": token
+                },
+            });
+
         console.log('update-member-services-res-data----', data.data);
         dispatch(serviceActions.updateServiceSuccess(data.data));
     } catch (error) {
@@ -64,7 +64,6 @@ export const updateService = async (serviceData, token, serviceId) => async (dis
         dispatch(serviceActions.updateServiceFailure(errorMessage));
     }
 }
-
 
 export const deAllocateServices = (serviceId, token) => async (dispatch) => {
     try {
@@ -88,7 +87,7 @@ export const deAllocateServices = (serviceId, token) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        console.log("dealloate service error",errorMessage)
+        console.log("dealloate service error", errorMessage)
         dispatch(serviceActions.deAllocateServiceFailure(errorMessage));
     }
 };

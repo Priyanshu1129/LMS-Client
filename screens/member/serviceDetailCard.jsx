@@ -2,9 +2,12 @@ import { StyleSheet, Text, View, TextInput } from "react-native";
 import { Button, useTheme } from "react-native-paper";
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
-import { deAllocateServices, updateService } from "../../redux/actions/serviceActions";
+import {
+  deAllocateServices,
+  updateService,
+} from "../../redux/actions/serviceActions";
 import { updateMember } from "../../redux/actions/memberActions";
-import { useDispatch , useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { serviceActions } from "../../redux/slices/serviceSlice";
 
 const ServiceDetailsCard = ({ service, token }) => {
@@ -15,31 +18,34 @@ const ServiceDetailsCard = ({ service, token }) => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
-  const {status : updateServiceStatus, data : updateServiceData, error : updateServiceError} = useSelector((state)=>state.service.updateService);
-  
-  useEffect(()=>{
+  const {
+    status: updateServiceStatus,
+    data: updateServiceData,
+    error: updateServiceError,
+  } = useSelector((state) => state.service.updateService);
+
+  useEffect(() => {
     if (updateServiceStatus == "pending") {
-      console.log("update service loading->pending", status);
+      console.log("update service loading->pending", updateServiceStatus);
       setLoading(true);
     } else if (
       updateServiceStatus === "success" &&
       updateServiceData.status === "success"
     ) {
-      console.log("updated-service-before-dispatch ", updateServiceData.data)
-      dispatch(serviceActions.updateMemberServicesState(updateServiceData.data));
+      console.log("updated-service-before-dispatch ", updateServiceData.data);
+      dispatch(
+        serviceActions.updateMemberServicesState(updateServiceData.data)
+      );
       setLoading(false);
       dispatch(serviceActions.clearUpdateServiceStatus());
-    } else if(updateServiceStatus == 'failed') {
+    } else if (updateServiceStatus == "failed") {
       setMessage(updateServiceError);
-      console.log("++++========================++++++",updateServiceError)
       setVisible(true);
       setLoading(false);
       dispatch(serviceActions.clearUpdateServiceError());
       dispatch(serviceActions.clearUpdateServiceError());
     }
-  },[updateServiceStatus])
-  
-
+  }, [updateServiceStatus]);
 
   const handleChange = (key, value) => {
     setEditModeDetails({ ...editModeDetails, [key]: value });
@@ -47,16 +53,15 @@ const ServiceDetailsCard = ({ service, token }) => {
   };
 
   const handleUpdateService = () => {
-      console.log("update-service-edited-details-------------",editedDetails);
-      dispatch(updateService(editedDetails, token, service._id));
-      // setEditedDetails({});
+    console.log("update-service-edited-details-------------", editedDetails);
+    dispatch(updateService(editedDetails, token, service._id));
+    // setEditedDetails({});
   };
 
   const handleDeallocateService = () => {
     dispatch(deAllocateServices(service._id, token));
     setEditedDetails({});
   };
-
 
   useEffect(() => {
     setEditModeDetails(service);
@@ -67,8 +72,6 @@ const ServiceDetailsCard = ({ service, token }) => {
     labelColor: theme.colors.primary,
     buttonBackground: theme.colors.primary,
   };
-
-
 
   return (
     <View
@@ -214,7 +217,15 @@ const ServiceDetailsCard = ({ service, token }) => {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <View style={[{display : 'flex', flexDirection : 'row', justifyContent : 'space-between'}]}>
+        <View
+          style={[
+            {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            },
+          ]}
+        >
           {edit ? (
             <>
               <Button
@@ -324,13 +335,13 @@ const styles = StyleSheet.create({
       fontSize: 18,
     },
     buttonContainer: {
-      width : '100%',
+      width: "100%",
       flexDirection: "row",
       marginTop: 12,
       gap: 8,
     },
     button: {
-      width : 100,
+      width: 100,
       paddingVertical: 4,
       paddingHorizontal: 4,
       borderRadius: 10,
