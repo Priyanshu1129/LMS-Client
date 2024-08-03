@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Text, View, Image } from "react-native";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -7,16 +7,23 @@ import { Avatar, useTheme } from "react-native-paper";
 import TakePhotoOptions from "./takePhotoOptions";
 import * as ImagePicker from "expo-image-picker";
 import { Dimensions } from "react-native";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
 import imageCompressor from "../utils/imageCompressor";
+import { useSelector } from "react-redux";
+import {ActivityIndicator} from "react-native-paper";
+import PageLoader from "./pageLoader";
+import {MoonLoader} from "react-spinners";
 
-export default EditProfilePic = ({ profileUrl, setProfileUrl, edit }) => {
+export default EditProfilePic = ({ profileUrl, setProfileUrl, edit , uploadStatus}) => {
   const [showImageOption, setShowImageOption] = useState(false);
 
   // No permissions request is necessary for launching the image library
 
-  
+  const {
+    status: updateStatus,
+    data: updateData,
+    error: updateError,
+  } = useSelector((state) => state.member.updateMember);
 
   const closeImageOptions = () => {
     setShowImageOption(false);
@@ -72,11 +79,23 @@ export default EditProfilePic = ({ profileUrl, setProfileUrl, edit }) => {
         <View
           style={[styles.avatarWrapper, { borderColor: theme.colors.primary }]}
         >
-          <Avatar.Image
-            style={{ opacity: edit ? 0.4 : 1 }}
+          {uploadStatus == "pending" ? (
+            // <ClipLoader size={50} color="blue" loading={true} />
+            <View style={[styles.loaderWraper]}>
+            <ActivityIndicator
             size={95}
-            source={{ uri: profileUrl }}
-          />
+            animating={true}
+            style={styles.loader}
+          /></View>
+            // <PageLoader />
+            // <Text>loading</Text>
+          ) : (
+            <Avatar.Image
+              style={{ opacity: edit ? 0.4 : 1 }}
+              size={95}
+              source={{ uri: profileUrl }}
+            />
+          )}
           {edit && (
             <View
               style={[
@@ -106,6 +125,17 @@ export default EditProfilePic = ({ profileUrl, setProfileUrl, edit }) => {
 const windowWidth = Dimensions.get("window").width;
 const baseUnit = windowWidth / 20;
 const styles = StyleSheet.create({
+  loader: {
+    width : 'auto',
+    height : 'auto',
+    padding : 3
+  },
+  loaderWraper : {
+    display : 'flex',
+    justifyContent : 'center',
+    alignItems : 'center',
+    margin : 'auto'
+  },
   profileContainer: {
     alignItems: "center",
     marginBottom: 20,

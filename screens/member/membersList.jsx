@@ -157,7 +157,7 @@ const MembersList = ({ route, navigation }) => {
                       member.membershipStatus.toLowerCase() ===
                         filterOption.toLowerCase()
                   )
-                  .map((member, index) => (
+                  ?.map((member, index) => (
                     <TouchableOpacity
                       onPress={() =>
                         navigation.navigate("MemberDetails", { member })

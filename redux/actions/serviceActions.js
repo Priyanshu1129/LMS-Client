@@ -2,7 +2,6 @@ import axios from "axios";
 import { serviceActions } from "../slices/serviceSlice";
 import { serverURL } from "../../config/config";
 
-
 const route = `${serverURL}/service`
 
 export const getMemberServices = (memberId, token) => async (dispatch) => {
@@ -37,6 +36,10 @@ export const updateService = (serviceData, token, serviceId) => async (dispatch)
     Object.entries(serviceData).forEach(([key, value]) => {
         formData.append(key, value);
     });
+    // Log the form data for debugging
+    //  for (let [key, value] of formData) {
+    //     console.log(`${key}: ${value}`);
+    // }
     console.log("update-service-form-data ", formData)
     try {
         console.log('updateServiceRequest:', serviceId)
@@ -45,7 +48,8 @@ export const updateService = (serviceData, token, serviceId) => async (dispatch)
             formData,
             {
                 headers: {
-                    "authorization": token
+                    "Authorization": token,
+                    "Content-Type": "multipart/form-data"
                 },
             });
 
@@ -67,7 +71,7 @@ export const updateService = (serviceData, token, serviceId) => async (dispatch)
 
 export const deAllocateServices = (serviceId, token) => async (dispatch) => {
     try {
-        console.log('deAlllocateServiceRequest:', serviceId)
+        console.log('de-allocateServiceRequest:', serviceId)
         dispatch(serviceActions.deAllocateServiceRequest());
         const data = await axios.post(`${route}/de_allocate/${serviceId}`, {
             headers: {
@@ -87,7 +91,7 @@ export const deAllocateServices = (serviceId, token) => async (dispatch) => {
         } else {
             errorMessage = error.message || "Unknown error";
         }
-        console.log("dealloate service error", errorMessage)
+        console.log("de-allocate service error", errorMessage)
         dispatch(serviceActions.deAllocateServiceFailure(errorMessage));
     }
 };

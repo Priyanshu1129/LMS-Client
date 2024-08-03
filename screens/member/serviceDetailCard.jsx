@@ -6,13 +6,15 @@ import {
   deAllocateServices,
   updateService,
 } from "../../redux/actions/serviceActions";
+import { serviceActions } from "../../redux/slices/serviceSlice";
 import { updateMember } from "../../redux/actions/memberActions";
 import { useDispatch, useSelector } from "react-redux";
-import { serviceActions } from "../../redux/slices/serviceSlice";
+import { Snackbar } from "react-native-paper";
 
+import SelectDropdown from "react-native-select-dropdown";
 const ServiceDetailsCard = ({ service, token }) => {
   const [editModeDetails, setEditModeDetails] = useState(service);
-  const [editedDetails, setEditedDetails] = useState(service);
+  const [editedDetails, setEditedDetails] = useState(null);
   const [edit, setEdit] = useState(false);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -23,20 +25,23 @@ const ServiceDetailsCard = ({ service, token }) => {
     data: updateServiceData,
     error: updateServiceError,
   } = useSelector((state) => state.service.updateService);
-
+  const [selectedValue, setSelectedValue] = useState(
+    edit ? editModeDetails?.renewalPeriodUnit : service?.renewalPeriodUnit
+  );
   useEffect(() => {
     if (updateServiceStatus == "pending") {
       console.log("update service loading->pending", updateServiceStatus);
       setLoading(true);
     } else if (
       updateServiceStatus === "success" &&
-      updateServiceData.status === "success"
+      updateServiceData?.status === "success"
     ) {
       console.log("updated-service-before-dispatch ", updateServiceData.data);
       dispatch(
         serviceActions.updateMemberServicesState(updateServiceData.data)
       );
       setLoading(false);
+      setMessage();
       dispatch(serviceActions.clearUpdateServiceStatus());
     } else if (updateServiceStatus == "failed") {
       setMessage(updateServiceError);
@@ -53,7 +58,10 @@ const ServiceDetailsCard = ({ service, token }) => {
   };
 
   const handleUpdateService = () => {
-    console.log("update-service-edited-details-------------", editedDetails);
+    console.log(
+      "update-service-edited-details-----------------",
+      editedDetails
+    );
     dispatch(updateService(editedDetails, token, service._id));
     // setEditedDetails({});
   };
@@ -71,6 +79,11 @@ const ServiceDetailsCard = ({ service, token }) => {
   const colors = {
     labelColor: theme.colors.primary,
     buttonBackground: theme.colors.primary,
+  };
+
+  const onDismissSnackBar = () => {
+    setVisible(false);
+    setMessage(null);
   };
 
   return (
@@ -157,18 +170,16 @@ const ServiceDetailsCard = ({ service, token }) => {
             </Text>
             <TextInput
               style={styles.input}
-              keyboardType="numeric"
               editable={edit}
               value={
                 edit
                   ? editModeDetails?.renewalPeriodUnit
                   : service?.renewalPeriodUnit
               }
-              onChangeText={(value) =>
-                handleChange("renewalPeriodUnit", parseFloat(value))
-              }
+              onChangeText={(value) => handleChange("renewalPeriodUnit", value)}
             />
           </View>
+
           <View style={[styles.serviceInfoRow, { width: "37%" }]}>
             <Text
               style={[
@@ -283,12 +294,43 @@ const ServiceDetailsCard = ({ service, token }) => {
             </>
           )}
         </View>
+        {message && (
+          <Snackbar
+            visible={visible}
+            onDismiss={onDismissSnackBar}
+            action={{
+              label: "Hide",
+              onPress: () => {
+                onDismissSnackBar();
+              },
+            }}
+          >
+            {message}
+          </Snackbar>
+        )}
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  dropdown: {
+    width: 150,
+    backgroundColor: "#fafafa",
+    borderColor: "#ccc",
+  },
+  dropdownText: {
+    color: "#000",
+    textAlign: "left",
+  },
+  dropdownRow: {
+    backgroundColor: "#fafafa",
+    borderBottomColor: "#ccc",
+  },
+  dropdownRowText: {
+    color: "#000",
+    textAlign: "left",
+  },
   wrapper: {
     width: "100%",
     padding: 5,

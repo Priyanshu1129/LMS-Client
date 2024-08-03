@@ -31,13 +31,15 @@ const serviceSlice = createSlice({
     initialState: initialState,
     reducers: {
         updateMemberServicesState : (state, action)=>{
-               state.memberServices.data = state.memberServices.data.map((service)=>{
+               if(action.payload.service){
+               state.memberServices.data = state.memberServices?.data?.map((service)=>{
                    if(service._id == action.payload._id){
                     return action.payload
                    }
                    return service
                })
                state.memberServices.status = "success"
+            }
         },
 
         getMemberServicesRequest: (state) => {

@@ -78,7 +78,8 @@ const ServiceDropdownCard = ({ service, token }) => {
                 width: 12,
                 height: 12,
                 backgroundColor:
-                  service?.status == "active" ? "green" : "orange",
+                  // service?.status == "active" ? "green" : "orange",
+                  service== "active" ? "green" : "orange",
                 borderRadius: 4,
               },
             ]}
