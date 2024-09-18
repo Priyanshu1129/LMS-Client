@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1006564613116",
+    "project_id": "liberary-58b27",
+    "storage_bucket": "liberary-58b27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006564613116:android:f99627679fb2b08bf6b079",
+        "android_client_info": {
+          "package_name": "liberary.management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeL1wZRq8nGdfds3QlVwUYc4-3nFfNuJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
