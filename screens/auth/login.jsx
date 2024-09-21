@@ -13,6 +13,7 @@ import { Formik } from "formik";
 import { login } from "../../redux/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../redux/slices/authSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 let loginSchema = object({
   email: string().email().required(),
@@ -22,7 +23,7 @@ let loginSchema = object({
 const Login = ({ navigation }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const { status, isAuthenticated, error } = useSelector(
+  const { status, isAuthenticated, data, error } = useSelector(
     (state) => state.auth.authDetails
   );
 
@@ -37,9 +38,15 @@ const Login = ({ navigation }) => {
       // navigation.navigate("Home");
       dispatch(authActions.clearStatus());
       setLoading(false);
-      navigation.navigate("DrawNav", {
-        screen: "Home",
-      });
+      // const data = await AsyncStorage.getItem('data');
+      //checking for system access
+      console.log("user data in LS while login ",data.data);
+      if(data.data.systemAccess){
+        navigation.navigate("Home");
+      }else{
+        navigation.navigate("Subscription");
+      }
+      
     } else if (status === "failed") {
       Alert.alert(error);
       setLoading(false);

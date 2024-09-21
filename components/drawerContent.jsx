@@ -14,6 +14,7 @@ const DrawerList = [
   { icon: "seat-outline", label: "Seat", navigateTo: "AllSeats" },
   { icon: "locker", label: "Locker", navigateTo: "AllLockers" },
   { icon: "cash-multiple", label: "Payment", navigateTo: "PaymentList" },
+  { icon: "cash-multiple", label: "Subscription", navigateTo: "Subscription" },
   {
     icon: "library",
     label: "My Organization",
